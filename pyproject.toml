@@ -1,0 +1,79 @@
+[project]
+name = "dnafm"
+version = "0.1.0"
+description = "DNA foundation model / sequence modeling experiments"
+readme = "README.md"
+requires-python = ">=3.12,<3.13"
+
+dependencies = [
+    # Torch stack
+    "torch==2.8.*",
+
+    # Core scientific stack
+    "numpy>=2.3,<3",
+
+    # HF / modeling stack
+    "transformers==4.57.1",
+    "datasets==4.4.1",
+    "tokenizers==0.22.1",
+    "huggingface-hub==0.35.3",
+    "accelerate==1.10.1",
+    "safetensors==0.6.2",
+
+    # Sequence / attention kernels
+    "einops==0.8.*",
+
+    # Build helpers
+    "ninja",
+
+    # H-Net related
+    "flash-attn==2.8.3",
+    "mamba-ssm==2.3.0",
+    "causal-conv1d==1.6.0",
+
+    # Logging / utilities
+    "hydra-core",
+    "omegaconf>=2.3",
+    "wandb",
+    "tqdm",
+    "pyyaml",
+    "rich",
+    "rootutils",
+    "codetiming",
+    "humanfriendly",
+    "optree",
+
+    # Misc utils
+    "pyfaidx",
+
+    # dna long benchmark
+    "peft",
+    "pytabix",
+    "pyBigWig",
+]
+
+[tool.uv]
+python-preference = "system"
+index-strategy = "unsafe-best-match"
+link-mode = "copy"
+
+# Build from source to avoid ABI-mismatched wheels.
+no-binary-package = ["mamba-ssm", "causal-conv1d"]
+
+[tool.uv.sources]
+torch = { index = "pytorch-cu126" }
+
+[tool.uv.extra-build-dependencies]
+flash-attn = ["torch==2.8.*", "ninja"]
+mamba-ssm = ["torch==2.8.*", "ninja"]
+causal-conv1d = ["torch==2.8.*", "ninja"]
+
+[tool.uv.extra-build-variables]
+flash-attn = { FLASH_ATTENTION_SKIP_CUDA_BUILD = "TRUE" }
+mamba-ssm = { MAMBA_FORCE_BUILD = "TRUE" }
+causal-conv1d = { CAUSAL_CONV1D_FORCE_BUILD = "TRUE" }
+
+[[tool.uv.index]]
+name = "pytorch-cu126"
+url = "https://download.pytorch.org/whl/cu126"
+explicit = true

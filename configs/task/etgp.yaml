@@ -1,0 +1,60 @@
+# @package _global_
+task: etgp
+name: dna_longbench_etgp
+
+data: gencode_human_128k
+model_alias: ${ckpt}
+training_alias: dna_longbench_etgp
+
+max_len: 128000
+lr: 1e-3
+batch_size: 1
+grad_acc_steps: 8
+eval_batch_size: 1
+train_steps: 0
+max_train_steps: ${train_steps}
+eval_steps: 100
+save_steps: 100
+log_every: 5
+num_train_samples: 0
+num_valid_samples: 0
+num_test_samples: 0
+max_eval_samples: ${num_valid_samples}
+max_grad_norm: 1.0
+mixed_precision: bf16
+
+task_name: enhancer_target_gene_prediction
+cell_type: CRISPRi_EPI_K562_hg19
+ckpt: GeneZip-70M-Intergenic-focused
+data_max_length: 12800
+freeze_encoder: false
+use_lora: true
+test_load: best
+
+training:
+  do_train: true
+  learning_rate: ${lr}
+  per_device_train_batch_size: 1
+  per_device_eval_batch_size: 1
+  gradient_accumulation_steps: ${grad_acc_steps}
+  num_train_epochs: 15
+  eval_strategy: epoch
+  save_strategy: epoch
+  load_best_model_at_end: true
+  metric_for_best_model: eval_auprc
+  greater_is_better: true
+  logging_steps: ${log_every}
+  save_total_limit: 20
+  dataloader_num_workers: 1
+  dataloader_drop_last: true
+  remove_unused_columns: false
+  group_by_length: false
+  disable_tqdm: false
+  gradient_checkpointing: false
+  max_grad_norm: ${max_grad_norm}
+  weight_decay: 0.1
+  lr_scheduler_type: linear
+  warmup_ratio: 0.1
+  adam_beta1: 0.9
+  adam_beta2: 0.95
+  bf16: true

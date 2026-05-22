@@ -1,0 +1,59 @@
+# @package _global_
+
+task: tisp
+name: dna_longbench_tisp
+mode: Release
+
+data: gencode_human_128k
+data_alias: tisp
+model_alias: ${ckpt}
+training_alias: tisp_ft
+alias: ${model_alias}_${training_alias}
+
+root: ./data/dnalongbench
+dnalongbench_repo: andyjzhao/dnalongbench
+task_name: tisp
+sequence_length: 100000
+num_outputs: 10
+
+ckpt: GeneZip-70M-Promoter-distal-regulatory
+hf_user: ${oc.env:HF_USER,${oc.env:HF_USERNAME,andyjzhao}}
+strict: false
+offline_mode: false
+
+tokenizer: fast
+dtype: bfloat16
+mixed_precision: bf16
+routing_step: null
+
+batch_size: 1
+eval_batch_size: 1
+grad_acc_steps: 4
+train_steps: 5000
+max_train_steps: ${train_steps}
+eval_steps: 1000
+log_every: 50
+num_train_samples: 0
+num_valid_samples: 0
+num_test_samples: 0
+num_workers: 0
+
+learning_rate: 2e-4
+lr: ${learning_rate}
+weight_decay: 0.0
+max_grad_norm: 1.0
+freeze_encoder: false
+use_layer_norm: true
+head_dropout: 0.0
+tisp_loss: pseudo_poisson_kl
+tisp_random_strand: false
+
+wandb:
+  name: ${alias}
+  project: ${oc.env:WANDB_PROJECT,GeneZip-TISP}
+  entity: ${oc.env:WANDB_ENTITY,null}
+  tags: ["${task}", "${mode}"]
+  dir: ${dirs.wandb_cache}
+  mode: online
+  id: null
+  step_metric: null

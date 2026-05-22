@@ -1,0 +1,58 @@
+# @package _global_
+task: pretrain
+name: glm_stage1
+
+data: gencode_human_12.8k
+model_alias: ${model.name}
+training_alias: ${mode}_glm_s1_${region_info}_bp${bp_per_token}_a${alpha}_lr${lr}_e${epochs}_ms${max_train_steps}_maxlen${max_len}
+
+max_len: 12800
+lr: 1e-3
+batch_size: 1
+grad_acc_steps: 1
+eval_batch_size: ${batch_size}
+train_steps: 9999999
+max_train_steps: ${train_steps}
+eval_steps: 1000
+save_steps: 3000
+log_every: 10
+num_train_samples: 0
+num_valid_samples: 0
+num_test_samples: 0
+max_eval_samples: ${num_valid_samples}
+max_grad_norm: 2.0
+mixed_precision: bf16
+epochs: 200
+
+training:
+  learning_rate: ${lr}
+  do_train: true
+  group_by_length: false
+  remove_unused_columns: false
+  label_names: ["input_ids"]
+  disable_tqdm: false
+  num_train_epochs: ${epochs}
+  max_train_steps: ${max_train_steps}
+  eval_strategy: steps
+  eval_steps: ${eval_steps}
+  save_strategy: steps
+  save_steps: ${save_steps}
+  logging_steps: ${log_every}
+  report_to: null
+  per_device_train_batch_size: ${batch_size}
+  per_device_eval_batch_size: ${eval_batch_size}
+  gradient_accumulation_steps: ${grad_acc_steps}
+  dataloader_num_workers: 1
+  dataloader_drop_last: true
+  gradient_checkpointing: false
+  max_grad_norm: ${max_grad_norm}
+  weight_decay: 0.1
+  use_lr_multiplier: true
+  hnet_lr_multiplier: null
+  hnet_initializer_range: 0.02
+  lr_scheduler_type: linear
+  warmup_steps: 500
+  adam_beta1: 0.9
+  adam_beta2: 0.95
+  bf16: true
+  overrides: {}

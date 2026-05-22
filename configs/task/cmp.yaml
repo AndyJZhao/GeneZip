@@ -1,0 +1,29 @@
+# @package _global_
+task: cmp
+name: dlb_orca_cmp
+
+subset: HFF
+data: ${_dlb_cmp_data.${subset}}
+ckpt: GeneZip-70M-Transcript-balanced
+model_alias: ${ckpt}
+training_alias: dlb_orca_cmp
+
+max_len: 12800
+lr: 2e-4
+batch_size: 32
+grad_acc_steps: 1
+eval_batch_size: 64
+train_steps: 5000
+max_train_steps: ${train_steps}
+eval_steps: 2500
+save_steps: 0
+log_every: 50
+num_train_samples: 0
+num_valid_samples: 100
+num_test_samples: 0
+max_eval_samples: ${num_valid_samples}
+max_grad_norm: 1.0
+mixed_precision: bf16
+
+training:
+  do_train: true

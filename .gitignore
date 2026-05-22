@@ -1,0 +1,42 @@
+# Local environments
+.env
+.venv/
+venv/
+!uv.lock
+
+# Python
+__pycache__/
+*.py[cod]
+*.so
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Runtime outputs
+.codex_tmp/
+temp/
+output/
+outputs/
+.hydra/
+wandb/
+
+# Data and caches
+data/
+data_cache/
+hf_cache/
+.cache/
+.triton/
+triton_cache/
+torch_extensions/
+
+# Large model artifacts
+*.pt
+*.pth
+*.bin
+*.safetensors
+*.ckpt
+
+# Editors and OS files
+.DS_Store
+.idea/
+.vscode/

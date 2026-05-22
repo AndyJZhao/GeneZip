@@ -1,0 +1,239 @@
+# @package _global_
+defaults:
+  - data
+  - _self_
+  - task: pretrain
+  - override /hydra/hydra_logging@_group_: none
+  - override /hydra/job_logging@_group_: none
+
+task: pretrain
+name: glm_stage1
+mode: Formal
+
+seed: 0
+project_root: ${hydra:runtime.cwd}
+uid: null
+device: cuda
+
+_dlb_cmp_data:
+  HFF: dlb_cmp_hff
+  H1hESC: dlb_cmp_h1hesc
+  GM12878: dlb_cmp_gm12878
+  IMR90: dlb_cmp_imr90
+  HCT116: dlb_cmp_hct116
+
+subset: HFF
+data: gencode_human_12.8k
+data_alias: ${data}
+dataset: ${_dataset_cfg_lookup[${data}]}
+source: ${dataset.type}
+
+model_name: hnet_mamba_64m_2dc
+
+_model_lookup:
+  hnet_mamba_64m_2dc:
+    model:
+      name: hnet_mamba_64m_2dc
+      arch: hnet
+    k_min_list: [8, 8]
+    k_max_list: [0, 0]
+    model_cfg:
+      arch_layout: ["m2", ["m2", ["m15"], "m2"], "m2"]
+      d_model: [512, 512, 768]
+      d_intermediate: [0, 0, 2048]
+      vocab_size: 12
+      ssm_cfg:
+        chunk_size: 256
+        head_dim: 64
+        d_conv: 4
+        d_state: 64
+        expand: 2
+      attn_cfg:
+        num_heads: [8, 8, 12]
+        rotary_emb_dim: [16, 16, 24]
+        window_size: [511, 511, -1]
+      tie_embeddings: true
+      k_min_list: ${k_min_list}
+      k_max_list: ${k_max_list}
+
+  hnet_mamba_650m_2dc:
+    model:
+      name: hnet_mamba_650m_2dc
+      arch: hnet
+    k_min_list: [8, 8]
+    k_max_list: [0, 0]
+    model_cfg:
+      arch_layout: ["m2", ["m2", ["m40"], "m2"], "m2"]
+      d_model: [1024, 1024, 1536]
+      d_intermediate: [0, 0, 4096]
+      vocab_size: 12
+      ssm_cfg:
+        chunk_size: 256
+        head_dim: 64
+        d_conv: 4
+        d_state: 64
+        expand: 2
+      attn_cfg:
+        num_heads: [8, 8, 16]
+        rotary_emb_dim: [32, 32, 48]
+        window_size: [511, 511, -1]
+      tie_embeddings: true
+      k_min_list: ${k_min_list}
+      k_max_list: ${k_max_list}
+
+model: ${_model_lookup.${model_name}.model}
+arch: ${model.arch}
+k_min_list: ${_model_lookup.${model_name}.k_min_list}
+k_max_list: ${_model_lookup.${model_name}.k_max_list}
+model_cfg: ${_model_lookup.${model_name}.model_cfg}
+
+model_alias: ${model.name}
+training_alias: default
+alias: ${model_alias}_${training_alias}
+
+max_len: 12800
+max_length: ${max_len}
+valid_test_downsample: null
+
+tokenizer: fast
+RC_augmentation: false
+
+region_info: promoter1_cds1_utr2_exon2_intron8_nig8_dig16
+bp_per_token: 32
+region_label_map:
+  promoter: 0
+  cds: 1
+  utr: 2
+  exon: 3
+  intron: 4
+  nig: 5
+  dig: 6
+
+alpha: 0.03
+pretrained_ckpt: null
+use_routing_floor: true
+use_routing_ceiling: false
+
+lr: 1e-3
+batch_size: 1
+grad_acc_steps: 1
+eval_batch_size: ${batch_size}
+train_steps: 0
+max_train_steps: ${train_steps}
+eval_steps: 100
+save_steps: 100
+log_every: 10
+num_train_samples: 0
+num_valid_samples: 0
+num_test_samples: 0
+max_eval_samples: ${num_valid_samples}
+max_grad_norm: 1.0
+mixed_precision: bf16
+
+# CMP (contact map prediction)
+modeling: identity
+head_type: 2dcnn
+
+ckpt: GeneZip-70M-Transcript-balanced
+strict: false
+emb_cache: data_cache/dlb_cmp_${subset}/${ckpt}_${modeling}_${pooling}_${emb_position}_tok${tokenizer}_trunk${trunk_len}/
+use_cache: true
+precompute_embeddings: true
+
+pooling: mean
+emb_position: before_lm_head
+trunk_len: 12800
+routing_step: null
+encode_batch_size: 40
+validate_spans: false
+
+num_bins: 448
+bin_size: 2048
+upper_offset: 2
+head:
+  dim: 128
+  dist_emb_dim: 16
+  symmetrize: true
+  cnn1d:
+    enabled: true
+    channels: 128
+    layers: 2
+    kernel_size: 5
+    dropout: 0.1
+  cnn2d:
+    channels: [64, 64, 64]
+    kernel_size: 3
+    dropout: 0.1
+
+dtype: bfloat16
+optimizer:
+  name: adamw
+  lr: ${lr}
+  weight_decay: 0.0
+
+# DNALongBench binary classification (eQTL / ETGP)
+task_name: eqtl_prediction
+cell_type: Artery_Tibial
+pooling_method: mean
+freeze_encoder: true
+
+data_root: ./data/dnalongbench
+dnalongbench_repo: andyjzhao/dnalongbench
+data_max_length: 1280000
+
+save_dir: ./temp/dnalongbench_ckpt
+cleanup_checkpoints: true
+conjoin_test: false
+test_load: auto
+
+use_lora: false
+lora_r: 32
+lora_alpha: 64
+lora_dropout: 0.05
+lora_target_modules: ""
+lora_bias: none
+lora_task_type: SEQ_CLS
+
+hnet_dtype: bfloat16
+hnet_strict: false
+
+max_train_records: null
+max_valid_records: null
+max_test_records: null
+
+early_stopping_epochs: 10
+
+training: {}
+
+# HuggingFace / Checkpoints
+hf_repo: ${oc.env:HF_REPO_ID,null}
+hf_user: ${oc.env:HF_USER,${oc.env:HF_USERNAME,andyjzhao}}
+hf_token: ${oc.env:HF_TOKEN,${oc.env:HUGGINGFACE_HUB_TOKEN,null}}
+upload_to_hf: false
+private: false
+
+# Paths / runtime / logging
+dirs:
+  output: ${project_root}/output/${data_alias}/${alias}/
+  hydra: ${project_root}/temp/hydra/
+  wandb_cache: ${oc.env:WANDB_CACHE_DIR,${project_root}/temp/wandb_cache/}
+  hf_cache: ${oc.env:HF_HOME,${project_root}/temp/hf_home/}
+
+use_wandb: true
+wandb:
+  name: ${alias}
+  project: ${oc.env:WANDB_PROJECT,DNAFM}
+  entity: ${oc.env:WANDB_ENTITY,null}
+  tags: ["${task}", "${mode}"]
+  dir: ${dirs.wandb_cache}
+  mode: online
+  id: null
+  step_metric: null
+
+logging:
+  level: info
+  log_wandb_metric_to_stdout: true
+
+hydra:
+  run:
+    dir: ${dirs.hydra}/${now:%Y-%m-%d-%H-%M-%S}/${alias}

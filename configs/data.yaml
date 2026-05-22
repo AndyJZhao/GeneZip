@@ -1,0 +1,121 @@
+# @package _global_
+data: gencode_human_12.8k
+data_alias: ${.data}_${max_len}
+dataset: ${_dataset_cfg_lookup[${data}]}
+max_len: 12800
+source: ${dataset.type}
+max_length: ${max_len}
+valid_test_downsample: null
+tokenizer: fast
+RC_augmentation: false
+
+_dataset_cfg_lookup:
+  dlb_cmp_hff:
+    type: cmp_seq
+    use_hbins: true
+    cache_hbins: true
+    train_split: train
+    eval_split: validation
+    test_split: test
+    label_key: label_ut
+    mask_key: mask_ut
+    sequence_key: sequence
+    sequence_format: uint8
+    reference_id: hg38
+    num_workers: 0
+    shuffle: true
+    pin_memory: true
+    path: data/dnalongbench/cmp
+    hf_repo: andyjzhao/dnalongbench
+    hf_subdir: cmp
+    target_index: 0
+
+  dlb_cmp_h1hesc:
+    type: cmp_seq
+    use_hbins: true
+    cache_hbins: true
+    train_split: train
+    eval_split: validation
+    test_split: test
+    label_key: label_ut
+    mask_key: mask_ut
+    sequence_key: sequence
+    sequence_format: uint8
+    reference_id: hg38
+    num_workers: 0
+    shuffle: true
+    pin_memory: true
+    path: data/dnalongbench/cmp
+    hf_repo: andyjzhao/dnalongbench
+    hf_subdir: cmp
+    target_index: 1
+
+  dlb_cmp_gm12878:
+    type: cmp_seq
+    use_hbins: true
+    cache_hbins: true
+    train_split: train
+    eval_split: validation
+    test_split: test
+    label_key: label_ut
+    mask_key: mask_ut
+    sequence_key: sequence
+    sequence_format: uint8
+    reference_id: hg38
+    num_workers: 0
+    shuffle: true
+    pin_memory: true
+    path: data/dnalongbench/cmp
+    hf_repo: andyjzhao/dnalongbench
+    hf_subdir: cmp
+    target_index: 2
+
+  dlb_cmp_imr90:
+    type: cmp_seq
+    use_hbins: true
+    cache_hbins: true
+    train_split: train
+    eval_split: validation
+    test_split: test
+    label_key: label_ut
+    mask_key: mask_ut
+    sequence_key: sequence
+    sequence_format: uint8
+    reference_id: hg38
+    num_workers: 0
+    shuffle: true
+    pin_memory: true
+    path: data/dnalongbench/cmp
+    hf_repo: andyjzhao/dnalongbench
+    hf_subdir: cmp
+    target_index: 3
+
+  dlb_cmp_hct116:
+    type: cmp_seq
+    use_hbins: true
+    cache_hbins: true
+    train_split: train
+    eval_split: validation
+    test_split: test
+    label_key: label_ut
+    mask_key: mask_ut
+    sequence_key: sequence
+    sequence_format: uint8
+    reference_id: hg38
+    num_workers: 0
+    shuffle: true
+    pin_memory: true
+    path: data/dnalongbench/cmp
+    hf_repo: andyjzhao/dnalongbench
+    hf_subdir: cmp
+    target_index: 4
+
+  gencode_human_12.8k:
+    type: refseq
+    path: data/gencode_human_12.8k
+    hf_repo: andyjzhao/gencode_human_12.8k
+
+  gencode_human_128k:
+    type: refseq
+    path: data/gencode_human_128k
+    hf_repo: andyjzhao/gencode_human_128k
