@@ -4,7 +4,7 @@
 
 </div>
 
-Public code release for GeneZip.
+Public code release for [GeneZip](https://arxiv.org/abs/2602.17739).
 
 ## Abstract
 
