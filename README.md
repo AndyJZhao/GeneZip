@@ -4,32 +4,19 @@
 
 </div>
 
-Camera Ready code review candidate on `cr_release`. The main benchmark mapping
-was checked against the current **V7.13** paper source tables on 2026-11-01.
-The seven CR pretrained models are published on Hugging Face. Current validation coverage and limits are recorded in
-[the release validation record](results/reproduce_release.md).
-
-GeneZip combines hierarchical dynamic routing, a Region-Aware Ratio (RAR)
-training objective and bounded routing. Gene annotations supervise compression
-training; inference requires raw DNA only. GeneZip-70M reaches 137.6 BPT with a
-0.31 PPL increase relative to uncompressed Mamba2-84M. A common pretrained
-GeneZip-70M checkpoint supports four downstream tasks, outperforming H-Net and
-U-Net on their primary metrics. Its average rank is 3.13; NTv3 has the best
-rank across all pretraining groups. In the paper's single-H100 benchmark of
-100 real 450-kb sequences, inference takes 6.34 seconds versus JanusDNA's
-228.63 seconds (36.1×). This is an inference measurement, not training speed.
+Long-context DNA models are limited by token-mixing cost and by how compression allocates representational budget across the genome. Existing approaches operate close to base-pair resolution, apply fixed downsampling, or learn content-dependent chunks without an explicit genomic budget, making long-context pretraining expensive and difficult to control. We introduce GeneZip, a region-aware DNA compression framework that combines H-Net-style dynamic routing with a Region-Aware Ratio (RAR) objective and bounded routing. GeneZip uses static gene-structure annotations during compression training to specify region-wise base-pairs-per-token (BPT) targets; at inference time, it compresses raw unseen DNA without annotations. GeneZip provides three main benefits. First, it is effective: GeneZip variants achieve the best validation perplexity (PPL) among high-compression encoder-based models. At 137.6 BPT, GeneZip-70M incurs only a +0.31 perplexity increase relative to the 84M Mamba2 baseline without compression. Across four DNALongBench tasks—contact map prediction, eQTL prediction, enhancer–target gene prediction, and transcription-initiation signal prediction—GeneZip outperforms all compression baselines under matched leakage-controlled pre-training. Second, it is redundancy-aware: a post-hoc RepeatMasker/TRF analysis shows that, without repeat supervision, GeneZip assigns higher local BPT to selected TE-derived interspersed repeats and tandem repeats, two major classes of repetitive DNA sequence redundancy. Third, it is efficient: on 450-kb inputs, 70M GeneZip achieves a 36.1× inference speedup over the uncompressed JanusDNA-7.7M model. GeneZip also supports 128K-context and 636M-parameter pretraining on a single H100 80GB GPU. These results establish GeneZip as an effective, redundancy-aware, and efficient compression interface for long-context DNA modeling.
 
 ![GeneZip overview](asset/GeneZip.png)
 
-## Model and result mapping
+## Pretrained models
 
-See [the complete checkpoint/task matrix](results/CHECKPOINTS.md), its
+See [model details and benchmark results](results/CHECKPOINTS.md), its
 [machine-readable manifest](results/checkpoints.json), and the
 [paper result CSV](results/tables/dnalongbench.csv).
 
 ### Main models
 
-| Canonical model | Pretraining context | Use |
+| Model | Pretraining context | Use |
 | --- | ---: | --- |
 | [GeneZip-70M](https://huggingface.co/andyjzhao/GeneZip-70M) | 12,800 | Default; all four main tasks |
 | [GeneZip-70M-128K](https://huggingface.co/andyjzhao/GeneZip-70M-128K) | 128,000 | Pretraining context scaling |
@@ -40,22 +27,21 @@ See [the complete checkpoint/task matrix](results/CHECKPOINTS.md), its
 
 These checkpoints support the regional-prior ablation in the paper appendix.
 
-| Canonical model | Pretraining context | Use |
+| Model | Pretraining context | Use |
 | --- | ---: | --- |
 | [GeneZip-Regulome](https://huggingface.co/andyjzhao/GeneZip-Regulome) | 12,800 | N=64 regional prior |
 | [GeneZip-PromoterDistal](https://huggingface.co/andyjzhao/GeneZip-PromoterDistal) | 12,800 | N=64 regional prior |
 | [GeneZip-Intergenic](https://huggingface.co/andyjzhao/GeneZip-Intergenic) | 12,800 | N=32 regional prior |
 
-Historical names are retained as source provenance. This release covers GeneZip
-pretrained weights and pretraining/CMP/eQTL/ETGP/TISP code. Downstream task
-checkpoints are not distributed.
+This repository provides pretrained weights and code for pretraining and
+training and evaluating CMP, eQTL, ETGP and TISP on DNALongBench. Each task
+starts from the pretrained weights using the commands below.
 
 ## Environment
 
-Linux and an NVIDIA GPU are required for model execution. The inherited lockfile
+Linux and an NVIDIA GPU are required for model execution. The lockfile
 uses Python 3.12, PyTorch 2.8/CUDA 12.6, flash-attn 2.8.3, mamba-ssm 2.3.0 and
-causal-conv1d 1.6.0. This incremental release reuses the existing environment; a fresh-install audit
-is outside the agreed validation scope.
+causal-conv1d 1.6.0.
 
 ```sh
 uv venv --python 3.12
@@ -64,10 +50,9 @@ source .venv/bin/activate
 ```
 
 Run shell entrypoints from the repository root. W&B is optional for downstream
-commands (`USE_WANDB=true`). HF uploads are disabled by default. `HF_USER` is the
-checkpoint namespace, not a requirement to create a personal HF account.
+commands (`USE_WANDB=true`). `HF_USER` selects the Hugging Face namespace and defaults to `andyjzhao`.
 
-## Main downstream recipes
+## DNALongBench training and evaluation
 
 All four wrappers default to the public `andyjzhao/GeneZip-70M` weights.
 Their default commands download the checkpoint automatically:
@@ -79,19 +64,25 @@ bash shell/dnalongbench/etgp.sh
 bash shell/dnalongbench/tisp.sh
 ```
 
-For an immutable download, use `snapshot_download` with the model's
-`release_revision` from `results/checkpoints.json`, then pass its returned path
-as `CKPT`. To reconstruct the same weights from their historical source:
+To download a fixed model revision into a local directory:
 
 ```sh
-python scripts/export_pretrained.py --model GeneZip-70M --output ./pretrained
+python - <<'PYTHON'
+import json
+from huggingface_hub import snapshot_download
+
+with open("results/checkpoints.json") as f:
+    model = json.load(f)["models"]["GeneZip-70M"]
+snapshot_download(
+    repo_id="andyjzhao/GeneZip-70M",
+    revision=model["release_revision"],
+    local_dir="./pretrained/GeneZip-70M",
+)
+PYTHON
 CKPT=./pretrained/GeneZip-70M bash shell/dnalongbench/etgp.sh
 ```
 
-The export verifies the source SHA-256 and writes a minimal `hydra_cfg.yaml`
-with explicit routing settings. It never uploads files.
-
-CMP requires all five subsets, not only the wrapper's HFF default:
+The CMP command defaults to HFF. To evaluate all five cell lines:
 
 ```sh
 for SUBSET in HFF H1hESC GM12878 IMR90 HCT116; do
@@ -104,8 +95,7 @@ starts with Artery_Tibial. Both eQTL and ETGP use 450,000 bp, seed 1, no LoRA,
 frozen embeddings/encoder/router, LR 2e-4, three epochs and best validation AUROC.
 Their compression regularizer targets 128 BPT (alpha 0.03), independently of
 the pretraining N=32 anchor. TISP uses WD 0.01 and routing caps `[60000,30000]`. CMP evaluates every 200 steps. Alternative-prior tasks require
-their own recipes; changing
-only `CKPT` is not a reproduction of Table 12.
+task-specific settings described in [the ablation results](results/CHECKPOINTS.md#regional-prior-ablations). The wrappers above use the main-model settings.
 
 Data loaders download the revisions pinned in `configs/data.yaml` and
 `configs/main.yaml`. GENCODE uses Parquet with its original `train`/`valid` split;
@@ -122,14 +112,13 @@ bash shell/pretrain/GeneZip-636M-128K-template.sh
 ```
 
 128K training continues from the same-size 12.8K checkpoint. Each stage uses its
-own training budget. The inherited templates use eight GPUs; they do not by
-themselves demonstrate the paper's single-GPU feasibility claim. Regional targets
+own training budget. The templates default to eight GPUs. Regional targets
 are declared in `configs/prior/`, with N=64 for Regulome and PromoterDistal.
 Regulome, PromoterDistal and Intergenic use routing floors `[8,8]` and caps
 `[5000,2000]`. The 636M templates use `[3000,3000]` at 12.8K and `[30000,10000]`
-at 128K, matching their pinned source configurations.
+at 128K.
 
-Evaluate the staged 70M checkpoint on the pretraining validation split:
+Evaluate the downloaded 70M checkpoint on the pretraining validation split:
 
 ```sh
 python src/scripts/pretrain_genezip.py task=pretrain \
@@ -140,9 +129,9 @@ For a short training check, set `max_train_steps=2 num_train_samples=4
 num_valid_samples=2 eval_steps=1 save_steps=1`. These sample and step caps are
 validation overrides, not the paper's training budget.
 
-## Validation
+## Quick checks
 
-Run CPU contract checks and GPU smoke in an allocated compute environment:
+Run the configuration/data-loader checks and short GPU checks:
 
 ```sh
 python -m unittest discover -s tests -v
@@ -151,7 +140,9 @@ python scripts/smoke_cr_checkpoint.py --checkpoint /path/to/local/GeneZip-70M
 python scripts/smoke_cr_checkpoint.py --checkpoint /path/to/local/GeneZip-70M --sequence-length 450000
 ```
 
-The GPU smoke checks strict loading, finite forward/backward, frozen-parameter
-behavior and save/reload equivalence. It is not a full benchmark reproduction.
+The GPU checks cover strict loading, finite forward/backward outputs, frozen
+parameters and save/reload equivalence. Short checks validate execution; benchmark
+scores require the full training and evaluation recipes. See
+[validation coverage](results/reproduce_release.md) for details.
 
 Code is Apache-2.0. See [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
