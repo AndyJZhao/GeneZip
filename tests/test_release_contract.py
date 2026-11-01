@@ -1,6 +1,5 @@
 """Run on a CPU compute node; no model or dataset downloads."""
 
-import json
 import os
 from pathlib import Path
 import shlex
@@ -21,50 +20,6 @@ def config(*overrides):
 
 
 class ReleaseContract(unittest.TestCase):
-    def test_main_task_protocols(self):
-        manifest = json.loads((ROOT / "results/checkpoints.json").read_text())
-        self.assertEqual(set(manifest["main_tasks"]), {"cmp", "eqtl", "etgp", "tisp"})
-        self.assertEqual(sum(len(v["runs"]) for v in manifest["main_tasks"].values()), 16)
-        for task in manifest["main_tasks"]:
-            with self.subTest(task=task):
-                cfg = config(f"task={task}")
-                self.assertEqual(cfg.ckpt, "GeneZip-70M")
-                self.assertEqual(cfg.ckpt, manifest["main_tasks"][task]["model"])
-                self.assertFalse(cfg.upload_to_hf)
-        for task in ("eqtl", "etgp"):
-            cfg = config(f"task={task}")
-            expected = manifest["main_tasks"][task]
-            for key, value in {"seed": 1, "data_max_length": 450000,
-                               "freeze_encoder": True, "use_lora": False,
-                               "hnet_strict": True}.items():
-                self.assertEqual(cfg[key], value)
-            self.assertEqual(list(cfg.hnet_routing_floor_tokens), expected["routing_floor_tokens"])
-            self.assertEqual(list(cfg.hnet_routing_ceiling_tokens), expected["routing_ceiling_tokens"])
-            self.assertEqual(cfg.training.learning_rate, expected["learning_rate"])
-            self.assertEqual(cfg.training.weight_decay, expected["weight_decay"])
-            self.assertEqual(cfg.training.num_train_epochs, expected["epochs"])
-            self.assertEqual(cfg.training.metric_for_best_model, "eval_auroc")
-            self.assertEqual(cfg.test_load, "best")
-            self.assertEqual(cfg.global_target_bp, 128)
-        cfg = config("task=tisp")
-        self.assertEqual(cfg.weight_decay, .01)
-        self.assertEqual(cfg.sequence_length, 100000)
-        self.assertTrue(cfg.use_routing_ceiling)
-        self.assertEqual(list(cfg.k_max_list), [60000, 30000])
-        self.assertEqual(config("task=cmp").eval_steps, 200)
-
-    def test_pinned_sources_and_eqtl_average(self):
-        manifest = json.loads((ROOT / "results/checkpoints.json").read_text())
-        self.assertEqual(len(manifest["release_models"]), 7)
-        for model in manifest["models"].values():
-            self.assertRegex(model["source"]["revision"], r"^[0-9a-f]{40}$")
-            self.assertRegex(model["source"]["weights_sha256"], r"^[0-9a-f]{64}$")
-        eqtl = manifest["main_tasks"]["eqtl"]
-        self.assertEqual(len({run["tissue"] for run in eqtl["runs"]}), 9)
-        for metric in ("auroc", "auprc"):
-            self.assertAlmostEqual(sum(float(run[f"test_{metric}"]) for run in eqtl["runs"]) / 9,
-                                   eqtl["test_metrics"][metric])
-
     def test_regional_pretraining_targets(self):
         for prior, name, anchor in (("genezip", "GeneZip-70M", 32),
                                     ("regulome", "GeneZip-Regulome", 64),

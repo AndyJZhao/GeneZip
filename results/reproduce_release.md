@@ -1,6 +1,6 @@
 # Validation and reproduction
 
-The benchmark results come from the experiment records linked in
+The reported benchmark results are listed in
 [model details and benchmark results](CHECKPOINTS.md). Short checks validate the
 training and evaluation pipelines; their scores are not benchmark estimates.
 
@@ -11,7 +11,7 @@ Checks ran on NVIDIA A100 GPUs.
 | Component | Coverage |
 | --- | --- |
 | Pretrained weights | Anonymous downloads at fixed revisions, SHA-256 and configuration verification, strict loading and finite CUDA outputs for every published model |
-| Configuration and data loading | Seven checks covering shell entrypoints, Hydra composition, Parquet loading, preservation of validation splits and partial-download recovery |
+| Configuration and data loading | Checks covering shell entrypoints, Hydra composition, Parquet loading, preservation of validation splits and partial-download recovery |
 | 12.8K pretraining | Two training steps and evaluation for 70M and 636M; independent evaluation for 70M |
 | 128K pretraining | One continuation step and evaluation for 70M and 636M |
 | Regional priors | Two 12.8K training steps and evaluation for Regulome and PromoterDistal |
@@ -78,9 +78,3 @@ The first positive ETGP test example occurs at index 53 in this pinned dataset;
 the smoke uses 64 test records so AUROC/AUPRC are defined. Complete benchmark
 recipes keep the full splits. Short-run caps and initialization losses must not be
 reported as reproduced benchmark scores.
-
-## Experiment records
-
-- [Main-task configurations, scoring protocols and held-out metrics](sources/adopted_main_run_audit.json)
-- [Published model revisions and download verification](sources/published_pretrained_models.json)
-- [Model configurations and weight checksums](checkpoints.json)

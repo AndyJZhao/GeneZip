@@ -10,8 +10,7 @@ Long-context DNA models are limited by token-mixing cost and by how compression 
 
 ## Pretrained models
 
-See [model details and benchmark results](results/CHECKPOINTS.md), its
-[machine-readable manifest](results/checkpoints.json), and the
+See [model details and benchmark results](results/CHECKPOINTS.md) and the
 [paper result CSV](results/tables/dnalongbench.csv).
 
 ### Main models
@@ -68,14 +67,10 @@ To download a fixed model revision into a local directory:
 
 ```sh
 python - <<'PYTHON'
-import json
 from huggingface_hub import snapshot_download
-
-with open("results/checkpoints.json") as f:
-    model = json.load(f)["models"]["GeneZip-70M"]
 snapshot_download(
     repo_id="andyjzhao/GeneZip-70M",
-    revision=model["release_revision"],
+    revision="15e46711bd6fa23fe5922dfe22e8893c9f01bec5",
     local_dir="./pretrained/GeneZip-70M",
 )
 PYTHON
@@ -90,8 +85,8 @@ for SUBSET in HFF H1hESC GM12878 IMR90 HCT116; do
 done
 ```
 
-eQTL requires all nine tissues listed in `results/checkpoints.json`; the wrapper
-starts with Artery_Tibial. Both eQTL and ETGP use 450,000 bp, seed 1, no LoRA,
+The eQTL command defaults to Artery_Tibial. Use `CELL_TYPE` to select one of the
+[nine tissues](results/CHECKPOINTS.md#task-subsets). Both eQTL and ETGP use 450,000 bp, seed 1, no LoRA,
 frozen embeddings/encoder/router, LR 2e-4, three epochs and best validation AUROC.
 Their compression regularizer targets 128 BPT (alpha 0.03), independently of
 the pretraining N=32 anchor. TISP uses WD 0.01 and routing caps `[60000,30000]`. CMP evaluates every 200 steps. Alternative-prior tasks require
