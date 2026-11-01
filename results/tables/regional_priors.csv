@@ -1,0 +1,6 @@
+model,validation_bpt,eqtl_auroc,eqtl_auprc,etgp_auroc,etgp_auprc,cmp_scc,cmp_corr,tisp_pcc
+GeneZip-70M,139.35,0.8172,0.1995,0.8229,0.3746,0.1332,0.1791,0.2741
+GeneZip-Regulome,118.15,0.8343,0.2041,0.7888,0.3395,0.1013,0.1482,0.2637
+GeneZip-PromoterDistal,122.79,0.8142,0.1743,0.7523,0.2586,0.0932,0.1416,0.2507
+GeneZip-Intergenic,115.95,0.7865,0.2058,0.8225,0.4464,0.128,0.1735,0.2238
+H-Net-70M,122.48,0.8087,0.1797,0.7283,0.1308,0.1182,0.1607,0.2349

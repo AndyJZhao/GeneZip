@@ -1,0 +1,25 @@
+% GeneZip eQTL/ETGP: AJZ-299/AJZ-300 12.8K-pretrained checkpoint; other priors retain their documented protocols.
+\begin{table*}[t]
+\centering
+\small
+\setlength{\tabcolsep}{4pt}
+\renewcommand{\arraystretch}{1.08}
+\caption{Regional-prior comparison across four tasks at approximately matched pretraining-validation BPT. Each GeneZip row uses one pretrained checkpoint across all tasks. GeneZip-Regulome and GeneZip-PromoterDistal use $N=64$; GeneZip and GeneZip-Intergenic use $N=32$. BPT is measured on the same 3,000 pretraining-validation windows; U-Net uses its architectural count. All scores are held-out test metrics. eQTL reports mean AUROC/AUPRC over nine tissues, ETGP reports AUROC/AUPRC, CMP reports mean SCC/Corr over five cell lines, and TISP reports mean PCC over five assays. Best scores within this table are \textbf{bold}; a dash denotes an unreported metric.}
+\label{tab:region_ratio_ablation}
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{@{}lccccc@{}}
+\toprule
+\textbf{Model / prior} & \textbf{Validation BPT} & \textbf{eQTL AUROC/AUPRC} & \textbf{ETGP AUROC/AUPRC} & \textbf{CMP SCC/Corr} & \textbf{TISP PCC} \\
+\midrule
+U-Net & 127.99 & 0.7690 / --- & 0.7500 / 0.2440 & 0.1314 / 0.1762 & 0.0085 \\
+H-Net-70M & 122.48 & 0.8087 / 0.1797 & 0.7283 / 0.1308 & 0.1182 / 0.1607 & 0.2349 \\
+\midrule
+\rowcolor{teal!10}
+GeneZip & 139.35 & 0.8172 / 0.1995 & \textbf{0.8229} / 0.3746 & \textbf{0.1332 / 0.1791} & \textbf{0.2741} \\
+GeneZip-Regulome ($N=64$) & 118.15 & \textbf{0.8343} / 0.2041 & 0.7888 / 0.3395 & 0.1013 / 0.1482 & 0.2637 \\
+GeneZip-PromoterDistal ($N=64$) & 122.79 & 0.8142 / 0.1743 & 0.7523 / 0.2586 & 0.0932 / 0.1416 & 0.2507 \\
+GeneZip-Intergenic ($N=32$) & 115.95 & 0.7865 / \textbf{0.2058} & 0.8225 / \textbf{0.4464} & 0.1280 / 0.1735 & 0.2238 \\
+\bottomrule
+\end{tabular}%
+}
+\end{table*}

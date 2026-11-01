@@ -1,13 +1,14 @@
 # @package _global_
 task: etgp
 name: dna_longbench_etgp
+seed: 1
 
 data: gencode_human_128k
 model_alias: ${ckpt}
 training_alias: dna_longbench_etgp
 
 max_len: 128000
-lr: 1e-3
+lr: 2e-4
 batch_size: 1
 grad_acc_steps: 8
 eval_batch_size: 1
@@ -25,11 +26,15 @@ mixed_precision: bf16
 
 task_name: enhancer_target_gene_prediction
 cell_type: CRISPRi_EPI_K562_hg19
-ckpt: GeneZip-70M-Intergenic-focused
-data_max_length: 12800
-freeze_encoder: false
-use_lora: true
+ckpt: GeneZip-70M
+data_max_length: 450000
+freeze_encoder: true
 test_load: best
+use_lora: false
+hnet_strict: true
+hnet_routing_floor_tokens: [0, 0]
+hnet_routing_ceiling_tokens: [70000, 70000]
+global_target_bp: 128
 
 training:
   do_train: true
@@ -37,13 +42,15 @@ training:
   per_device_train_batch_size: 1
   per_device_eval_batch_size: 1
   gradient_accumulation_steps: ${grad_acc_steps}
-  num_train_epochs: 15
-  eval_strategy: epoch
-  save_strategy: epoch
+  num_train_epochs: 3
+  eval_strategy: steps
+  save_strategy: steps
   load_best_model_at_end: true
-  metric_for_best_model: eval_auprc
+  metric_for_best_model: eval_auroc
   greater_is_better: true
   logging_steps: ${log_every}
+  eval_steps: ${eval_steps}
+  save_steps: ${save_steps}
   save_total_limit: 20
   dataloader_num_workers: 1
   dataloader_drop_last: true

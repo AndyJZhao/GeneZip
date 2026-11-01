@@ -1,0 +1,293 @@
+[
+  {
+    "task": "eqtl",
+    "wandb_url": "https://wandb.ai/jzshared/DNALLM_eQTL/runs/37nwc0hq",
+    "state": "finished",
+    "config_paths": {
+      "ckpt": "jzshared/GeneZip-7R-LT-32BPT-100B@40a4039a589288939c551b3c330a1c3562b2b15a/checkpoint-30600",
+      "output_dir": "/network/scratch/j/jianan.zhao/DNAFM/version_worktrees/codex-ajz299-eqtl-context-450k/temp/ajz299_eqtl_context_450k_seed1/eqtl_prediction_Adipose_Subcutaneous_37nwc0hq"
+    },
+    "artifact_summary": {},
+    "logged_artifacts": [
+      {
+        "name": "run-37nwc0hq-history:v0",
+        "type": "wandb-history"
+      }
+    ],
+    "weight_files": []
+  },
+  {
+    "task": "eqtl",
+    "wandb_url": "https://wandb.ai/jzshared/DNALLM_eQTL/runs/9syr5awo",
+    "state": "finished",
+    "config_paths": {
+      "ckpt": "jzshared/GeneZip-7R-LT-32BPT-100B@40a4039a589288939c551b3c330a1c3562b2b15a/checkpoint-30600",
+      "output_dir": "/network/scratch/j/jianan.zhao/DNAFM/version_worktrees/codex-ajz299-eqtl-context-450k/temp/ajz299_eqtl_context_450k_seed1/eqtl_prediction_Artery_Tibial_9syr5awo"
+    },
+    "artifact_summary": {},
+    "logged_artifacts": [
+      {
+        "name": "run-9syr5awo-history:v0",
+        "type": "wandb-history"
+      }
+    ],
+    "weight_files": []
+  },
+  {
+    "task": "eqtl",
+    "wandb_url": "https://wandb.ai/jzshared/DNALLM_eQTL/runs/tp8fplr0",
+    "state": "finished",
+    "config_paths": {
+      "ckpt": "jzshared/GeneZip-7R-LT-32BPT-100B@40a4039a589288939c551b3c330a1c3562b2b15a/checkpoint-30600",
+      "output_dir": "/network/scratch/j/jianan.zhao/DNAFM/version_worktrees/codex-ajz299-eqtl-context-450k/temp/ajz299_eqtl_context_450k_seed1/eqtl_prediction_Cells_Cultured_fibroblasts_tp8fplr0"
+    },
+    "artifact_summary": {},
+    "logged_artifacts": [
+      {
+        "name": "run-tp8fplr0-history:v0",
+        "type": "wandb-history"
+      }
+    ],
+    "weight_files": []
+  },
+  {
+    "task": "eqtl",
+    "wandb_url": "https://wandb.ai/jzshared/DNALLM_eQTL/runs/bruz076f",
+    "state": "finished",
+    "config_paths": {
+      "ckpt": "jzshared/GeneZip-7R-LT-32BPT-100B@40a4039a589288939c551b3c330a1c3562b2b15a/checkpoint-30600",
+      "output_dir": "/network/scratch/j/jianan.zhao/DNAFM/version_worktrees/codex-ajz299-eqtl-context-450k/temp/ajz299_eqtl_context_450k_seed1/eqtl_prediction_Muscle_Skeletal_bruz076f"
+    },
+    "artifact_summary": {},
+    "logged_artifacts": [
+      {
+        "name": "run-bruz076f-history:v0",
+        "type": "wandb-history"
+      }
+    ],
+    "weight_files": []
+  },
+  {
+    "task": "eqtl",
+    "wandb_url": "https://wandb.ai/jzshared/DNALLM_eQTL/runs/9t4u2w5p",
+    "state": "finished",
+    "config_paths": {
+      "ckpt": "jzshared/GeneZip-7R-LT-32BPT-100B@40a4039a589288939c551b3c330a1c3562b2b15a/checkpoint-30600",
+      "output_dir": "/network/scratch/j/jianan.zhao/DNAFM/version_worktrees/codex-ajz299-eqtl-context-450k/temp/ajz299_eqtl_context_450k_seed1/eqtl_prediction_Nerve_Tibial_9t4u2w5p"
+    },
+    "artifact_summary": {},
+    "logged_artifacts": [
+      {
+        "name": "run-9t4u2w5p-history:v0",
+        "type": "wandb-history"
+      }
+    ],
+    "weight_files": []
+  },
+  {
+    "task": "eqtl",
+    "wandb_url": "https://wandb.ai/jzshared/DNALLM_eQTL/runs/xl2b1h0w",
+    "state": "finished",
+    "config_paths": {
+      "ckpt": "jzshared/GeneZip-7R-LT-32BPT-100B@40a4039a589288939c551b3c330a1c3562b2b15a/checkpoint-30600",
+      "output_dir": "/network/scratch/j/jianan.zhao/DNAFM/version_worktrees/codex-ajz299-eqtl-context-450k/temp/ajz299_eqtl_context_450k_seed1/eqtl_prediction_Skin_Not_Sun_Exposed_Suprapubic_xl2b1h0w"
+    },
+    "artifact_summary": {},
+    "logged_artifacts": [
+      {
+        "name": "run-xl2b1h0w-history:v0",
+        "type": "wandb-history"
+      }
+    ],
+    "weight_files": []
+  },
+  {
+    "task": "eqtl",
+    "wandb_url": "https://wandb.ai/jzshared/DNALLM_eQTL/runs/20a8poj5",
+    "state": "finished",
+    "config_paths": {
+      "ckpt": "jzshared/GeneZip-7R-LT-32BPT-100B@40a4039a589288939c551b3c330a1c3562b2b15a/checkpoint-30600",
+      "output_dir": "/network/scratch/j/jianan.zhao/DNAFM/version_worktrees/codex-ajz299-eqtl-context-450k/temp/ajz299_eqtl_context_450k_seed1/eqtl_prediction_Skin_Sun_Exposed_Lower_leg_20a8poj5"
+    },
+    "artifact_summary": {},
+    "logged_artifacts": [
+      {
+        "name": "run-20a8poj5-history:v0",
+        "type": "wandb-history"
+      }
+    ],
+    "weight_files": []
+  },
+  {
+    "task": "eqtl",
+    "wandb_url": "https://wandb.ai/jzshared/DNALLM_eQTL/runs/5avmvngd",
+    "state": "finished",
+    "config_paths": {
+      "ckpt": "jzshared/GeneZip-7R-LT-32BPT-100B@40a4039a589288939c551b3c330a1c3562b2b15a/checkpoint-30600",
+      "output_dir": "/network/scratch/j/jianan.zhao/DNAFM/version_worktrees/codex-ajz299-eqtl-context-450k/temp/ajz299_eqtl_context_450k_seed1/eqtl_prediction_Thyroid_5avmvngd"
+    },
+    "artifact_summary": {},
+    "logged_artifacts": [
+      {
+        "name": "run-5avmvngd-history:v0",
+        "type": "wandb-history"
+      }
+    ],
+    "weight_files": []
+  },
+  {
+    "task": "eqtl",
+    "wandb_url": "https://wandb.ai/jzshared/DNALLM_eQTL/runs/1qa7ifsh",
+    "state": "finished",
+    "config_paths": {
+      "ckpt": "jzshared/GeneZip-7R-LT-32BPT-100B@40a4039a589288939c551b3c330a1c3562b2b15a/checkpoint-30600",
+      "output_dir": "/network/scratch/j/jianan.zhao/DNAFM/version_worktrees/codex-ajz299-eqtl-context-450k/temp/ajz299_eqtl_context_450k_seed1/eqtl_prediction_Whole_Blood_1qa7ifsh"
+    },
+    "artifact_summary": {},
+    "logged_artifacts": [
+      {
+        "name": "run-1qa7ifsh-history:v0",
+        "type": "wandb-history"
+      }
+    ],
+    "weight_files": []
+  },
+  {
+    "task": "etgp",
+    "wandb_url": "https://wandb.ai/jzshared/DNALLM_ETGP/runs/8a4nrecm",
+    "state": "finished",
+    "config_paths": {
+      "output_dir": "/network/scratch/j/jianan.zhao/DNAFM/version_worktrees/codex-ajz299-eqtl-context-450k/temp/ajz300_etgp_eqtl_matched_450k_seed1/enhancer_target_gene_prediction_CRISPRi_EPI_K562_hg19_8a4nrecm"
+    },
+    "artifact_summary": {},
+    "logged_artifacts": [
+      {
+        "name": "run-8a4nrecm-history:v0",
+        "type": "wandb-history"
+      }
+    ],
+    "weight_files": []
+  },
+  {
+    "task": "cmp",
+    "wandb_url": "https://wandb.ai/jzshared/DLB-CMP/runs/8pbzcpqg",
+    "state": "finished",
+    "config_paths": {
+      "ckpt": "GeneZip-7R-LT-32BPT-100B"
+    },
+    "artifact_summary": {},
+    "logged_artifacts": [
+      {
+        "name": "run-8pbzcpqg-history:v0",
+        "type": "wandb-history"
+      },
+      {
+        "name": "run-8pbzcpqg-events:v0",
+        "type": "wandb-events"
+      }
+    ],
+    "weight_files": []
+  },
+  {
+    "task": "cmp",
+    "wandb_url": "https://wandb.ai/jzshared/DLB-CMP/runs/j508744t",
+    "state": "finished",
+    "config_paths": {
+      "ckpt": "GeneZip-7R-LT-32BPT-100B"
+    },
+    "artifact_summary": {},
+    "logged_artifacts": [
+      {
+        "name": "run-j508744t-history:v0",
+        "type": "wandb-history"
+      },
+      {
+        "name": "run-j508744t-events:v0",
+        "type": "wandb-events"
+      }
+    ],
+    "weight_files": []
+  },
+  {
+    "task": "cmp",
+    "wandb_url": "https://wandb.ai/jzshared/DLB-CMP/runs/6516bst3",
+    "state": "finished",
+    "config_paths": {
+      "ckpt": "GeneZip-7R-LT-32BPT-100B"
+    },
+    "artifact_summary": {},
+    "logged_artifacts": [
+      {
+        "name": "run-6516bst3-history:v0",
+        "type": "wandb-history"
+      },
+      {
+        "name": "run-6516bst3-events:v0",
+        "type": "wandb-events"
+      }
+    ],
+    "weight_files": []
+  },
+  {
+    "task": "cmp",
+    "wandb_url": "https://wandb.ai/jzshared/DLB-CMP/runs/2krrvu3o",
+    "state": "finished",
+    "config_paths": {
+      "ckpt": "GeneZip-7R-LT-32BPT-100B"
+    },
+    "artifact_summary": {},
+    "logged_artifacts": [
+      {
+        "name": "run-2krrvu3o-history:v0",
+        "type": "wandb-history"
+      },
+      {
+        "name": "run-2krrvu3o-events:v0",
+        "type": "wandb-events"
+      }
+    ],
+    "weight_files": []
+  },
+  {
+    "task": "cmp",
+    "wandb_url": "https://wandb.ai/jzshared/DLB-CMP/runs/1ved4mm9",
+    "state": "finished",
+    "config_paths": {
+      "ckpt": "GeneZip-7R-LT-32BPT-100B"
+    },
+    "artifact_summary": {},
+    "logged_artifacts": [
+      {
+        "name": "run-1ved4mm9-history:v0",
+        "type": "wandb-history"
+      },
+      {
+        "name": "run-1ved4mm9-events:v0",
+        "type": "wandb-events"
+      }
+    ],
+    "weight_files": []
+  },
+  {
+    "task": "tisp",
+    "wandb_url": "https://wandb.ai/jzshared/GeneZip-TISP/runs/m6tlxgu1",
+    "state": "finished",
+    "config_paths": {
+      "ckpt": "GeneZip-7R-LT-32BPT-100B"
+    },
+    "artifact_summary": {
+      "best_pcc": 0.25890076504128745
+    },
+    "logged_artifacts": [
+      {
+        "name": "run-m6tlxgu1-history:v0",
+        "type": "wandb-history"
+      },
+      {
+        "name": "run-m6tlxgu1-events:v0",
+        "type": "wandb-events"
+      }
+    ],
+    "weight_files": []
+  }
+]

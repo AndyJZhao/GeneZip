@@ -1,0 +1,8 @@
+# @package _global_
+pretraining_name: GeneZip-Intergenic
+bp_per_token: 32
+region_info: promoter32_cds16_utr8_exon4_intron2_nig4_dig1
+use_routing_floor: true
+use_routing_ceiling: true
+k_min_list: [8, 8]
+k_max_list: [5000, 2000]

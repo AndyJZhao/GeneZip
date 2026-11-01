@@ -16,15 +16,17 @@ task_name: tisp
 sequence_length: 100000
 num_outputs: 10
 
-ckpt: GeneZip-70M-Promoter-distal-regulatory
+ckpt: GeneZip-70M
 hf_user: ${oc.env:HF_USER,${oc.env:HF_USERNAME,andyjzhao}}
-strict: false
+strict: true
 offline_mode: false
 
 tokenizer: fast
 dtype: bfloat16
 mixed_precision: bf16
 routing_step: null
+use_routing_ceiling: true
+k_max_list: [60000, 30000]
 
 batch_size: 1
 eval_batch_size: 1
@@ -32,6 +34,7 @@ grad_acc_steps: 4
 train_steps: 5000
 max_train_steps: ${train_steps}
 eval_steps: 1000
+save_steps: 0
 log_every: 50
 num_train_samples: 0
 num_valid_samples: 0
@@ -40,7 +43,7 @@ num_workers: 0
 
 learning_rate: 2e-4
 lr: ${learning_rate}
-weight_decay: 0.0
+weight_decay: 0.01
 max_grad_norm: 1.0
 freeze_encoder: false
 use_layer_norm: true

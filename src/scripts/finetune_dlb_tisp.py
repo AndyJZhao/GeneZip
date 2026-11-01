@@ -328,7 +328,7 @@ def evaluate_tisp_posthoc_metrics(
                 device=device,
             )
             output = model(input_ids=batch["input_ids"], attention_mask=batch["attention_mask"])
-            predictions = torch.exp(output["logits"].float()).detach().cpu()
+            predictions = torch.exp(output["logits"]).detach().cpu()
             labels = batch["labels"].detach().cpu()
 
             for batch_idx in range(predictions.shape[0]):
@@ -439,7 +439,7 @@ def _evaluate_tisp_window_posthoc_metrics(
                 device=device,
             )
             output = model(input_ids=batch["input_ids"], attention_mask=batch["attention_mask"])
-            predictions = torch.exp(output["logits"].float())
+            predictions = torch.exp(output["logits"])
             update_tisp_assay_accumulators(accumulators, predictions, batch["labels"])
 
     if was_training:
@@ -603,6 +603,8 @@ def build_tisp_model(cfg: RunConfig, device: torch.device) -> nn.Module:
         device=device,
         dtype=dtype,
         strict=bool(cfg.get("strict", False)),
+        use_routing_ceiling=bool(cfg.use_routing_ceiling),
+        k_max_list=cfg.k_max_list,
     )
     model = HNetForTISPRegression(
         hnet,
@@ -803,7 +805,8 @@ def main(cfg: RunConfig) -> None:
 
     data_root = resolve_hf_dataset_root(
         str(cfg.root),
-        repo_id=str(cfg.get("dnalongbench_repo", "andyjzhao/dnalongbench")),
+        repo_id=str(cfg.dnalongbench_repo),
+        revision=str(cfg.dnalongbench_revision),
         required_subdir="tisp",
         token=cfg.get("hf_token"),
         cache_dir=resolve_hf_cache_dir(cfg),

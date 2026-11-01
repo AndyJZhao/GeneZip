@@ -3,7 +3,9 @@ task: pretrain
 name: glm_stage1
 
 data: gencode_human_12.8k
-model_alias: ${model.name}
+model_alias: ${pretraining_name}
+hf_repo: ${hf_user}/${pretraining_name}
+alias: ${pretraining_name}
 training_alias: ${mode}_glm_s1_${region_info}_bp${bp_per_token}_a${alpha}_lr${lr}_e${epochs}_ms${max_train_steps}_maxlen${max_len}
 
 max_len: 12800
@@ -27,6 +29,7 @@ epochs: 200
 training:
   learning_rate: ${lr}
   do_train: true
+  do_eval: true
   group_by_length: false
   remove_unused_columns: false
   label_names: ["input_ids"]

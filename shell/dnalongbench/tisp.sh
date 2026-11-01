@@ -10,8 +10,7 @@
 
 set -euo pipefail
 
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-PROJECT_ROOT="$(cd "${SCRIPT_DIR}/../.." && pwd)"
+PROJECT_ROOT="${PROJECT_ROOT:-${SLURM_SUBMIT_DIR:-$PWD}}"
 export PROJECT_ROOT
 
 export WANDB_DIR="${WANDB_DIR:-${PROJECT_ROOT}/temp/wandb/}"
@@ -41,7 +40,7 @@ cd "${PROJECT_ROOT}"
 WANDB_PROJ="${WANDB_PROJ:-GeneZip-TISP}"
 USE_WANDB="${USE_WANDB:-false}"
 
-CKPT="${CKPT:-GeneZip-70M-Promoter-distal-regulatory}"
+CKPT="${CKPT:-GeneZip-70M}"
 HF_USER="${HF_USER:-andyjzhao}"
 DATA_ROOT="${DATA_ROOT:-./data/dnalongbench}"
 TRAIN_STEPS="${TRAIN_STEPS:-5000}"

@@ -2,6 +2,7 @@
 defaults:
   - data
   - _self_
+  - prior: genezip
   - task: pretrain
   - override /hydra/hydra_logging@_group_: none
   - override /hydra/job_logging@_group_: none
@@ -14,6 +15,7 @@ seed: 0
 project_root: ${hydra:runtime.cwd}
 uid: null
 device: cuda
+offline_mode: false
 
 _dlb_cmp_data:
   HFF: dlb_cmp_hff
@@ -28,12 +30,12 @@ data_alias: ${data}
 dataset: ${_dataset_cfg_lookup[${data}]}
 source: ${dataset.type}
 
-model_name: hnet_mamba_64m_2dc
+model_name: genezip_70m
 
 _model_lookup:
-  hnet_mamba_64m_2dc:
+  genezip_70m:
     model:
-      name: hnet_mamba_64m_2dc
+      name: genezip_70m
       arch: hnet
     k_min_list: [8, 8]
     k_max_list: [0, 0]
@@ -56,9 +58,9 @@ _model_lookup:
       k_min_list: ${k_min_list}
       k_max_list: ${k_max_list}
 
-  hnet_mamba_650m_2dc:
+  genezip_636m:
     model:
-      name: hnet_mamba_650m_2dc
+      name: genezip_636m
       arch: hnet
     k_min_list: [8, 8]
     k_max_list: [0, 0]
@@ -98,8 +100,6 @@ valid_test_downsample: null
 tokenizer: fast
 RC_augmentation: false
 
-region_info: promoter1_cds1_utr2_exon2_intron8_nig8_dig16
-bp_per_token: 32
 region_label_map:
   promoter: 0
   cds: 1
@@ -134,8 +134,8 @@ mixed_precision: bf16
 modeling: identity
 head_type: 2dcnn
 
-ckpt: GeneZip-70M-Transcript-balanced
-strict: false
+ckpt: GeneZip-70M
+strict: true
 emb_cache: data_cache/dlb_cmp_${subset}/${ckpt}_${modeling}_${pooling}_${emb_position}_tok${tokenizer}_trunk${trunk_len}/
 use_cache: true
 precompute_embeddings: true
@@ -179,6 +179,7 @@ freeze_encoder: true
 
 data_root: ./data/dnalongbench
 dnalongbench_repo: andyjzhao/dnalongbench
+dnalongbench_revision: 4764bc626b4f4187cefb9e1c31355f62f4d3ee66
 data_max_length: 1280000
 
 save_dir: ./temp/dnalongbench_ckpt
@@ -195,7 +196,10 @@ lora_bias: none
 lora_task_type: SEQ_CLS
 
 hnet_dtype: bfloat16
-hnet_strict: false
+hnet_strict: true
+hnet_routing_floor_tokens: [0, 0]
+hnet_routing_ceiling_tokens: [70000, 70000]
+global_target_bp: 128
 
 max_train_records: null
 max_valid_records: null
@@ -219,7 +223,8 @@ dirs:
   wandb_cache: ${oc.env:WANDB_CACHE_DIR,${project_root}/temp/wandb_cache/}
   hf_cache: ${oc.env:HF_HOME,${project_root}/temp/hf_home/}
 
-use_wandb: true
+issue_key: null
+use_wandb: false
 wandb:
   name: ${alias}
   project: ${oc.env:WANDB_PROJECT,DNAFM}

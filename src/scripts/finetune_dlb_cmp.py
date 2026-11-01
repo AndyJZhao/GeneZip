@@ -939,8 +939,7 @@ def main(cfg: RunConfig) -> None:
     test_split = subset_dataset(test_split, int(cfg.num_test_samples))
 
     ckpt_file = resolve_checkpoint_file(cfg)
-    ckpt_tag = os.path.basename(str(cfg.ckpt or ""))
-    disable_routing = not (ckpt_tag.startswith("GeneZip") or ckpt_tag.startswith("HNet"))
+    disable_routing = False
 
     emb_layer, emb_stream = resolve_emb_position(cfg.emb_position)
     tokenizer_name = str(cfg.tokenizer).lower()

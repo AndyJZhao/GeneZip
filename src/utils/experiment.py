@@ -284,7 +284,9 @@ def wandb_init(cfg: RunConfig) -> None:
     os.environ["WANDB_WATCH"] = "false"
     rank = int(cfg.get("rank", 0) or 0)
     if cfg.use_wandb and rank == 0 and int(os.getenv("OMPI_COMM_WORLD_RANK", 0)) == 0:
-        wandb_tags = cfg.wandb.tags
+        wandb_tags = list(cfg.wandb.tags)
+        if cfg.issue_key and cfg.issue_key not in wandb_tags:
+            wandb_tags.append(cfg.issue_key)
         mode = cfg.wandb.get("mode", "online")
         imp_cfg = get_important_cfg(cfg)
         imp_cfg = clean_up_cfg_for_wandb(imp_cfg)

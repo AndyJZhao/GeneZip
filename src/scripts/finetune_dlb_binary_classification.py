@@ -274,6 +274,7 @@ def _ensure_dnalongbench_dataset(
     data_root: str,
     task_name: str,
     repo_id: str,
+    revision: str,
     hf_token: str | None,
     cache_dir: str | None,
     local_files_only: bool,
@@ -289,6 +290,7 @@ def _ensure_dnalongbench_dataset(
         data_root,
         repo_id=repo_id,
         required_subdir=task_dir,
+        revision=revision,
         token=hf_token,
         cache_dir=cache_dir,
         local_files_only=local_files_only,
@@ -538,29 +540,19 @@ def build_hnet_backbone(
     device: torch.device,
     dtype: torch.dtype,
     strict: bool,
+    routing_floor_tokens: list[int],
+    routing_ceiling_tokens: list[int],
 ) -> tuple[torch.nn.Module, RunConfig]:
     cfg_path = resolve_hydra_cfg_path(checkpoint_dir)
     prev_cfg = RunConfig.from_path(cfg_path)
-    cfg_dict = OmegaConf.to_container(prev_cfg.cfg, resolve=True) or {}
-    if not isinstance(cfg_dict, dict):
-        cfg_dict = {}
-    model_cfg = cfg_dict.get("model_cfg") or (cfg_dict.get("model") or {}).get("config") or cfg_dict
+    model_cfg = OmegaConf.to_container(prev_cfg.model_cfg, resolve=True)
     hnet_kwargs = prepare_hnet_config_kwargs(model_cfg)
     if not hnet_kwargs.get("d_model"):
         raise ValueError("Model config missing d_model in checkpoint hydra_cfg.yaml")
 
     hnet_cfg = HNetConfig(**hnet_kwargs)
-    use_floor = bool(cfg_dict.get("use_routing_floor", True))
-    routing_floor = parse_routing_floor_config(cfg_dict) if use_floor else None
-
-    # Default behavior matches the main-branch sweeps: always cap routing tokens to
-    # avoid pathological memory blow-ups on 1.28M inputs.
-    routing_ceiling = parse_routing_ceiling_config(cfg_dict)
-    if not routing_ceiling.enabled():
-        k_max = 40000 if dtype == torch.float32 else 70000
-        num_stages = max(1, len(list(getattr(hnet_cfg, "d_model", []) or [])))
-        forced_cfg = {"routing_ceiling": {"k_max_list": [k_max] * num_stages}}
-        routing_ceiling = parse_routing_ceiling_config(forced_cfg)
+    routing_floor = parse_routing_floor_config({"k_min_list": routing_floor_tokens})
+    routing_ceiling = parse_routing_ceiling_config({"k_max_list": routing_ceiling_tokens})
 
     if routing_floor is not None and routing_floor.enabled() and routing_ceiling.enabled():
         model: torch.nn.Module = HNetForCausalLMWithRoutingFloorAndCeiling(
@@ -598,26 +590,6 @@ def _slice_optional_str(value: Any) -> str | None:
     return str(value)
 
 
-def _resolve_global_target_bp(cfg: RunConfig, prev_cfg: RunConfig | None) -> float:
-    candidates = [
-        ("cfg.bp_per_token", cfg.get("bp_per_token")),
-        ("checkpoint hydra_cfg.yaml bp_per_token", prev_cfg.get("bp_per_token") if prev_cfg is not None else None),
-        ("default", 128),
-    ]
-    for source, raw_value in candidates:
-        value = _slice_optional_str(raw_value)
-        if value is None:
-            continue
-        try:
-            target = float(value)
-        except (TypeError, ValueError) as exc:
-            raise ValueError(f"Invalid {source}: {raw_value!r}") from exc
-        if target <= 0:
-            raise ValueError(f"{source} must be positive, got {target}")
-        return target
-    raise ValueError("Unable to resolve bp_per_token for compression regularization.")
-
-
 @hydra.main(config_path=f"{root}/configs", config_name="main", version_base=None)
 def main(cfg: RunConfig) -> None:
     cfg, logger = init_experiment(cfg, init_wandb=bool(cfg.get("use_wandb", True)))
@@ -643,7 +615,8 @@ def main(cfg: RunConfig) -> None:
         data_root = _ensure_dnalongbench_dataset(
             data_root=str(cfg.get("data_root", "./data/dnalongbench")),
             task_name=task_name,
-            repo_id=str(cfg.get("dnalongbench_repo", "andyjzhao/dnalongbench")),
+            repo_id=str(cfg.dnalongbench_repo),
+            revision=str(cfg.dnalongbench_revision),
             hf_token=_slice_optional_str(cfg.get("hf_token")),
             cache_dir=resolve_hf_cache_dir(cfg),
             local_files_only=bool(cfg.get("offline_mode", False)),
@@ -679,14 +652,16 @@ def main(cfg: RunConfig) -> None:
         checkpoint_path = ckpt_info["file"]
         checkpoint_dir = ckpt_info["dir"]
 
-        backbone, prev_cfg = build_hnet_backbone(
+        backbone, _ = build_hnet_backbone(
             checkpoint_dir=checkpoint_dir,
             checkpoint_path=checkpoint_path,
             device=torch.device(device_str),
             dtype=hnet_dtype,
-            strict=bool(cfg.get("hnet_strict", False)),
+            strict=cfg.hnet_strict,
+            routing_floor_tokens=list(cfg.hnet_routing_floor_tokens),
+            routing_ceiling_tokens=list(cfg.hnet_routing_ceiling_tokens),
         )
-        global_target_bp = _resolve_global_target_bp(cfg, prev_cfg)
+        global_target_bp = float(cfg.global_target_bp)
 
         pad_token_id = int(getattr(tokenizer, "pad", 0))
         spec = TASK_SPECS[task_name]
@@ -768,6 +743,8 @@ def main(cfg: RunConfig) -> None:
         else:
             raise ValueError("test_load must be one of: auto, best, last, current, none, skip.")
 
+        if test_load in {"best", "last"} and selected_checkpoint is None:
+            raise ValueError(f"test_load={test_load} requires a saved task checkpoint.")
         if selected_checkpoint:
             strict = not bool(cfg.get("use_lora", False))
             _load_checkpoint_into_model(model, selected_checkpoint, torch.device(device_str), strict=strict)

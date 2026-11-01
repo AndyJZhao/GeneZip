@@ -4,7 +4,7 @@ name: dlb_orca_cmp
 
 subset: HFF
 data: ${_dlb_cmp_data.${subset}}
-ckpt: GeneZip-70M-Transcript-balanced
+ckpt: GeneZip-70M
 model_alias: ${ckpt}
 training_alias: dlb_orca_cmp
 
@@ -15,7 +15,7 @@ grad_acc_steps: 1
 eval_batch_size: 64
 train_steps: 5000
 max_train_steps: ${train_steps}
-eval_steps: 2500
+eval_steps: 200
 save_steps: 0
 log_every: 50
 num_train_samples: 0

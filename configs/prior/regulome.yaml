@@ -1,0 +1,8 @@
+# @package _global_
+pretraining_name: GeneZip-Regulome
+bp_per_token: 64
+region_info: promoter1_cds16_utr2_exon4_intron2_nig2_dig4
+use_routing_floor: true
+use_routing_ceiling: true
+k_min_list: [8, 8]
+k_max_list: [5000, 2000]

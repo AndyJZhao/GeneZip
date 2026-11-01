@@ -13,8 +13,7 @@ set -euo pipefail
 # -----------------------------
 # Environment (cache dirs)
 # -----------------------------
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-PROJECT_ROOT="$(cd "${SCRIPT_DIR}/../.." && pwd)"
+PROJECT_ROOT="${PROJECT_ROOT:-${SLURM_SUBMIT_DIR:-$PWD}}"
 export PROJECT_ROOT
 
 # Cache / runtime directories (override via env)
@@ -42,13 +41,13 @@ WANDB_PROJ="${WANDB_PROJ:-DLB-CMP}"
 USE_WANDB="${USE_WANDB:-false}"
 
 SUBSET="${SUBSET:-HFF}"
-CKPT="${CKPT:-GeneZip-70M-Transcript-balanced}"
+CKPT="${CKPT:-GeneZip-70M}"
 HF_USER="${HF_USER:-andyjzhao}"
 POOLING="${POOLING:-mean}"
 EMB_POSITION="${EMB_POSITION:-before_lm_head}"
 
 TRAIN_STEPS="${TRAIN_STEPS:-5000}"
-EVAL_STEPS="${EVAL_STEPS:-2500}"
+EVAL_STEPS="${EVAL_STEPS:-200}"
 NUM_TRAIN_SAMPLES="${NUM_TRAIN_SAMPLES:-0}"
 NUM_VALID_SAMPLES="${NUM_VALID_SAMPLES:-100}"
 NUM_TEST_SAMPLES="${NUM_TEST_SAMPLES:-0}"

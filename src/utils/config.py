@@ -61,21 +61,7 @@ def save_config(cfg: DictConfig, path, as_global=True):
 
 
 def load_config(path: str):
-    # Load the configuration from the file
-    cfg = OmegaConf.load(path)
-
-    # If the config file has the global package declaration,
-    # remove it so that it's compatible with normal OmegaConf usage
-    with open(path, "r") as file:
-        content = file.read()
-
-    # Check if the file starts with the global package declaration
-    if content.startswith("# @package _global_"):
-        # Remove the declaration if present
-        with open(path, "w") as file:
-            file.write(content.replace("# @package _global_\n", "", 1))
-
-    return cfg
+    return OmegaConf.load(path)
 
 
 def resolve_hydra_cfg_path(ckpt_dir: str) -> str:

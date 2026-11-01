@@ -1,0 +1,30 @@
+% Auto-generated from pretraining evaluation CSV (region-wise perplexity)
+\begin{table*}[t]
+\caption{Region-wise autoregressive perplexity (PPL) on the validation dataset. We omit \texttt{dig} (distal-intergenic) because it is weakly constrained and often heavily repeated, making PPL less informative. \textbf{Bold} indicates the best (lowest) PPL among high-compression methods (U-Net, H-Net-70M, and GeneZip). \underline{Underline} indicates the best PPL among 70M high-compression models trained at 12.8K context length.}
+\label{tab:pretrain_ppl}
+\vspace{-0.35em}
+\centering
+\small
+\setlength{\tabcolsep}{4pt}
+\renewcommand{\arraystretch}{1.06}
+\begin{tabular}{lcccccccc}
+\toprule
+\textbf{Model} & \textbf{BPT}  & \textbf{Overall} $\downarrow$ & \textbf{Prom.} $\downarrow$ & \textbf{CDS} $\downarrow$ & \textbf{UTR} $\downarrow$ & \textbf{Exon} $\downarrow$ & \textbf{Intron} $\downarrow$ & \textbf{NIG} $\downarrow$ \\
+\midrule
+\multicolumn{9}{l}{\textit{Backbone / fine-grained upper bounds}} \\
+Mamba2-84M          & 1.0 & 2.4135 & 2.0494 & 2.4136 & 2.5608 & 2.6346 & 2.5076 & 2.4826 \\
+H-Net-3BPT-70M             & 3.0   & 2.4115 & 2.0694 & 2.4815 & 2.4306 & 2.8113 & 2.5462 & 2.4357 \\
+\midrule
+\multicolumn{9}{l}{\textit{Uniform / hierarchical compression baselines}} \\
+U-Net-70M           & 128.0 & 2.8414 & 3.1335 & 3.4665 & 3.2389 & 3.0586 & 2.8415 & 2.6474 \\
+H-Net-70M           & 122.2 & 2.7930 & 2.8940 & 3.4657 & 3.0241 & 3.0277 & 2.8270 & 2.6375 \\
+\midrule
+\multicolumn{9}{l}{\textit{GeneZip (region-aware compression)}} \\
+GeneZip-70M     & 137.6 & \underline{2.7259} & \underline{2.6765} & \underline{3.4124} & \underline{\textbf{2.9084}} & \underline{2.9847} & \underline{2.7761} & \underline{2.6278} \\
+GeneZip-70M-128K          & 169.2 & 2.6557 & 2.7520 & 3.0866 & 3.1236 & 3.0401 & 2.7350 & 2.5422 \\
+GeneZip-636M    & 137.0 & 2.6620 & \textbf{2.6094} & \textbf{2.8272} & 2.9311 & 3.2052 & 2.7724 & 2.5741 \\
+GeneZip-636M-128K    & 161.1 & \textbf{2.6484} & 2.8121 & 2.9647 & 3.1037 & \textbf{2.8712} & \textbf{2.6486} & \textbf{2.4941} \\
+\bottomrule
+\end{tabular}
+\vspace{-0.6em}
+\end{table*}

@@ -9,8 +9,7 @@
 
 set -euo pipefail
 
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-PROJECT_ROOT="$(cd "${SCRIPT_DIR}/../.." && pwd)"
+PROJECT_ROOT="${PROJECT_ROOT:-${SLURM_SUBMIT_DIR:-$PWD}}"
 export PROJECT_ROOT
 
 export WANDB_DIR="${WANDB_DIR:-${PROJECT_ROOT}/temp/wandb/}"
@@ -34,38 +33,14 @@ HF_USER="${HF_USER:-andyjzhao}"
 NUM_PROCESSES="${NUM_PROCESSES:-8}"
 MIXED_PRECISION="${MIXED_PRECISION:-bf16}"
 UPLOAD_TO_HF="${UPLOAD_TO_HF:-false}"
-BP_PER_TOKEN="${BP_PER_TOKEN:-32}"
-MU_R_ALIAS="${MU_R_ALIAS:-Transcript-balanced}"
+PRIOR="${PRIOR:-genezip}"
 
-if [[ -z "${REGION_INFO:-}" ]]; then
-  case "${MU_R_ALIAS}" in
-    Transcript-balanced)
-      REGION_INFO="promoter1_cds1_utr2_exon2_intron8_nig8_dig16"
-      ;;
-    Cis-regulatory-focused)
-      REGION_INFO="promoter1_cds16_utr2_exon4_intron2_nig2_dig4"
-      ;;
-    Promoter-distal-regulatory)
-      REGION_INFO="promoter1_cds16_utr8_exon8_intron2_nig2_dig4"
-      ;;
-    Intergenic-focused)
-      REGION_INFO="promoter32_cds16_utr8_exon4_intron2_nig4_dig1"
-      ;;
-    *)
-      echo "Unknown MU_R_ALIAS='${MU_R_ALIAS}'. Set REGION_INFO directly or use Transcript-balanced, Cis-regulatory-focused, Promoter-distal-regulatory, or Intergenic-focused." >&2
-      exit 2
-      ;;
-  esac
-fi
-ALIAS="${ALIAS:-GeneZip-70M-${MU_R_ALIAS}}"
 
 CMD_TO_RUN="accelerate launch --num_processes ${NUM_PROCESSES} --main_process_port 0 --mixed_precision ${MIXED_PRECISION} \
   src/scripts/pretrain_genezip.py \
-  task=pretrain data=gencode_human_12.8k model_name=hnet_mamba_64m_2dc \
+  task=pretrain prior=${PRIOR} data=gencode_human_12.8k model_name=genezip_70m \
   max_len=12800 batch_size=32 grad_acc_steps=1 max_train_steps=30600 eval_steps=500 num_valid_samples=3000 \
   upload_to_hf=${UPLOAD_TO_HF} wandb.project=${WANDB_PROJ} hf_user=${HF_USER} \
-  bp_per_token=${BP_PER_TOKEN} \
-  region_info=${REGION_INFO} alias=${ALIAS} \
   use_wandb=true"
 
 echo "Running command:"

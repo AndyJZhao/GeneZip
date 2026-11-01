@@ -1,0 +1,132 @@
+[
+  {
+    "wandb_url": "https://wandb.ai/jzshared/DNALLM_eQTL/runs/37nwc0hq",
+    "recorded_output_dir": "/network/scratch/j/jianan.zhao/DNAFM/version_worktrees/codex-ajz299-eqtl-context-450k/temp/ajz299_eqtl_context_450k_seed1/eqtl_prediction_Adipose_Subcutaneous_37nwc0hq",
+    "directory_exists": true,
+    "weights": [
+      {
+        "path": "/network/scratch/j/jianan.zhao/DNAFM/version_worktrees/codex-ajz299-eqtl-context-450k/temp/ajz299_eqtl_context_450k_seed1/eqtl_prediction_Adipose_Subcutaneous_37nwc0hq/best_model/pytorch_model.bin",
+        "size": 140771427
+      }
+    ],
+    "verification": "file_exists_and_size_only",
+    "slurm_job_id": "11414836"
+  },
+  {
+    "wandb_url": "https://wandb.ai/jzshared/DNALLM_eQTL/runs/9syr5awo",
+    "recorded_output_dir": "/network/scratch/j/jianan.zhao/DNAFM/version_worktrees/codex-ajz299-eqtl-context-450k/temp/ajz299_eqtl_context_450k_seed1/eqtl_prediction_Artery_Tibial_9syr5awo",
+    "directory_exists": true,
+    "weights": [
+      {
+        "path": "/network/scratch/j/jianan.zhao/DNAFM/version_worktrees/codex-ajz299-eqtl-context-450k/temp/ajz299_eqtl_context_450k_seed1/eqtl_prediction_Artery_Tibial_9syr5awo/best_model/pytorch_model.bin",
+        "size": 140771427
+      }
+    ],
+    "verification": "file_exists_and_size_only",
+    "slurm_job_id": "11414836"
+  },
+  {
+    "wandb_url": "https://wandb.ai/jzshared/DNALLM_eQTL/runs/tp8fplr0",
+    "recorded_output_dir": "/network/scratch/j/jianan.zhao/DNAFM/version_worktrees/codex-ajz299-eqtl-context-450k/temp/ajz299_eqtl_context_450k_seed1/eqtl_prediction_Cells_Cultured_fibroblasts_tp8fplr0",
+    "directory_exists": true,
+    "weights": [
+      {
+        "path": "/network/scratch/j/jianan.zhao/DNAFM/version_worktrees/codex-ajz299-eqtl-context-450k/temp/ajz299_eqtl_context_450k_seed1/eqtl_prediction_Cells_Cultured_fibroblasts_tp8fplr0/best_model/pytorch_model.bin",
+        "size": 140771427
+      }
+    ],
+    "verification": "file_exists_and_size_only",
+    "slurm_job_id": "11414836"
+  },
+  {
+    "wandb_url": "https://wandb.ai/jzshared/DNALLM_eQTL/runs/bruz076f",
+    "recorded_output_dir": "/network/scratch/j/jianan.zhao/DNAFM/version_worktrees/codex-ajz299-eqtl-context-450k/temp/ajz299_eqtl_context_450k_seed1/eqtl_prediction_Muscle_Skeletal_bruz076f",
+    "directory_exists": true,
+    "weights": [
+      {
+        "path": "/network/scratch/j/jianan.zhao/DNAFM/version_worktrees/codex-ajz299-eqtl-context-450k/temp/ajz299_eqtl_context_450k_seed1/eqtl_prediction_Muscle_Skeletal_bruz076f/best_model/pytorch_model.bin",
+        "size": 140771427
+      }
+    ],
+    "verification": "file_exists_and_size_only",
+    "slurm_job_id": "11414836"
+  },
+  {
+    "wandb_url": "https://wandb.ai/jzshared/DNALLM_eQTL/runs/9t4u2w5p",
+    "recorded_output_dir": "/network/scratch/j/jianan.zhao/DNAFM/version_worktrees/codex-ajz299-eqtl-context-450k/temp/ajz299_eqtl_context_450k_seed1/eqtl_prediction_Nerve_Tibial_9t4u2w5p",
+    "directory_exists": true,
+    "weights": [
+      {
+        "path": "/network/scratch/j/jianan.zhao/DNAFM/version_worktrees/codex-ajz299-eqtl-context-450k/temp/ajz299_eqtl_context_450k_seed1/eqtl_prediction_Nerve_Tibial_9t4u2w5p/best_model/pytorch_model.bin",
+        "size": 140771427
+      }
+    ],
+    "verification": "file_exists_and_size_only",
+    "slurm_job_id": "11414836"
+  },
+  {
+    "wandb_url": "https://wandb.ai/jzshared/DNALLM_eQTL/runs/xl2b1h0w",
+    "recorded_output_dir": "/network/scratch/j/jianan.zhao/DNAFM/version_worktrees/codex-ajz299-eqtl-context-450k/temp/ajz299_eqtl_context_450k_seed1/eqtl_prediction_Skin_Not_Sun_Exposed_Suprapubic_xl2b1h0w",
+    "directory_exists": true,
+    "weights": [
+      {
+        "path": "/network/scratch/j/jianan.zhao/DNAFM/version_worktrees/codex-ajz299-eqtl-context-450k/temp/ajz299_eqtl_context_450k_seed1/eqtl_prediction_Skin_Not_Sun_Exposed_Suprapubic_xl2b1h0w/best_model/pytorch_model.bin",
+        "size": 140771427
+      }
+    ],
+    "verification": "file_exists_and_size_only",
+    "slurm_job_id": "11414836"
+  },
+  {
+    "wandb_url": "https://wandb.ai/jzshared/DNALLM_eQTL/runs/20a8poj5",
+    "recorded_output_dir": "/network/scratch/j/jianan.zhao/DNAFM/version_worktrees/codex-ajz299-eqtl-context-450k/temp/ajz299_eqtl_context_450k_seed1/eqtl_prediction_Skin_Sun_Exposed_Lower_leg_20a8poj5",
+    "directory_exists": true,
+    "weights": [
+      {
+        "path": "/network/scratch/j/jianan.zhao/DNAFM/version_worktrees/codex-ajz299-eqtl-context-450k/temp/ajz299_eqtl_context_450k_seed1/eqtl_prediction_Skin_Sun_Exposed_Lower_leg_20a8poj5/best_model/pytorch_model.bin",
+        "size": 140771427
+      }
+    ],
+    "verification": "file_exists_and_size_only",
+    "slurm_job_id": "11414836"
+  },
+  {
+    "wandb_url": "https://wandb.ai/jzshared/DNALLM_eQTL/runs/5avmvngd",
+    "recorded_output_dir": "/network/scratch/j/jianan.zhao/DNAFM/version_worktrees/codex-ajz299-eqtl-context-450k/temp/ajz299_eqtl_context_450k_seed1/eqtl_prediction_Thyroid_5avmvngd",
+    "directory_exists": true,
+    "weights": [
+      {
+        "path": "/network/scratch/j/jianan.zhao/DNAFM/version_worktrees/codex-ajz299-eqtl-context-450k/temp/ajz299_eqtl_context_450k_seed1/eqtl_prediction_Thyroid_5avmvngd/best_model/pytorch_model.bin",
+        "size": 140771427
+      }
+    ],
+    "verification": "file_exists_and_size_only",
+    "slurm_job_id": "11414836"
+  },
+  {
+    "wandb_url": "https://wandb.ai/jzshared/DNALLM_eQTL/runs/1qa7ifsh",
+    "recorded_output_dir": "/network/scratch/j/jianan.zhao/DNAFM/version_worktrees/codex-ajz299-eqtl-context-450k/temp/ajz299_eqtl_context_450k_seed1/eqtl_prediction_Whole_Blood_1qa7ifsh",
+    "directory_exists": true,
+    "weights": [
+      {
+        "path": "/network/scratch/j/jianan.zhao/DNAFM/version_worktrees/codex-ajz299-eqtl-context-450k/temp/ajz299_eqtl_context_450k_seed1/eqtl_prediction_Whole_Blood_1qa7ifsh/best_model/pytorch_model.bin",
+        "size": 140771427
+      }
+    ],
+    "verification": "file_exists_and_size_only",
+    "slurm_job_id": "11414836"
+  },
+  {
+    "wandb_url": "https://wandb.ai/jzshared/DNALLM_ETGP/runs/8a4nrecm",
+    "recorded_output_dir": "/network/scratch/j/jianan.zhao/DNAFM/version_worktrees/codex-ajz299-eqtl-context-450k/temp/ajz300_etgp_eqtl_matched_450k_seed1/enhancer_target_gene_prediction_CRISPRi_EPI_K562_hg19_8a4nrecm",
+    "directory_exists": true,
+    "weights": [
+      {
+        "path": "/network/scratch/j/jianan.zhao/DNAFM/version_worktrees/codex-ajz299-eqtl-context-450k/temp/ajz300_etgp_eqtl_matched_450k_seed1/enhancer_target_gene_prediction_CRISPRi_EPI_K562_hg19_8a4nrecm/best_model/pytorch_model.bin",
+        "size": 140771427
+      }
+    ],
+    "verification": "file_exists_and_size_only",
+    "slurm_job_id": "11414836"
+  }
+]

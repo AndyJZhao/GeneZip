@@ -1,0 +1,4 @@
+# @package _global_
+pretraining_name: GeneZip-70M
+bp_per_token: 32
+region_info: promoter1_cds1_utr2_exon2_intron8_nig8_dig16

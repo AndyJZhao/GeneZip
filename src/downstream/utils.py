@@ -6,8 +6,12 @@ from typing import Any, Dict, Optional
 import rootutils
 import torch
 from omegaconf import OmegaConf
-from src.genezip.config import parse_routing_floor_config
-from src.genezip.region_aware_hnet import HNetForCausalLMWithRoutingFloor
+from src.genezip.config import parse_routing_ceiling_config, parse_routing_floor_config
+from src.genezip.region_aware_hnet import (
+    HNetForCausalLMWithRoutingCeiling,
+    HNetForCausalLMWithRoutingFloor,
+    HNetForCausalLMWithRoutingFloorAndCeiling,
+)
 from src.hnet.models.config_hnet import AttnConfig, HNetConfig, SSMConfig
 from src.hnet.models.mixer_seq import HNetForCausalLM
 from src.utils import RunConfig, resolve_hydra_cfg_path
@@ -82,15 +86,12 @@ def build_model(
     dtype: torch.dtype,
     strict: bool,
     disable_routing: bool = False,
+    use_routing_ceiling: bool = False,
+    k_max_list: Optional[list[int]] = None,
 ) -> tuple[torch.nn.Module, RunConfig]:
     cfg_path = resolve_hydra_cfg_path(checkpoint_dir)
     prev_cfg = RunConfig.from_path(cfg_path)
-    cfg_dict = OmegaConf.to_container(prev_cfg.cfg, resolve=True)
-    model_cfg = (
-        cfg_dict.get("model_cfg")
-        or (cfg_dict.get("model") or {}).get("config")
-        or cfg_dict
-    )
+    model_cfg = OmegaConf.to_container(prev_cfg.model_cfg, resolve=True)
     hnet_kwargs = prepare_hnet_config_kwargs(model_cfg)
     if not hnet_kwargs.get("d_model"):
         raise ValueError(
@@ -98,12 +99,20 @@ def build_model(
             "(for example outputs/.../.hydra/config.yaml or a model JSON)."
         )
     hnet_cfg = HNetConfig(**hnet_kwargs)
-    use_routing_floor = bool(cfg_dict.get("use_routing_floor", True))
+    use_routing_floor = bool(prev_cfg.use_routing_floor)
     if disable_routing:
         use_routing_floor = False
-    routing_floor = parse_routing_floor_config(cfg_dict)
-    if use_routing_floor and routing_floor.enabled():
+        use_routing_ceiling = False
+    routing_floor = parse_routing_floor_config(model_cfg)
+    routing_ceiling = parse_routing_ceiling_config({"k_max_list": k_max_list})
+    if use_routing_floor and routing_floor.enabled() and use_routing_ceiling and routing_ceiling.enabled():
+        model = HNetForCausalLMWithRoutingFloorAndCeiling(
+            hnet_cfg, routing_floor, routing_ceiling, device=device, dtype=dtype
+        )
+    elif use_routing_floor and routing_floor.enabled():
         model = HNetForCausalLMWithRoutingFloor(hnet_cfg, routing_floor, device=device, dtype=dtype)
+    elif use_routing_ceiling and routing_ceiling.enabled():
+        model = HNetForCausalLMWithRoutingCeiling(hnet_cfg, routing_ceiling, device=device, dtype=dtype)
     else:
         model = HNetForCausalLM(hnet_cfg, device=device, dtype=dtype)
     state_dict = load_state_dict(checkpoint_path, device)

@@ -33,6 +33,7 @@ from src.utils.hf_utils import (
     downsample_dataset_splits,
     load_hf_dataset_from_cfg,
     split_train_valid_test,
+    subset_dataset,
     EvalResumeCUDACleaner,
     PeriodicCUDACleaner,
     HFCheckpointUploader,
@@ -798,6 +799,7 @@ def prepare_stage1_datasets(cfg, tokenizer, logger):
         dataset, seed=cfg.seed, valid_size=0.05
     )
 
+    train_split = subset_dataset(train_split, cfg.num_train_samples)
     train_dataset = RegionAwareDNADataset(tokenizer, train_split, max_length)
     valid_dataset = RegionAwareDNADataset(tokenizer, valid_split, max_length)
     return train_dataset, valid_dataset
@@ -816,7 +818,7 @@ def main(cfg: RunConfig) -> None:
 
     pretrained_ckpt = cfg.pretrained_ckpt
 
-    if str(cfg.model.name).startswith("hnet"):
+    if cfg.model.arch == "hnet":
         lr_multipliers = compute_hnet_lr_multipliers(model, model_config_dict)
         for stage_idx, mult in enumerate(lr_multipliers):
             logger.print(f"[hnet] lr_multiplier[stage={stage_idx}]={mult}")
@@ -918,7 +920,12 @@ def main(cfg: RunConfig) -> None:
         trainer.add_callback(HFCheckpointUploader(repo_id, cfg.hf_token, cfg.private, logger))
         logger.print(f"[hf] upload enabled: repo={repo_id}")
 
-    trainer.train()
+    if training_args.do_train:
+        trainer.train()
+    if training_args.do_eval:
+        if not training_args.do_train and not pretrained_ckpt:
+            raise ValueError("Evaluation requires pretrained_ckpt or training.do_train=true.")
+        logger.update_summary(trainer.evaluate())
     finish_experiment(cfg, logger, effective_params=effective_params)
 
 

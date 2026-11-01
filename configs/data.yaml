@@ -27,6 +27,7 @@ _dataset_cfg_lookup:
     pin_memory: true
     path: data/dnalongbench/cmp
     hf_repo: andyjzhao/dnalongbench
+    revision: ${dnalongbench_revision}
     hf_subdir: cmp
     target_index: 0
 
@@ -47,6 +48,7 @@ _dataset_cfg_lookup:
     pin_memory: true
     path: data/dnalongbench/cmp
     hf_repo: andyjzhao/dnalongbench
+    revision: ${dnalongbench_revision}
     hf_subdir: cmp
     target_index: 1
 
@@ -67,6 +69,7 @@ _dataset_cfg_lookup:
     pin_memory: true
     path: data/dnalongbench/cmp
     hf_repo: andyjzhao/dnalongbench
+    revision: ${dnalongbench_revision}
     hf_subdir: cmp
     target_index: 2
 
@@ -87,6 +90,7 @@ _dataset_cfg_lookup:
     pin_memory: true
     path: data/dnalongbench/cmp
     hf_repo: andyjzhao/dnalongbench
+    revision: ${dnalongbench_revision}
     hf_subdir: cmp
     target_index: 3
 
@@ -107,6 +111,7 @@ _dataset_cfg_lookup:
     pin_memory: true
     path: data/dnalongbench/cmp
     hf_repo: andyjzhao/dnalongbench
+    revision: ${dnalongbench_revision}
     hf_subdir: cmp
     target_index: 4
 
@@ -114,8 +119,14 @@ _dataset_cfg_lookup:
     type: refseq
     path: data/gencode_human_12.8k
     hf_repo: andyjzhao/gencode_human_12.8k
+    revision: af222ba30cb3bd3e97c1b8b678b4f8c2ef71006b
+    format: parquet
+    splits: [train, valid]
 
   gencode_human_128k:
     type: refseq
     path: data/gencode_human_128k
     hf_repo: andyjzhao/gencode_human_128k
+    revision: 883f3df895d6de4e5575c2f9b581c5f7c71058f1
+    format: parquet
+    splits: [train, valid]

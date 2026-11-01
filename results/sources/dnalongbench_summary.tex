@@ -1,0 +1,32 @@
+\begin{table*}[t]
+\centering
+\scriptsize
+\setlength{\tabcolsep}{4.5pt}
+\renewcommand{\arraystretch}{1.08}
+\caption{DNALongBench results and inference cost. BPT reports validation compression; measurement protocols are detailed in Appendix~\ref{app:matched_bpt_dlb}. $^{*}$JanusDNA-7.7M uses the architectural value implied by its published single-nucleotide representation. Inference reports total time for 100 sequences of 450 kb; hardware, batching, and timing details are in Appendix~\ref{app:table2-inference}. $^{\dagger}$Evo2 runs out of memory on one GPU. Average rank averages the four descending task ranks among all 10 rows, using displayed scores and average ranks for ties; inference time is excluded. Best task scores and lowest average rank within \emph{Leakage-controlled-pretraining} are \textbf{bold}; best across all rows are \underline{underlined}.}
+\label{tab:dnalongbench_summary}
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{@{}lccccccc@{}}
+\toprule
+\textbf{Model} & \textbf{BPT} & \textbf{Inference (s)} $\downarrow$ & \textbf{CMP SCC} & \textbf{eQTL AUROC} & \textbf{ETGP AUPRC} & \textbf{TISP PCC} & \textbf{Avg. rank} $\downarrow$ \\
+\midrule
+\multicolumn{8}{@{}l}{\emph{DNALongBench-official}} \\
+HyenaDNA-6.6M\citep{hyenadna_nguyen2023} & 1.0 & 22.86 & 0.115 & 0.514 & 0.249 & 0.132 & 7.50 \\
+Caduceus-Ph-7.7M\citep{caduceus_schiff2024} & 1.0 & 35.06 & 0.133 & 0.566 & 0.380 & 0.109 & 5.13 \\
+Caduceus-PS-7.7M\citep{caduceus_schiff2024} & 1.0 & 68.36 & 0.127 & 0.538 & 0.376 & 0.108 & 6.50 \\
+\midrule
+\multicolumn{8}{@{}l}{\emph{External-pretraining}} \\
+JanusDNA-7.7M\citep{janusdna_duan2025} & 1.0$^{*}$ & 228.63 & \underline{0.159} & \underline{0.840} & 0.438 & 0.002 & 3.25 \\
+NTv3-100M-pre\citep{ntv3_boshar2025} & 127.99 & 13.27 & 0.136 & 0.792 & \underline{0.440} & 0.194 & \underline{2.75} \\
+Evo2-1B\citep{evo2_brixi2025} & 1.0 & ---$^{\dagger}$ & 0.018 & 0.754 & 0.095 & -0.002 & 9.25 \\
+\midrule
+\multicolumn{8}{@{}l}{\emph{Leakage-controlled-pretraining}} \\
+Mamba2-84M\citep{mamba2-dao24a} & 1.0 & 40.80 & 0.111 & 0.762 & 0.322 & \underline{\textbf{0.294}} & 5.50 \\
+U-Net-70M\citep{unet_ronneberger2015} & 127.99 & 4.85 & 0.131 & 0.769 & 0.244 & 0.008 & 6.50 \\
+H-Net-70M\citep{hnet_hwang2025} & 122.19 & 11.78 & 0.118 & 0.809 & 0.131 & 0.235 & 5.50 \\
+\rowcolor{teal!10}
+GeneZip-70M & 137.59 & 6.34 & \textbf{0.133} & \textbf{0.817} & \textbf{0.375} & 0.274 & \textbf{3.13} \\
+\bottomrule
+\end{tabular}%
+}
+\end{table*}

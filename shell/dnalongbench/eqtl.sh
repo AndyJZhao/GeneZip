@@ -13,8 +13,7 @@ set -euo pipefail
 # -----------------------------
 # Environment (cache dirs)
 # -----------------------------
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-PROJECT_ROOT="$(cd "${SCRIPT_DIR}/../.." && pwd)"
+PROJECT_ROOT="${PROJECT_ROOT:-${SLURM_SUBMIT_DIR:-$PWD}}"
 export PROJECT_ROOT
 
 # Cache / runtime directories (override via env)
@@ -41,7 +40,7 @@ cd "${PROJECT_ROOT}"
 WANDB_PROJ="${WANDB_PROJ:-DNALLM_eQTL}"
 USE_WANDB="${USE_WANDB:-false}"
 
-CKPT="${CKPT:-GeneZip-70M-Cis-regulatory-focused}"
+CKPT="${CKPT:-GeneZip-70M}"
 HF_USER="${HF_USER:-andyjzhao}"
 CELL_TYPE="${CELL_TYPE:-Artery_Tibial}"
 POOLING_METHOD="${POOLING_METHOD:-mean}"
@@ -50,7 +49,7 @@ USE_LORA="${USE_LORA:-false}"
 
 DATA_ROOT="${DATA_ROOT:-./data/dnalongbench}"
 SAVE_DIR="${SAVE_DIR:-./temp/eQTL_ckpt}"
-DATA_MAX_LENGTH="${DATA_MAX_LENGTH:-12800}"
+DATA_MAX_LENGTH="${DATA_MAX_LENGTH:-450000}"
 TEST_LOAD="${TEST_LOAD:-best}"
 
 LR="${LR:-2e-4}"

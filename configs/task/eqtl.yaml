@@ -1,6 +1,7 @@
 # @package _global_
 task: eqtl
 name: dna_longbench_eqtl
+seed: 1
 
 data: gencode_human_128k
 model_alias: ${ckpt}
@@ -25,10 +26,15 @@ mixed_precision: bf16
 
 task_name: eqtl_prediction
 cell_type: Artery_Tibial
-ckpt: GeneZip-70M-Cis-regulatory-focused
-data_max_length: 12800
+ckpt: GeneZip-70M
+data_max_length: 450000
 freeze_encoder: true
 test_load: best
+use_lora: false
+hnet_strict: true
+hnet_routing_floor_tokens: [0, 0]
+hnet_routing_ceiling_tokens: [70000, 70000]
+global_target_bp: 128
 
 training:
   do_train: true

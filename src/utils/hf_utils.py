@@ -5,7 +5,7 @@ from pathlib import Path
 from typing import Any, Callable, Iterable
 
 import yaml
-from datasets import load_from_disk
+from datasets import load_dataset, load_from_disk
 from huggingface_hub import HfApi, HfFolder
 from huggingface_hub import snapshot_download
 from huggingface_hub.utils import EntryNotFoundError, HfHubHTTPError, LocalEntryNotFoundError
@@ -411,6 +411,7 @@ def resolve_hf_dataset_root(
     *,
     repo_id: str,
     required_subdir: str,
+    revision: str | None = None,
     token: str | None = None,
     cache_dir: str | None = None,
     local_files_only: bool = False,
@@ -422,7 +423,7 @@ def resolve_hf_dataset_root(
     else:
         local_root = os.path.abspath(local_root)
     required_subdir = _normalize_hf_subdir(required_subdir)
-    if os.path.isdir(os.path.join(local_root, required_subdir)):
+    if local_files_only and os.path.isdir(os.path.join(local_root, required_subdir)):
         return local_root
 
     repo_id = _normalize_optional_str(repo_id)
@@ -433,6 +434,8 @@ def resolve_hf_dataset_root(
     snapshot_download(
         repo_id=str(repo_id),
         repo_type="dataset",
+        revision=revision,
+        cache_dir=cache_dir,
         token=_normalize_optional_str(token),
         local_dir=local_root,
         local_files_only=local_files_only,
@@ -454,7 +457,8 @@ def load_hf_dataset_from_cfg(
     if local_path and path_resolver is not None:
         local_path = path_resolver(local_path)
 
-    if local_path and os.path.exists(local_path):
+    if local_path and any((Path(local_path) / marker).is_file()
+                          for marker in ("dataset_dict.json", "state.json")):
         return load_from_disk(local_path)
 
     repo_id = _normalize_optional_str(dataset_cfg.get("hf_repo") or dataset_cfg.get("repo_id"))
@@ -465,6 +469,8 @@ def load_hf_dataset_from_cfg(
             snapshot_download(
                 repo_id=str(repo_id),
                 repo_type="dataset",
+                revision=dataset_cfg.get("revision"),
+                cache_dir=cache_dir,
                 token=_normalize_optional_str(hf_token),
                 local_dir=local_root,
                 local_files_only=local_files_only,
@@ -475,10 +481,18 @@ def load_hf_dataset_from_cfg(
             snapshot_download(
                 repo_id=str(repo_id),
                 repo_type="dataset",
+                revision=dataset_cfg.get("revision"),
+                cache_dir=cache_dir,
                 token=_normalize_optional_str(hf_token),
                 local_dir=local_path,
                 local_files_only=local_files_only,
             )
+        if dataset_cfg.get("format") == "parquet":
+            data_files = {
+                split: sorted(str(p) for p in (Path(local_path) / "data").glob(f"{split}-*.parquet"))
+                for split in dataset_cfg["splits"]
+            }
+            return load_dataset("parquet", data_files=data_files, cache_dir=cache_dir)
         return load_from_disk(local_path)
 
     raise FileNotFoundError(f"Local release dataset not found at '{local_path}'.")
@@ -487,10 +501,9 @@ def load_hf_dataset_from_cfg(
 def downsample_dataset_splits(dataset, fraction, seed):
     if not fraction:
         return dataset
-    if "validation" in dataset:
-        dataset["validation"] = (
-            dataset["validation"].train_test_split(test_size=fraction, seed=seed)["test"]
-        )
+    for split in ("validation", "valid"):
+        if split in dataset:
+            dataset[split] = dataset[split].train_test_split(test_size=fraction, seed=seed)["test"]
     if "test" in dataset:
         dataset["test"] = dataset["test"].train_test_split(
             test_size=fraction, seed=seed
@@ -508,6 +521,8 @@ def split_train_valid_test(dataset, seed, valid_size=0.05):
         train_split = dataset["train"] if "train" in dataset else next(iter(dataset.values()))
         if "validation" in dataset:
             valid_split = dataset["validation"]
+        elif "valid" in dataset:
+            valid_split = dataset["valid"]
         elif "test" in dataset:
             valid_split = dataset["test"]
         else:
@@ -524,7 +539,7 @@ def subset_dataset(dataset, max_samples: int):
     if max_samples <= 0:
         return dataset
     if hasattr(dataset, "select"):
-        return dataset.select(range(max_samples))
+        return dataset.select(range(min(max_samples, len(dataset))))
     return dataset[:max_samples]
 
 

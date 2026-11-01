@@ -1,0 +1,86 @@
+{
+  "published_models": [
+    {
+      "model": "GeneZip-70M",
+      "repo_id": "andyjzhao/GeneZip-70M",
+      "revision": "15e46711bd6fa23fe5922dfe22e8893c9f01bec5",
+      "url": "https://huggingface.co/andyjzhao/GeneZip-70M",
+      "weights_sha256": "babdd426ed886df755fb5f2f3f3665eae113e855c3596eb06a9b49a114ddb8f9",
+      "published_at": "2026-11-01T03:27:14.168655+00:00",
+      "anonymous_download_verified": true
+    },
+    {
+      "model": "GeneZip-70M-128K",
+      "repo_id": "andyjzhao/GeneZip-70M-128K",
+      "revision": "20f6090f7d2da446e5cb13d0c5b0b84edcaa5556",
+      "url": "https://huggingface.co/andyjzhao/GeneZip-70M-128K",
+      "weights_sha256": "cc4b86ccbc4305669ae4b1a003d475aac543a368efb886d8e6691839e5498061",
+      "published_at": "2026-11-01T03:27:15.998132+00:00",
+      "anonymous_download_verified": true
+    },
+    {
+      "model": "GeneZip-636M",
+      "repo_id": "andyjzhao/GeneZip-636M",
+      "revision": "9f9c75869dd6ca8c8fc3395f7e6f9bd7299b8f64",
+      "url": "https://huggingface.co/andyjzhao/GeneZip-636M",
+      "weights_sha256": "e9a8555fb457ddb2eaad8df23de70e2c69be5a30f275aeb2458ae412547a78fe",
+      "published_at": "2026-11-01T03:28:14.207314+00:00",
+      "anonymous_download_verified": true
+    },
+    {
+      "model": "GeneZip-636M-128K",
+      "repo_id": "andyjzhao/GeneZip-636M-128K",
+      "revision": "da0940a702ef66ca4f3678a8e93ac241e1aa6cb9",
+      "url": "https://huggingface.co/andyjzhao/GeneZip-636M-128K",
+      "weights_sha256": "a70a35232d1bbcdc7c0a555e1fdcd279ffdf147a4029430e1874e9cddd4607e0",
+      "published_at": "2026-11-01T03:29:09.787108+00:00",
+      "anonymous_download_verified": true
+    },
+    {
+      "model": "GeneZip-Regulome",
+      "repo_id": "andyjzhao/GeneZip-Regulome",
+      "revision": "90eb6e414a572ac86d7584c5ef9946eedf13834c",
+      "url": "https://huggingface.co/andyjzhao/GeneZip-Regulome",
+      "weights_sha256": "8acb9c73cdbe331a3208edb275da12c5f9ffb4bc3227dde204d253b6b88a1392",
+      "published_at": "2026-11-01T03:29:17.567038+00:00",
+      "anonymous_download_verified": true
+    },
+    {
+      "model": "GeneZip-PromoterDistal",
+      "repo_id": "andyjzhao/GeneZip-PromoterDistal",
+      "revision": "866d9d05b678dff97090271831488f32633ef2f5",
+      "url": "https://huggingface.co/andyjzhao/GeneZip-PromoterDistal",
+      "weights_sha256": "0f85630b2bed4452430e7bf78a54f35b5c5b1673115cc5b86f3ad286e1b205da",
+      "published_at": "2026-11-01T03:29:25.945236+00:00",
+      "anonymous_download_verified": true
+    },
+    {
+      "model": "GeneZip-Intergenic",
+      "repo_id": "andyjzhao/GeneZip-Intergenic",
+      "revision": "45b96924a76c67e65d9d4faa49b667940739ab17",
+      "url": "https://huggingface.co/andyjzhao/GeneZip-Intergenic",
+      "weights_sha256": "a35a52717e68e26abae507b5a9dc547f60ae6de19e0aeb56345bd0c3ce525d89",
+      "published_at": "2026-11-01T03:29:33.802249+00:00",
+      "anonymous_download_verified": true
+    }
+  ],
+  "publication_job_id": "11476123",
+  "verification_scope": "All seven anonymous downloads matched source weight SHA-256 and exported Hydra configuration.",
+  "public_strict_load_evidence": {
+    "models": [
+      "GeneZip-70M",
+      "GeneZip-70M-128K",
+      "GeneZip-636M",
+      "GeneZip-636M-128K",
+      "GeneZip-Regulome",
+      "GeneZip-PromoterDistal",
+      "GeneZip-Intergenic"
+    ],
+    "job_id": "11476167",
+    "strict_load": true,
+    "finite_forward": true,
+    "sequence_length": 2048,
+    "node": "cn-g006",
+    "gpu_count": 2
+  }
+}

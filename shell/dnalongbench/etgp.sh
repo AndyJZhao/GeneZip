@@ -13,8 +13,7 @@ set -euo pipefail
 # -----------------------------
 # Environment (cache dirs)
 # -----------------------------
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-PROJECT_ROOT="$(cd "${SCRIPT_DIR}/../.." && pwd)"
+PROJECT_ROOT="${PROJECT_ROOT:-${SLURM_SUBMIT_DIR:-$PWD}}"
 export PROJECT_ROOT
 
 # Cache / runtime directories (override via env)
@@ -41,20 +40,20 @@ cd "${PROJECT_ROOT}"
 WANDB_PROJ="${WANDB_PROJ:-DNALLM_ETGP}"
 USE_WANDB="${USE_WANDB:-false}"
 
-CKPT="${CKPT:-GeneZip-70M-Intergenic-focused}"
+CKPT="${CKPT:-GeneZip-70M}"
 HF_USER="${HF_USER:-andyjzhao}"
 CELL_TYPE="${CELL_TYPE:-CRISPRi_EPI_K562_hg19}"
 POOLING_METHOD="${POOLING_METHOD:-mean}"
-FREEZE_ENCODER="${FREEZE_ENCODER:-false}"
-USE_LORA="${USE_LORA:-true}"
+FREEZE_ENCODER="${FREEZE_ENCODER:-true}"
+USE_LORA="${USE_LORA:-false}"
 
 DATA_ROOT="${DATA_ROOT:-./data/dnalongbench}"
 SAVE_DIR="${SAVE_DIR:-./temp/ETGP_ckpt}"
-DATA_MAX_LENGTH="${DATA_MAX_LENGTH:-12800}"
+DATA_MAX_LENGTH="${DATA_MAX_LENGTH:-450000}"
 TEST_LOAD="${TEST_LOAD:-best}"
 
-LR="${LR:-1e-3}"
-EPOCHS="${EPOCHS:-15}"
+LR="${LR:-2e-4}"
+EPOCHS="${EPOCHS:-3}"
 GRAD_ACC="${GRAD_ACC:-8}"
 
 # Optional caps for smoke runs (limits parsing cost too).
