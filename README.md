@@ -13,26 +13,29 @@ Long-context DNA models are limited by token-mixing cost and by how compression 
 See [model details and benchmark results](results/CHECKPOINTS.md) and the
 [paper result CSV](results/tables/dnalongbench.csv).
 
+The regional multipliers $\mu_r$ are listed in the order **promoter, CDS, UTR,
+exon, intron, NIG, DIG**. The target BPT for each region is $N \mu_r$.
+
 ### Main models
 
-| Model | Pretraining context | Use |
-| --- | ---: | --- |
-| [GeneZip-70M](https://huggingface.co/andyjzhao/GeneZip-70M) | 12,800 | Default; all four main tasks |
-| [GeneZip-70M-128K](https://huggingface.co/andyjzhao/GeneZip-70M-128K) | 128,000 | Pretraining context scaling |
-| [GeneZip-636M](https://huggingface.co/andyjzhao/GeneZip-636M) | 12,800 | Pretraining model scaling |
-| [GeneZip-636M-128K](https://huggingface.co/andyjzhao/GeneZip-636M-128K) | 128,000 | Model/context scaling |
+| Model | Pretraining context | $\mu_r$ | Use |
+| --- | ---: | --- | --- |
+| [GeneZip-70M](https://huggingface.co/andyjzhao/GeneZip-70M) | 12,800 | (1, 1, 2, 2, 8, 8, 16) | Default; all four main tasks |
+| [GeneZip-70M-128K](https://huggingface.co/andyjzhao/GeneZip-70M-128K) | 128,000 | (1, 1, 2, 2, 8, 8, 16) | Pretraining context scaling |
+| [GeneZip-636M](https://huggingface.co/andyjzhao/GeneZip-636M) | 12,800 | (1, 1, 2, 2, 8, 8, 16) | Pretraining model scaling |
+| [GeneZip-636M-128K](https://huggingface.co/andyjzhao/GeneZip-636M-128K) | 128,000 | (1, 1, 2, 2, 8, 8, 16) | Model/context scaling |
 
 ### Ablation models
 
 These checkpoints support the regional-prior ablation in the paper appendix.
 
-| Model | Pretraining context | Use |
-| --- | ---: | --- |
-| [GeneZip-Regulome](https://huggingface.co/andyjzhao/GeneZip-Regulome) | 12,800 | N=64 regional prior |
-| [GeneZip-PromoterDistal](https://huggingface.co/andyjzhao/GeneZip-PromoterDistal) | 12,800 | N=64 regional prior |
-| [GeneZip-Intergenic](https://huggingface.co/andyjzhao/GeneZip-Intergenic) | 12,800 | N=32 regional prior |
+| Model | Pretraining context | $\mu_r$ | Use |
+| --- | ---: | --- | --- |
+| [GeneZip-Regulome](https://huggingface.co/andyjzhao/GeneZip-Regulome) | 12,800 | (1, 16, 2, 4, 2, 2, 4) | N=64 regional prior |
+| [GeneZip-PromoterDistal](https://huggingface.co/andyjzhao/GeneZip-PromoterDistal) | 12,800 | (1, 16, 8, 8, 2, 2, 4) | N=64 regional prior |
+| [GeneZip-Intergenic](https://huggingface.co/andyjzhao/GeneZip-Intergenic) | 12,800 | (32, 16, 8, 4, 2, 4, 1) | N=32 regional prior |
 
-This repository provides pretrained weights and code for pretraining and
+This repository provides pretrained weights, pretraining code, and code for
 training and evaluating CMP, eQTL, ETGP and TISP on DNALongBench. Each task
 starts from the pretrained weights using the commands below.
 
