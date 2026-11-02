@@ -14,7 +14,7 @@ from hydra.utils import to_absolute_path
 from omegaconf import OmegaConf
 from peft import LoraConfig, TaskType, get_peft_model
 from torch import nn
-from transformers import EarlyStoppingCallback, Trainer, TrainingArguments
+from transformers import EarlyStoppingCallback, Trainer, TrainerState, TrainingArguments
 from transformers.trainer_utils import get_last_checkpoint
 
 from src.downstream.dlb_data import load_data
@@ -99,10 +99,10 @@ def _average_precision_binary(labels: np.ndarray, scores: np.ndarray) -> float:
 
     order = np.argsort(-scores, kind="mergesort")
     y = labels[order]
-    tp = np.cumsum(y == 1)
-    fp = np.cumsum(y == 0)
-    precision = tp / np.maximum(tp + fp, 1)
-    ap = float(precision[y == 1].sum() / float(n_pos))
+    thresholds = np.r_[np.flatnonzero(np.diff(scores[order])), labels.size - 1]
+    tp = np.cumsum(y == 1)[thresholds]
+    precision = tp / (thresholds + 1)
+    ap = float(np.sum(np.diff(np.r_[0, tp]) * precision) / float(n_pos))
     return ap
 
 
@@ -731,6 +731,9 @@ def main(cfg: RunConfig) -> None:
         test_load = str(cfg.get("test_load", "auto")).lower()
         best_checkpoint = trainer.state.best_model_checkpoint
         last_checkpoint = get_last_checkpoint(output_dir)
+        if best_checkpoint is None and last_checkpoint and test_load in {"auto", "best"}:
+            saved_state = TrainerState.load_from_json(os.path.join(last_checkpoint, "trainer_state.json"))
+            best_checkpoint = saved_state.best_model_checkpoint
         selected_checkpoint = None
         if test_load == "best":
             selected_checkpoint = best_checkpoint
@@ -747,6 +750,7 @@ def main(cfg: RunConfig) -> None:
             raise ValueError(f"test_load={test_load} requires a saved task checkpoint.")
         if selected_checkpoint:
             strict = not bool(cfg.get("use_lora", False))
+            logger.print(f"Loading task checkpoint: {selected_checkpoint}")
             _load_checkpoint_into_model(model, selected_checkpoint, torch.device(device_str), strict=strict)
 
         valid_metrics = trainer.evaluate(valid_dataset, metric_key_prefix="valid")

@@ -95,6 +95,17 @@ Their compression regularizer targets 128 BPT (alpha 0.03), independently of
 the pretraining N=32 anchor. TISP uses WD 0.01 and routing caps `[60000,30000]`. CMP evaluates every 200 steps. Alternative-prior tasks require
 task-specific settings described in [the ablation results](results/CHECKPOINTS.md#regional-prior-ablations). The wrappers above use the main-model settings.
 
+To repeat eQTL or ETGP evaluation after training, reuse the same model, subset
+and checkpoint directory. These examples use the wrappers' default settings
+and restore the checkpoint selected by validation AUROC:
+
+```sh
+python src/scripts/finetune_dlb_binary_classification.py task=eqtl \
+  cell_type=Artery_Tibial save_dir=./temp/eQTL_ckpt training.do_train=false test_load=best
+python src/scripts/finetune_dlb_binary_classification.py task=etgp \
+  cell_type=CRISPRi_EPI_K562_hg19 save_dir=./temp/ETGP_ckpt training.do_train=false test_load=best
+```
+
 Data loaders download the revisions pinned in `configs/data.yaml` and
 `configs/main.yaml`. GENCODE uses Parquet with its original `train`/`valid` split;
 DNALongBench uses its published task directories. Set `offline_mode=true` only
