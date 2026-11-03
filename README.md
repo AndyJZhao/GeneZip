@@ -4,7 +4,7 @@
 
 </div>
 
-Long-context DNA models are limited by token-mixing cost and by how compression allocates representational budget across the genome. Existing approaches operate close to base-pair resolution, apply fixed downsampling, or learn content-dependent chunks without an explicit genomic budget, making long-context pretraining expensive and difficult to control. We introduce GeneZip, a region-aware DNA compression framework that combines H-Net-style dynamic routing with a Region-Aware Ratio (RAR) objective and bounded routing. GeneZip uses static gene-structure annotations during compression training to specify region-wise base-pairs-per-token (BPT) targets; at inference time, it compresses raw unseen DNA without annotations. GeneZip provides three main benefits. First, it is effective: GeneZip variants achieve the best validation perplexity (PPL) among high-compression encoder-based models. At 137.6 BPT, GeneZip-70M incurs only a +0.31 perplexity increase relative to the 84M Mamba2 baseline without compression. Across four DNALongBench tasks—contact map prediction, eQTL prediction, enhancer–target gene prediction, and transcription-initiation signal prediction—GeneZip outperforms all compression baselines under matched leakage-controlled pre-training. Second, it is redundancy-aware: a post-hoc RepeatMasker/TRF analysis shows that, without repeat supervision, GeneZip assigns higher local BPT to selected TE-derived interspersed repeats and tandem repeats, two major classes of repetitive DNA sequence redundancy. Third, it is efficient: on 450-kb inputs, 70M GeneZip achieves a 36.1× inference speedup over the uncompressed JanusDNA-7.7M model. GeneZip also supports 128K-context and 636M-parameter pretraining on a single H100 80GB GPU. These results establish GeneZip as an effective, redundancy-aware, and efficient compression interface for long-context DNA modeling.
+Long-context DNA models are limited by token-mixing cost and by how compression allocates representational budget across the genome. Existing approaches operate close to base-pair resolution, apply fixed downsampling, or learn content-dependent chunks without an explicit genomic budget, making long-context pretraining expensive and difficult to control. We introduce GeneZip, a region-aware DNA compression framework that combines H-Net-style dynamic routing with a Region-Aware Ratio (RAR) objective and bounded routing. GeneZip uses static gene-structure annotations during compression training to specify region-wise base-pairs-per-token (BPT) targets; at inference time, it compresses raw unseen DNA without annotations. GeneZip provides three main benefits. First, it is effective: GeneZip variants achieve the best validation perplexity (PPL) among high-compression encoder-based models. At 137.6 BPT, GeneZip-70M incurs only a +0.31 perplexity increase relative to the 84M Mamba2 baseline without compression. GeneZip achieves the best average rank across four DNALongBench downstream tasks among compression models with leakage-controlled pretraining. Second, it is redundancy-aware: a post-hoc RepeatMasker/TRF analysis shows that, without repeat supervision, GeneZip assigns higher local BPT to selected TE-derived interspersed repeats and tandem repeats, two major classes of repetitive DNA sequence redundancy. Third, it is efficient: on 450-kb inputs, 70M GeneZip achieves a 36.1× inference speedup over the uncompressed JanusDNA-7.7M model. GeneZip also supports 128K-context and 636M-parameter pretraining on a single H100 80GB GPU. These results establish GeneZip as an effective, redundancy-aware, and efficient compression interface for long-context DNA modeling.
 
 ![GeneZip overview](asset/GeneZip.png)
 
@@ -92,8 +92,10 @@ The eQTL command defaults to Artery_Tibial. Use `CELL_TYPE` to select one of the
 [nine tissues](results/CHECKPOINTS.md#task-subsets). Both eQTL and ETGP use 450,000 bp, seed 1, no LoRA,
 frozen embeddings/encoder/router, LR 2e-4, three epochs and best validation AUROC.
 Their compression regularizer targets 128 BPT (alpha 0.03), independently of
-the pretraining N=32 anchor. TISP uses WD 0.01 and routing caps `[60000,30000]`. CMP evaluates every 200 steps. Alternative-prior tasks require
-task-specific settings described in [the ablation results](results/CHECKPOINTS.md#regional-prior-ablations). The wrappers above use the main-model settings.
+the pretraining N=32 anchor. eQTL, ETGP and TISP use WD 0.1. TISP freezes
+embeddings, encoders and routers, retains the checkpoint routing floor, and
+disables routing caps. CMP evaluates every 200 steps. The same ETGP/TISP
+protocol applies to the [regional-prior models](results/CHECKPOINTS.md#regional-prior-ablations).
 
 To repeat eQTL or ETGP evaluation after training, reuse the same model, subset
 and checkpoint directory. These examples use the wrappers' default settings
@@ -105,6 +107,20 @@ python src/scripts/finetune_dlb_binary_classification.py task=eqtl \
 python src/scripts/finetune_dlb_binary_classification.py task=etgp \
   cell_type=CRISPRi_EPI_K562_hg19 save_dir=./temp/ETGP_ckpt training.do_train=false test_load=best
 ```
+
+For TISP training that finished before final evaluation was interrupted, load
+its validation-selected task checkpoint without repeating optimization. Keep
+the same pretrained model and task settings, and use a fresh output directory:
+
+```sh
+python src/scripts/finetune_dlb_tisp.py task=tisp \
+  evaluation_checkpoint=/path/to/training/best_model.pt \
+  completed_training_steps=5000 train_steps=5000 dirs.output=./output/tisp-evaluation
+```
+
+`completed_training_steps` must be supported by the original training record;
+it is not inferred from the checkpoint. Recovery evaluates validation and test
+splits and does not select a checkpoint using test scores.
 
 Data loaders download the revisions pinned in `configs/data.yaml` and
 `configs/main.yaml`. GENCODE uses Parquet with its original `train`/`valid` split;

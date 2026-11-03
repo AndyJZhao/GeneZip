@@ -682,6 +682,14 @@ def train_tisp(
     best_pcc = float("-inf")
     best_model_path = os.path.join(to_absolute_path(str(cfg.dirs.output)), "best_model.pt")
     last_metrics: dict[str, float] = {}
+    if cfg.evaluation_checkpoint is not None:
+        if cfg.completed_training_steps is None or int(cfg.completed_training_steps) != max_steps or max_steps <= 0:
+            raise ValueError("Evaluation recovery requires completed_training_steps=train_steps > 0.")
+        best_model_path = to_absolute_path(str(cfg.evaluation_checkpoint))
+        if not os.path.isfile(best_model_path):
+            raise FileNotFoundError(best_model_path)
+        global_step = int(cfg.completed_training_steps)
+
     if max_steps <= 0:
         accelerator.wait_for_everyone()
         metrics: dict[str, float] = {}
@@ -789,6 +797,7 @@ def train_tisp(
         last_metrics["best_pcc"] = (
             float(best_pcc) if math.isfinite(best_pcc) else float(valid_metrics.get("valid/avg_pcc", float("nan")))
         )
+        last_metrics["train_steps_completed"] = global_step
     accelerator.wait_for_everyone()
     return last_metrics
 

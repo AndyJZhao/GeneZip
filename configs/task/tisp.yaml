@@ -25,13 +25,15 @@ tokenizer: fast
 dtype: bfloat16
 mixed_precision: bf16
 routing_step: null
-use_routing_ceiling: true
-k_max_list: [60000, 30000]
+use_routing_ceiling: false
+k_max_list: null
 
 batch_size: 1
 eval_batch_size: 1
 grad_acc_steps: 4
 train_steps: 5000
+evaluation_checkpoint: null
+completed_training_steps: null
 max_train_steps: ${train_steps}
 eval_steps: 1000
 save_steps: 0
@@ -43,9 +45,9 @@ num_workers: 0
 
 learning_rate: 2e-4
 lr: ${learning_rate}
-weight_decay: 0.01
+weight_decay: 0.1
 max_grad_norm: 1.0
-freeze_encoder: false
+freeze_encoder: true
 use_layer_norm: true
 head_dropout: 0.0
 tisp_loss: pseudo_poisson_kl

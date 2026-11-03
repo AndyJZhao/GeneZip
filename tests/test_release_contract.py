@@ -51,6 +51,12 @@ class ReleaseContract(unittest.TestCase):
                     self.assertEqual(cfg.data_max_length, 450000)
                     self.assertFalse(cfg.use_lora)
                     self.assertTrue(cfg.freeze_encoder)
+                if cfg.task == "tisp":
+                    self.assertEqual(cfg.sequence_length, 100000)
+                    self.assertTrue(cfg.freeze_encoder)
+                    self.assertEqual(cfg.weight_decay, 0.1)
+                    self.assertFalse(cfg.use_routing_ceiling)
+                    self.assertIsNone(cfg.k_max_list)
 
     def test_checkpoint_config_read_does_not_mutate(self):
         from src.utils.config import load_config
