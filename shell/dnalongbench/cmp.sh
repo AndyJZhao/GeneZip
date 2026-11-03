@@ -68,7 +68,7 @@ MIXED_PRECISION="${MIXED_PRECISION:-bf16}"
 # -----------------------------
 # Prefetch checkpoint (optional)
 # -----------------------------
-if [[ "${PRINT_ONLY:-false}" != "true" && ! -e "${CKPT}" ]]; then
+if [[ ! -e "${CKPT}" ]]; then
   CKPT_REPO_ID="${CKPT}"
   if [[ "${CKPT_REPO_ID}" != */* ]]; then
     CKPT_REPO_ID="${HF_USER}/${CKPT_REPO_ID}"
@@ -108,7 +108,4 @@ fi
 
 echo "Running command:"
 echo "${CMD_TO_RUN}"
-if [[ "${PRINT_ONLY:-false}" == "true" ]]; then
-  exit 0
-fi
 eval "${CMD_TO_RUN}"

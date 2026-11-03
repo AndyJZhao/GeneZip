@@ -15,7 +15,7 @@ ablations. Training and evaluation commands are in the [README](../README.md).
 | [GeneZip-PromoterDistal](https://huggingface.co/andyjzhao/GeneZip-PromoterDistal) | 12,800 | 64 | Regional-prior ablation |
 | [GeneZip-Intergenic](https://huggingface.co/andyjzhao/GeneZip-Intergenic) | 12,800 | 32 | Regional-prior ablation |
 
-Download commands, including a fixed-revision example, are in the
+Download commands are in the
 [README](../README.md#dnalongbench-training-and-evaluation).
 
 `GeneZip` in the paper refers to `GeneZip-70M`. Region-wise targets follow the
@@ -78,8 +78,8 @@ The [result CSV](tables/regional_priors.csv) contains the aggregate scores.
 
 ## Reproducibility
 
-[Validation coverage and quick-check commands](reproduce_release.md) describe
-which execution paths have been tested.
+[Reproduction instructions and result sources](reproduce_release.md) describe
+the published task protocols.
 The BPT values 137.59 in the main table and 139.35 in the matched-panel table
 come from different measurement protocols.
 

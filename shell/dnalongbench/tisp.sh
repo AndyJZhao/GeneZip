@@ -80,7 +80,4 @@ CMD_TO_RUN="${RUNNER} src/scripts/finetune_dlb_tisp.py \
 
 echo "Running command:"
 echo "${CMD_TO_RUN}"
-if [[ "${PRINT_ONLY:-false}" == "true" ]]; then
-  exit 0
-fi
 eval "${CMD_TO_RUN}"

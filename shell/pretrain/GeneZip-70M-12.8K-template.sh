@@ -45,7 +45,4 @@ CMD_TO_RUN="accelerate launch --num_processes ${NUM_PROCESSES} --main_process_po
 
 echo "Running command:"
 echo "${CMD_TO_RUN}"
-if [[ "${PRINT_ONLY:-false}" == "true" ]]; then
-  exit 0
-fi
 eval "${CMD_TO_RUN}"

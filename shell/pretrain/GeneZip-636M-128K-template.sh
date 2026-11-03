@@ -42,9 +42,7 @@ PREFETCH_CKPT="${PRETRAINED_CKPT}"
 if [[ "${PREFETCH_CKPT}" != */* ]]; then
   PREFETCH_CKPT="${HF_USER}/${PREFETCH_CKPT}"
 fi
-if [[ "${PRINT_ONLY:-false}" != "true" ]]; then
-  python -c "from huggingface_hub import snapshot_download; snapshot_download(repo_id='${PREFETCH_CKPT}', resume_download=True)"
-fi
+python -c "from huggingface_hub import snapshot_download; snapshot_download(repo_id='${PREFETCH_CKPT}', resume_download=True)"
 
 CMD_TO_RUN="accelerate launch --num_processes ${NUM_PROCESSES} --main_process_port 0 --mixed_precision ${MIXED_PRECISION} \
   src/scripts/pretrain_genezip.py \
@@ -56,7 +54,4 @@ CMD_TO_RUN="accelerate launch --num_processes ${NUM_PROCESSES} --main_process_po
 
 echo "Running command:"
 echo "${CMD_TO_RUN}"
-if [[ "${PRINT_ONLY:-false}" == "true" ]]; then
-  exit 0
-fi
 eval "${CMD_TO_RUN}"

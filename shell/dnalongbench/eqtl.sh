@@ -56,7 +56,7 @@ LR="${LR:-2e-4}"
 EPOCHS="${EPOCHS:-3}"
 GRAD_ACC="${GRAD_ACC:-8}"
 
-# Optional caps for smoke runs (limits parsing cost too).
+# Optional dataset subset limits.
 MAX_TRAIN_RECORDS="${MAX_TRAIN_RECORDS:-}"
 MAX_VALID_RECORDS="${MAX_VALID_RECORDS:-}"
 MAX_TEST_RECORDS="${MAX_TEST_RECORDS:-}"
@@ -98,7 +98,4 @@ fi
 
 echo "Running command:"
 echo "${CMD_TO_RUN}"
-if [[ "${PRINT_ONLY:-false}" == "true" ]]; then
-  exit 0
-fi
 eval "${CMD_TO_RUN}"

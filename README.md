@@ -66,14 +66,13 @@ bash shell/dnalongbench/etgp.sh
 bash shell/dnalongbench/tisp.sh
 ```
 
-To download a fixed model revision into a local directory:
+To download the model into a local directory:
 
 ```sh
 python - <<'PYTHON'
 from huggingface_hub import snapshot_download
 snapshot_download(
     repo_id="andyjzhao/GeneZip-70M",
-    revision="15e46711bd6fa23fe5922dfe22e8893c9f01bec5",
     local_dir="./pretrained/GeneZip-70M",
 )
 PYTHON
@@ -149,25 +148,5 @@ Evaluate the downloaded 70M checkpoint on the pretraining validation split:
 python src/scripts/pretrain_genezip.py task=pretrain \
   pretrained_ckpt=./pretrained/GeneZip-70M training.do_train=false training.do_eval=true
 ```
-
-For a short training check, set `max_train_steps=2 num_train_samples=4
-num_valid_samples=2 eval_steps=1 save_steps=1`. These sample and step caps are
-validation overrides, not the paper's training budget.
-
-## Quick checks
-
-Run the configuration/data-loader checks and short GPU checks:
-
-```sh
-python -m unittest discover -s tests -v
-python scripts/smoke_pretrained.py --checkpoint ./pretrained/GeneZip-70M
-python scripts/smoke_cr_checkpoint.py --checkpoint /path/to/local/GeneZip-70M
-python scripts/smoke_cr_checkpoint.py --checkpoint /path/to/local/GeneZip-70M --sequence-length 450000
-```
-
-The GPU checks cover strict loading, finite forward/backward outputs, frozen
-parameters and save/reload equivalence. Short checks validate execution; benchmark
-scores require the full training and evaluation recipes. See
-[validation coverage](results/reproduce_release.md) for details.
 
 Code is Apache-2.0. See [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
