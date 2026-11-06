@@ -3,7 +3,7 @@
 # GeneZip: Region-Aware Compression for Long-Context DNA Modeling
 
 [![PyTorch 2.8](https://img.shields.io/badge/PyTorch-2.8-ee4c2c?logo=pytorch&logoColor=white)](https://pytorch.org/)
-[![CUDA 12.6](https://img.shields.io/badge/CUDA-12.6-76b900?logo=nvidia&logoColor=white)](#environment)
+[![arXiv 2602.17739](https://img.shields.io/badge/arXiv-2602.17739-b31b1b?logo=arxiv&logoColor=white)](https://arxiv.org/abs/2602.17739)
 [![Config: Hydra 1.3](https://img.shields.io/badge/Config-Hydra_1.3-89b8cd)](https://hydra.cc/)
 [![Paper: NeurIPS 2026](https://img.shields.io/badge/Paper-NeurIPS_2026-5067b7)](https://openreview.net/pdf?id=E37ysCRa5d)
 [![Hugging Face models](https://img.shields.io/badge/🤗_Models-Hugging_Face-ffd21e)](#pretrained-models)
@@ -206,13 +206,6 @@ If you use GeneZip in your research, please cite:
 }
 ```
 
-## Questions and contributions
-
-Use [GitHub Issues](https://github.com/AndyJZhao/GeneZip/issues) for questions and
-bug reports. For a bug report, include the command, environment and traceback.
-Contributions are welcome; see [CONTRIBUTING.md](CONTRIBUTING.md).
-
 ## License
 
-GeneZip-authored code is licensed under [MIT](LICENSE). Third-party components
-retain their original licenses; see [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
+GeneZip-authored code is licensed under [MIT](LICENSE).
