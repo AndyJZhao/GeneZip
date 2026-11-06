@@ -94,7 +94,7 @@ The [result CSV](tables/regional_priors.csv) contains the aggregate scores.
 
 ## Reproducibility
 
-[Reproduction instructions and result sources](reproduce_release.md) describe
+[Reproduction instructions](reproduce_release.md) describe
 the published task protocols.
 The BPT values 137.59 in the main table and 139.35 in the matched-panel table
 come from different measurement protocols.
@@ -102,7 +102,6 @@ come from different measurement protocols.
 The main-table average rank uses CMP SCC, eQTL AUROC, ETGP AUPRC and TISP
 PCC across all ten displayed models, with average ranks for ties at the
 three-decimal reporting precision. GeneZip's average rank is 3.13, compared
-with U-Net 4.00, H-Net 5.75, Mamba2 6.25 and NTv3 2.75. The claim is restricted
-to compression models with leakage-controlled pretraining. eQTL AUPRC is
-an auxiliary metric. The U-Net and H-Net scores are comparison results;
-this repository does not provide their baseline training implementations.
+with U-Net 4.00, H-Net 5.75, Mamba2 6.25 and NTv3 2.75. GeneZip has the lowest
+average rank among compression models with leakage-controlled pretraining.
+eQTL AUPRC is an auxiliary metric.

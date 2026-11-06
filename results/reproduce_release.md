@@ -1,18 +1,17 @@
-# Reproducing the camera-ready results
+# Reproducing GeneZip results
 
-The [README](../README.md) and [result tables](CHECKPOINTS.md) follow the
-accepted camera-ready manuscript. The release provides seven GeneZip
-pretrained checkpoints, pretraining templates, and CMP/eQTL/ETGP/TISP
-training and evaluation. Baseline scores are comparisons; their training
-implementations and downstream task checkpoints are not distributed here.
+This guide describes the experiments in the [paper](https://openreview.net/pdf?id=E37ysCRa5d).
+The repository provides seven GeneZip pretrained checkpoints, pretraining
+templates, and CMP/eQTL/ETGP/TISP training and evaluation. See the
+[README](../README.md) for commands and the [result tables](CHECKPOINTS.md)
+for benchmark scores.
 
 ## Task protocols
 
 All main-task commands start from `andyjzhao/GeneZip-70M`. eQTL/ETGP/TISP training includes
 validation selection and final held-out evaluation. CMP reports validation
-and test metrics every 200 head updates; it does not expose a standalone
-head-checkpoint evaluation command. Use the README commands
-for independent binary evaluation and interrupted TISP evaluation recovery.
+and test metrics every 200 head updates. The README includes commands for
+training and evaluating task checkpoints.
 
 | Task | Input (bp) | Seed | Batch / accumulation | Budget | Selection |
 | --- | ---: | ---: | --- | --- | --- |
@@ -36,9 +35,7 @@ a floor of eight tokens per stage. CMP retains the pretrained routing floor.
 
 Aggregate eQTL scores average all nine tissues; CMP averages all five cell
 lines. TISP averages FC/EC/ER/GC/PC PCC computed on the full held-out
-chromosomes, not an average over a small sample of windows. Checkpoints are
-selected using validation metrics. Single-seed results and GPU kernels do
-not imply bitwise equality on reruns.
+chromosomes. Checkpoints are selected using validation metrics.
 
 ## Inference throughput
 
@@ -58,7 +55,6 @@ absolute and relative tolerances of 0.02.
 
 GeneZip takes 6.34 s at batch 7 (72.80 GiB peak allocated memory), versus
 JanusDNA's 228.63 s at batch 9 (41.11 GiB), giving 36.1-fold higher throughput.
-This is not a training-speed or single-sequence-latency comparison.
 GeneZip uses ceilings `[70000,70000]`; the H-Net timing run has no routing
 limits, separately from the common downstream adaptation protocol.
 NTv3 includes padding to 450,048 positions in its timing and excludes the
@@ -77,27 +73,13 @@ uses its published task directories. The README shows how to download
 `andyjzhao/GeneZip-70M` or select another public model by name.
 Use `offline_mode=true` only after the required files are cached locally.
 
-## Validation scope
+## Quick pipeline check
 
-The released environment and seven pretrained checkpoints have been checked
-on Linux/A100 80GB, including anonymous downloads, strict weight loading,
-finite model outputs, and four-task training/validation/test smoke checks at
-their real input lengths. Prior validation also covered short 70M/636M
-pretraining and 128K continuation. Full eQTL/ETGP/TISP reruns were used to
-check the execution paths; their scores are not substituted for the adopted
-paper results. CMP uses its adopted full-run evidence and a real-length smoke.
-A fresh dependency installation and complete multi-GPU pretraining are not
-part of this release acceptance.
-
-A short TISP pipeline check uses the same routing and freezing defaults:
+Run two TISP optimization steps using eight training windows and two windows
+per validation/test split:
 
 ```sh
 TRAIN_STEPS=2 EVAL_STEPS=1 LOG_EVERY=1 \
   NUM_TRAIN_SAMPLES=8 NUM_VALID_SAMPLES=2 NUM_TEST_SAMPLES=2 \
   bash shell/dnalongbench/tisp.sh
 ```
-
-These tiny-window scores validate execution only; they are not chromosome-level
-benchmark estimates. The camera-ready update replaces the former TISP routing
-recipe and associated results, updates the regional-prior eQTL results, and
-recomputes main-table ranks from the displayed three-decimal task scores.

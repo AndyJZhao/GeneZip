@@ -27,10 +27,9 @@ among **compression models with leakage-controlled pretraining**; the
 [complete comparison](results/CHECKPOINTS.md#dnalongbench-results) includes
 external-pretraining models.
 
-The **36.1× inference throughput** result processes 100 sequences of 450,000 bp
+The **36.1× batched inference throughput** result processes 100 sequences of 450,000 bp
 on one H100 80GB with BF16: 6.34 s for GeneZip-70M (batch 7), versus 228.63 s
-for JanusDNA-7.7M (batch 9). It measures batched inference, not training speed
-or single-sequence latency. See the [timing protocol](results/reproduce_release.md#inference-throughput).
+for JanusDNA-7.7M (batch 9). See the [timing protocol](results/reproduce_release.md#inference-throughput).
 
 ## Pretrained models
 
@@ -66,9 +65,8 @@ starts from the pretrained weights using the commands below.
 ## Environment
 
 Linux x86_64, an NVIDIA GPU and a CUDA 12.6-compatible driver/toolkit are
-required for model execution. The release smoke checks used A100 80GB GPUs;
-the inference-throughput comparison above used an H100 80GB. The lockfile
-uses Python 3.12, PyTorch 2.8/CUDA 12.6, flash-attn 2.8.3, mamba-ssm 2.3.0 and
+required for model execution. The software has been tested on A100 80GB GPUs.
+The lockfile uses Python 3.12, PyTorch 2.8/CUDA 12.6, flash-attn 2.8.3, mamba-ssm 2.3.0 and
 causal-conv1d 1.6.0.
 
 ```sh
@@ -134,9 +132,8 @@ python src/scripts/finetune_dlb_binary_classification.py task=etgp \
   cell_type=CRISPRi_EPI_K562_hg19 save_dir=./temp/ETGP_ckpt training.do_train=false test_load=best
 ```
 
-For TISP training that finished before final evaluation was interrupted, load
-its validation-selected task checkpoint without repeating optimization. Keep
-the same pretrained model and task settings, and use a fresh output directory:
+To evaluate a trained TISP checkpoint, use the same pretrained model and task
+settings with a fresh output directory. For a completed 5,000-step run:
 
 ```sh
 python src/scripts/finetune_dlb_tisp.py task=tisp \
@@ -144,13 +141,12 @@ python src/scripts/finetune_dlb_tisp.py task=tisp \
   completed_training_steps=5000 train_steps=5000 dirs.output=./output/tisp-evaluation
 ```
 
-`completed_training_steps` must be supported by the original training record;
-it is not inferred from the checkpoint. Recovery evaluates validation and test
-splits and does not select a checkpoint using test scores.
+Set `completed_training_steps` and `train_steps` to the training run's completed
+step count. The command evaluates the validation and test splits.
 
 eQTL/ETGP/TISP training performs validation selection and held-out test evaluation.
 CMP reports validation/test metrics every 200 head updates.
-Downstream task checkpoints are produced by training and are not distributed.
+Training produces the task checkpoints used for evaluation.
 When changing the eQTL tissue or pretrained model, use a distinct `SAVE_DIR`
 (e.g. `CELL_TYPE=Whole_Blood SAVE_DIR=./temp/eqtl_Whole_Blood bash shell/dnalongbench/eqtl.sh`)
 and pass that same directory and `ckpt` to independent evaluation.
