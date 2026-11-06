@@ -1,0 +1,135 @@
+{
+  "animation_kind": "ideal target allocation; not measured boundaries",
+  "equal_region_bases": 2048,
+  "priors": [
+    {
+      "name": "GeneZip",
+      "short": "Default (Promoter+Genic)",
+      "anchor": 32,
+      "multipliers": [
+        1,
+        1,
+        2,
+        2,
+        8,
+        8,
+        16
+      ],
+      "compression": 139.35,
+      "eqtl": 0.8172,
+      "etgp": 0.3746,
+      "cmp": 0.1332,
+      "tisp": 0.3356,
+      "description": "Retain finer resolution in promoters and genic sequence; compress intronic and intergenic sequence more strongly.",
+      "conclusion": "The default prior gives the strongest CMP score among these priors, while retaining strong TISP performance.",
+      "targets": [
+        32,
+        32,
+        64,
+        64,
+        256,
+        256,
+        512
+      ]
+    },
+    {
+      "name": "GeneZip-Regulome",
+      "short": "Regulome",
+      "anchor": 64,
+      "multipliers": [
+        1,
+        16,
+        2,
+        4,
+        2,
+        2,
+        4
+      ],
+      "compression": 118.15,
+      "eqtl": 0.8229,
+      "etgp": 0.5049,
+      "cmp": 0.1013,
+      "tisp": 0.3278,
+      "description": "Shift resolution toward promoter and broader noncoding regulatory context.",
+      "conclusion": "ETGP AUPRC rises to 0.5049, while CMP SCC falls to 0.1013. The preferred allocation depends on the task.",
+      "targets": [
+        64,
+        1024,
+        128,
+        256,
+        128,
+        128,
+        256
+      ]
+    },
+    {
+      "name": "GeneZip-PromoterDistal",
+      "short": "Promoter + distal",
+      "anchor": 64,
+      "multipliers": [
+        1,
+        16,
+        8,
+        8,
+        2,
+        2,
+        4
+      ],
+      "compression": 122.79,
+      "eqtl": 0.8241,
+      "etgp": 0.4893,
+      "cmp": 0.0932,
+      "tisp": 0.3377,
+      "description": "Prioritize promoters, introns and near-intergenic sequence over genic detail.",
+      "conclusion": "This prior has the highest eQTL AUROC and TISP PCC in the prior comparison, with lower CMP performance.",
+      "targets": [
+        64,
+        1024,
+        512,
+        512,
+        128,
+        128,
+        256
+      ]
+    },
+    {
+      "name": "GeneZip-Intergenic",
+      "short": "Intergenic",
+      "anchor": 32,
+      "multipliers": [
+        32,
+        16,
+        8,
+        4,
+        2,
+        4,
+        1
+      ],
+      "compression": 115.95,
+      "eqtl": 0.7865,
+      "etgp": 0.423,
+      "cmp": 0.128,
+      "tisp": 0.2654,
+      "description": "Reverse the default preference: retain finer resolution in distal intergenic sequence.",
+      "conclusion": "More tokens overall do not guarantee better predictions: TISP PCC is 20.9% below the default prior despite weaker overall compression.",
+      "targets": [
+        1024,
+        512,
+        256,
+        128,
+        64,
+        128,
+        32
+      ]
+    }
+  ],
+  "baseline": {
+    "name": "No Prior (HNet)",
+    "compression": 122.48,
+    "cmp": 0.1182,
+    "eqtl": 0.7909,
+    "etgp": 0.2251,
+    "tisp": 0.3032,
+    "source": "tex/tables/ablation_region_ratio.tex"
+  }
+}

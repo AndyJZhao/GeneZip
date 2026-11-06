@@ -4,11 +4,11 @@
 
 </div>
 
-Public code release for [GeneZip](https://arxiv.org/abs/2602.17739).
+[Project page](https://andyjzhao.github.io/GeneZip/) · [Paper](https://andyjzhao.github.io/GeneZip/assets/GeneZip.pdf) · [arXiv](https://arxiv.org/abs/2602.17739)
 
 ## Abstract
 
-Long-context DNA models are limited by token-mixing cost and by how compression allocates representational budget across the genome. Existing approaches operate close to base-pair resolution, apply fixed downsampling, or learn content-dependent chunks without an explicit genomic budget, making long-context pretraining expensive and difficult to control. We introduce GeneZip, a region-aware DNA compression framework that combines H-Net-style dynamic routing with a Region-Aware Ratio (RAR) objective and bounded routing. GeneZip uses static gene-structure annotations during compression training to specify region-wise base-pairs-per-token (BPT) targets; at inference time, it compresses raw unseen DNA without annotations. GeneZip provides three main benefits. First, it is effective: GeneZip variants achieve the best validation PPL among encoder-based compressors, with GeneZip-70M already operating at 137.6 BPT, and across four reproducible DNALongBench tasks---contact map prediction, eQTL prediction, enhancer-target gene prediction, and transcription-initiation signal prediction---GeneZip obtains the best average rank among compared sequence models. Second, it is redundancy-aware: a post-hoc RepeatMasker/TRF analysis shows that, without repeat supervision, GeneZip assigns higher local BPT to TE-derived interspersed repeats and tandem repeats, two major classes of repetitive DNA sequence redundancy. Third, it is efficient: by reducing the effective token-mixing length, GeneZip enables longer-context and larger-capacity pretraining, including 128K-context and 636M-parameter variants on a single A100 80GB GPU, and fine-tunes the eQTL task 50.4x faster than JanusDNA (50 vs. 2520 minutes). These results establish GeneZip as an effective, redundancy-aware, and efficient compression interface for long-context DNA modeling.
+Long-context DNA models are limited by token-mixing cost and by how compression allocates representational budget across the genome. Existing approaches operate close to base-pair resolution, apply fixed downsampling, or learn content-dependent chunks without an explicit genomic budget, making long-context pretraining expensive and difficult to control. We introduce GeneZip, a region-aware DNA compression framework that combines H-Net-style dynamic routing with a Region-Aware Ratio (RAR) objective and bounded routing. GeneZip uses static gene-structure annotations during compression training to specify region-wise sequence compression targets. GeneZip provides three main benefits. First, it is effective: GeneZip variants achieve the best validation perplexity (PPL) among high-compression encoder-based models. With 137.6-fold sequence compression, GeneZip-70M incurs only a +0.31 perplexity increase relative to the 84M Mamba2 baseline without compression. GeneZip achieves the best average rank across four DNALongBench downstream tasks among compression models with leakage-controlled pretraining. Second, GeneZip achieves high, region-aware compression with emergent repeat-aware allocation on unseen sequences, without annotations at inference. RepeatMasker/TRF analyses show higher local compression in TE-derived and tandem repeats than matched non-repeat sequence, without repeat supervision. Third, it is efficient: on 450-kb inputs, 70M GeneZip achieves a 36.1× inference speedup over the uncompressed JanusDNA-7.7M model. GeneZip also supports 128K-context and 636M-parameter pretraining on a single H100 80GB GPU. These results establish GeneZip as an effective, region-aware, and efficient compression interface for long-context DNA modeling.
 
 ## Overview
 
@@ -36,7 +36,7 @@ Tested release environment:
 | Kernel packages | `flash-attn==2.8.3`, `mamba-ssm==2.3.0`, `causal-conv1d==1.6.0` |
 | Package manager | `uv` with the checked-in `uv.lock` |
 
-This release contains runnable GeneZip targets only. Non-GeneZip baselines in the paper are cited context rather than release targets. HNet is included only as the uniform-resolution ablation control.
+This release contains runnable GeneZip targets only. Non-GeneZip baselines in the paper are cited context rather than release targets. HNet is included as the region-agnostic dynamic-routing ablation control.
 
 ## Released checkpoints
 
@@ -57,9 +57,11 @@ Distal-Intergenic)`. Each entry is the region multiplier for the target
 base-pairs-per-token budget in the RAR objective; larger values apply stronger
 compression to that region, while smaller values preserve a denser token budget.
 
-## Paper Result Mapping
+## Released Task Entrypoints
 
-| Paper result | Checkpoint | Script | Key overrides | Metric keys |
+The wrappers below expose the released task examples and their default checkpoints. The main-paper comparison uses `GeneZip-70M-Transcript-balanced` for all four tasks; pass that `CKPT` explicitly when following the main-paper protocol. Alternative priors belong to the regional-prior ablation. The [paper](https://andyjzhao.github.io/GeneZip/assets/GeneZip.pdf) specifies freezing, routing and evaluation settings; these must also match for reproduction.
+
+| Task | Wrapper default checkpoint | Script | Key overrides | Metric keys |
 | --- | --- | --- | --- | --- |
 | CMP aggregate | `GeneZip-70M-Transcript-balanced` | `shell/dnalongbench/cmp.sh` | run all five `SUBSET` values | `eval/scc`, `eval/corr` |
 | eQTL aggregate | `GeneZip-70M-Cis-regulatory-focused` | `shell/dnalongbench/eqtl.sh` | run all nine `CELL_TYPE` values | `valid_auroc`, `valid_auprc`, `test_auroc`, `test_auprc` |
@@ -148,9 +150,9 @@ Default checkpoint: `GeneZip-70M-Intergenic-focused`.
 bash shell/dnalongbench/tisp.sh
 ```
 
-Default checkpoint: `GeneZip-70M-Promoter-distal-regulatory`. To reproduce the
-128K GeneZip TISP setting reported in the paper, run
-`CKPT=GeneZip-70M-Transcript-balanced-128K`.
+Default checkpoint: `GeneZip-70M-Promoter-distal-regulatory`. For the released
+128K variant, use `CKPT=GeneZip-70M-Transcript-balanced-128K`; the
+main-paper TISP comparison uses the 12.8K pretrained default checkpoint.
 
 Each wrapper accepts a checkpoint override:
 
