@@ -7,7 +7,7 @@
 [![Config: Hydra 1.3](https://img.shields.io/badge/Config-Hydra_1.3-89b8cd)](https://hydra.cc/)
 [![Paper: NeurIPS 2026](https://img.shields.io/badge/Paper-NeurIPS_2026-5067b7)](https://openreview.net/pdf?id=E37ysCRa5d)
 [![Hugging Face models](https://img.shields.io/badge/🤗_Models-Hugging_Face-ffd21e)](#pretrained-models)
-[![License: Apache 2.0](https://img.shields.io/badge/License-Apache_2.0-green)](LICENSE)
+[![License: MIT](https://img.shields.io/badge/License-MIT-green)](LICENSE)
 
 [Project page](https://andyjzhao.github.io/GeneZip/) · [Paper](https://openreview.net/pdf?id=E37ysCRa5d) · [Models](#pretrained-models) · [Getting started](#environment) · [Citation](#citation)
 
@@ -214,5 +214,5 @@ Contributions are welcome; see [CONTRIBUTING.md](CONTRIBUTING.md).
 
 ## License
 
-Code is licensed under [Apache-2.0](LICENSE). See [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md)
-for upstream projects and licenses.
+GeneZip-authored code is licensed under [MIT](LICENSE). Third-party components
+retain their original licenses; see [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).

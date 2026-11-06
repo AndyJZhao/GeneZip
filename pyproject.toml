@@ -3,6 +3,7 @@ name = "genezip"
 version = "1.0.0"
 description = "Region-aware compression for long-context DNA modeling"
 readme = "README.md"
+license = "MIT"
 requires-python = ">=3.12,<3.13"
 
 dependencies = [

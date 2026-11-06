@@ -3,7 +3,7 @@ message: "If you use GeneZip in your research, please cite the paper below."
 type: software
 title: "GeneZip: Region-Aware Compression for Long-Context DNA Modeling"
 version: 1.0.0
-license: Apache-2.0
+license: MIT
 repository-code: "https://github.com/AndyJZhao/GeneZip"
 url: "https://andyjzhao.github.io/GeneZip/"
 authors:
