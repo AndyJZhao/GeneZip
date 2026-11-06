@@ -22,7 +22,7 @@ img { max-width: 100%; height: auto; }
 .skip-link { position: absolute; top: -80px; left: 16px; padding: 8px 14px; background: white; z-index: 20; }
 .skip-link:focus { top: 12px; }
 .publication-header { text-align: center; }
-.hero-body { width: 100%; max-width: 1008px; margin: 0 auto; padding: 32px 24px 26px; }
+.hero-body { width: 100%; max-width: 768px; margin: 0 auto; padding: 32px 24px 26px; }
 .venue { font-size: 18px; color: var(--muted); margin: 0 0 8px; }
 .publication-header .title { margin: 0; color: var(--ink); }
 .project-name { display: block; font-size: clamp(48px, 5.2vw, 68px); line-height: 1.08; letter-spacing: -2.2px; margin-bottom: 12px; }
@@ -41,7 +41,7 @@ sup { font-size: .65em; vertical-align: super; line-height: 0; margin-left: 2px;
 .code-button.button { background: #253041; color: #fff; }
 .code-button.button:hover { background: #101d35; color: #fff; }
 .paper-button img, .code-button img { filter: invert(1); }
-.page-container, .page-footer { width: calc(100% - 64px); max-width: 960px; margin: 0 auto; }
+.page-container, .page-footer { width: calc(100% - 64px); max-width: 720px; margin: 0 auto; }
 .overview-figure { padding: 8px 0 20px; }
 .overview-figure img { display: block; width: 100%; }
 .zoom-link { display: block; cursor: zoom-in; border-radius: 3px; }

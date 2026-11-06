@@ -15,7 +15,7 @@
 .region-target-demo .small, .prior-downstream .small { font-size: 13px; color: var(--muted); }
 .region-target-demo .scroll, .prior-downstream .scroll { overflow-x: auto; }
 .region-target-demo svg, .prior-downstream svg { display: block; width: 100%; font-family: Arial, Helvetica, sans-serif; }
-.region-target-demo svg { min-width: 720px; }
+.region-target-demo svg { min-width: 620px; }
 .region-target-demo .track-label, .prior-downstream .track-label { font-size: 15px; fill: var(--ink); font-weight: 600; }
 .region-target-demo .region-label { font-size: 14px; fill: var(--ink); }
 .region-target-demo .target-label { font-size: 22px; font-weight: 700; }
@@ -26,7 +26,7 @@
 .prior-downstream .sequence-name { font-size: 14px; font-weight: 600; }
 .prior-downstream figcaption { font-size: 12px; margin-top: 6px; }
 .prior-downstream .grouped-legend { margin-top: 16px; margin-bottom: 22px; }
-.prior-downstream .task-panels { min-width: 960px; gap: 20px; }
+.prior-downstream .task-panels { min-width: 0; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 28px; }
 .prior-downstream .task-panel h3 { margin: 0; }
 .prior-downstream .task-panel > p { margin: 4px 0 28px; min-height: 0; }
 .prior-downstream .panel-plot { height: 210px; }
@@ -42,7 +42,6 @@
 .prior-downstream tr.selected { background: #eaf1f9; }
 .prior-downstream .sources { font-size: 13px; color: var(--muted); }
 @media (max-width: 1100px) {
-  .prior-downstream .task-panels { min-width: 0; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 28px; }
   .prior-downstream .sequence-name { font-size: 18px; }
   .prior-downstream .grouped-legend { gap: 10px 20px; }
   .prior-downstream .panel-plot { height: 190px; }
@@ -63,6 +62,7 @@
 .prior-downstream .general-metrics .metric p:not(.metric-value) { max-width: 44ch; }
 .prior-downstream .ablation-heading { margin-top: 42px; padding-top: 30px; border-top: 1px solid var(--rule); }
 .prior-downstream #general-performance-table caption { text-align: left; color: var(--muted); margin-bottom: 10px; }
+.prior-downstream #general-performance-table thead th { white-space: normal; }
 @media (max-width: 600px) {
   .prior-downstream .general-metrics { grid-template-columns: 1fr; }
 }
