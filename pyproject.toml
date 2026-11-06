@@ -1,7 +1,7 @@
 [project]
-name = "dnafm"
-version = "0.1.0"
-description = "DNA foundation model / sequence modeling experiments"
+name = "genezip"
+version = "1.0.0"
+description = "Region-aware compression for long-context DNA modeling"
 readme = "README.md"
 requires-python = ">=3.12,<3.13"
 
@@ -51,6 +51,12 @@ dependencies = [
     "pytabix",
     "pyBigWig",
 ]
+
+[project.urls]
+Homepage = "https://andyjzhao.github.io/GeneZip/"
+Repository = "https://github.com/AndyJZhao/GeneZip"
+Paper = "https://openreview.net/pdf?id=E37ysCRa5d"
+Issues = "https://github.com/AndyJZhao/GeneZip/issues"
 
 [tool.uv]
 python-preference = "system"

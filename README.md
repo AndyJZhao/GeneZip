@@ -2,9 +2,20 @@
 
 # GeneZip: Region-Aware Compression for Long-Context DNA Modeling
 
+[![PyTorch 2.8](https://img.shields.io/badge/PyTorch-2.8-ee4c2c?logo=pytorch&logoColor=white)](https://pytorch.org/)
+[![CUDA 12.6](https://img.shields.io/badge/CUDA-12.6-76b900?logo=nvidia&logoColor=white)](#environment)
+[![Config: Hydra 1.3](https://img.shields.io/badge/Config-Hydra_1.3-89b8cd)](https://hydra.cc/)
+[![Paper: NeurIPS 2026](https://img.shields.io/badge/Paper-NeurIPS_2026-5067b7)](https://openreview.net/pdf?id=E37ysCRa5d)
+[![Hugging Face models](https://img.shields.io/badge/🤗_Models-Hugging_Face-ffd21e)](#pretrained-models)
+[![License: Apache 2.0](https://img.shields.io/badge/License-Apache_2.0-green)](LICENSE)
+
+[Project page](https://andyjzhao.github.io/GeneZip/) · [Paper](https://openreview.net/pdf?id=E37ysCRa5d) · [Models](#pretrained-models) · [Getting started](#environment) · [Citation](#citation)
+
 </div>
 
-[Project page](https://andyjzhao.github.io/GeneZip/) · [Paper](https://openreview.net/pdf?id=E37ysCRa5d) · [arXiv](https://arxiv.org/abs/2602.17739)
+Official PyTorch implementation of GeneZip, a framework for region-aware DNA compression.
+
+Jianan Zhao, Xixian Liu, Zhihao Zhan, Xinyu Yuan, Hongyu Guo, and Jian Tang.
 
 ## Abstract
 
@@ -70,6 +81,8 @@ The lockfile uses Python 3.12, PyTorch 2.8/CUDA 12.6, flash-attn 2.8.3, mamba-ss
 causal-conv1d 1.6.0.
 
 ```sh
+git clone https://github.com/AndyJZhao/GeneZip.git
+cd GeneZip
 uv venv --python 3.12
 uv sync
 source .venv/bin/activate
@@ -179,4 +192,27 @@ python src/scripts/pretrain_genezip.py task=pretrain \
   pretrained_ckpt=./pretrained/GeneZip-70M training.do_train=false training.do_eval=true
 ```
 
-Code is Apache-2.0. See [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
+## Citation
+
+If you use GeneZip in your research, please cite:
+
+```bibtex
+@inproceedings{zhao2026genezip,
+  title = {GeneZip: Region-Aware Compression for Long-Context DNA Modeling},
+  author = {Zhao, Jianan and Liu, Xixian and Zhan, Zhihao and Yuan, Xinyu and Guo, Hongyu and Tang, Jian},
+  booktitle = {Advances in Neural Information Processing Systems},
+  year = {2026},
+  url = {https://openreview.net/pdf?id=E37ysCRa5d}
+}
+```
+
+## Questions and contributions
+
+Use [GitHub Issues](https://github.com/AndyJZhao/GeneZip/issues) for questions and
+bug reports. For a bug report, include the command, environment and traceback.
+Contributions are welcome; see [CONTRIBUTING.md](CONTRIBUTING.md).
+
+## License
+
+Code is licensed under [Apache-2.0](LICENSE). See [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md)
+for upstream projects and licenses.

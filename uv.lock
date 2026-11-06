@@ -228,71 +228,6 @@ wheels = [
 ]
 
 [[package]]
-name = "dnafm"
-version = "0.1.0"
-source = { virtual = "." }
-dependencies = [
-    { name = "accelerate" },
-    { name = "causal-conv1d" },
-    { name = "codetiming" },
-    { name = "datasets" },
-    { name = "einops" },
-    { name = "flash-attn" },
-    { name = "huggingface-hub" },
-    { name = "humanfriendly" },
-    { name = "hydra-core" },
-    { name = "mamba-ssm" },
-    { name = "ninja" },
-    { name = "numpy" },
-    { name = "omegaconf" },
-    { name = "optree" },
-    { name = "peft" },
-    { name = "pybigwig" },
-    { name = "pyfaidx" },
-    { name = "pytabix" },
-    { name = "pyyaml" },
-    { name = "rich" },
-    { name = "rootutils" },
-    { name = "safetensors" },
-    { name = "tokenizers" },
-    { name = "torch" },
-    { name = "tqdm" },
-    { name = "transformers" },
-    { name = "wandb" },
-]
-
-[package.metadata]
-requires-dist = [
-    { name = "accelerate", specifier = "==1.10.1" },
-    { name = "causal-conv1d", specifier = "==1.6.0" },
-    { name = "codetiming" },
-    { name = "datasets", specifier = "==4.4.1" },
-    { name = "einops", specifier = "==0.8.*" },
-    { name = "flash-attn", specifier = "==2.8.3" },
-    { name = "huggingface-hub", specifier = "==0.35.3" },
-    { name = "humanfriendly" },
-    { name = "hydra-core" },
-    { name = "mamba-ssm", specifier = "==2.3.0" },
-    { name = "ninja" },
-    { name = "numpy", specifier = ">=2.3,<3" },
-    { name = "omegaconf", specifier = ">=2.3" },
-    { name = "optree" },
-    { name = "peft" },
-    { name = "pybigwig" },
-    { name = "pyfaidx" },
-    { name = "pytabix" },
-    { name = "pyyaml" },
-    { name = "rich" },
-    { name = "rootutils" },
-    { name = "safetensors", specifier = "==0.6.2" },
-    { name = "tokenizers", specifier = "==0.22.1" },
-    { name = "torch", specifier = "==2.8.*", index = "https://download.pytorch.org/whl/cu126" },
-    { name = "tqdm" },
-    { name = "transformers", specifier = "==4.57.1" },
-    { name = "wandb" },
-]
-
-[[package]]
 name = "einops"
 version = "0.8.2"
 source = { registry = "https://pypi.org/simple" }
@@ -357,6 +292,71 @@ wheels = [
 [package.optional-dependencies]
 http = [
     { name = "aiohttp" },
+]
+
+[[package]]
+name = "genezip"
+version = "1.0.0"
+source = { virtual = "." }
+dependencies = [
+    { name = "accelerate" },
+    { name = "causal-conv1d" },
+    { name = "codetiming" },
+    { name = "datasets" },
+    { name = "einops" },
+    { name = "flash-attn" },
+    { name = "huggingface-hub" },
+    { name = "humanfriendly" },
+    { name = "hydra-core" },
+    { name = "mamba-ssm" },
+    { name = "ninja" },
+    { name = "numpy" },
+    { name = "omegaconf" },
+    { name = "optree" },
+    { name = "peft" },
+    { name = "pybigwig" },
+    { name = "pyfaidx" },
+    { name = "pytabix" },
+    { name = "pyyaml" },
+    { name = "rich" },
+    { name = "rootutils" },
+    { name = "safetensors" },
+    { name = "tokenizers" },
+    { name = "torch" },
+    { name = "tqdm" },
+    { name = "transformers" },
+    { name = "wandb" },
+]
+
+[package.metadata]
+requires-dist = [
+    { name = "accelerate", specifier = "==1.10.1" },
+    { name = "causal-conv1d", specifier = "==1.6.0" },
+    { name = "codetiming" },
+    { name = "datasets", specifier = "==4.4.1" },
+    { name = "einops", specifier = "==0.8.*" },
+    { name = "flash-attn", specifier = "==2.8.3" },
+    { name = "huggingface-hub", specifier = "==0.35.3" },
+    { name = "humanfriendly" },
+    { name = "hydra-core" },
+    { name = "mamba-ssm", specifier = "==2.3.0" },
+    { name = "ninja" },
+    { name = "numpy", specifier = ">=2.3,<3" },
+    { name = "omegaconf", specifier = ">=2.3" },
+    { name = "optree" },
+    { name = "peft" },
+    { name = "pybigwig" },
+    { name = "pyfaidx" },
+    { name = "pytabix" },
+    { name = "pyyaml" },
+    { name = "rich" },
+    { name = "rootutils" },
+    { name = "safetensors", specifier = "==0.6.2" },
+    { name = "tokenizers", specifier = "==0.22.1" },
+    { name = "torch", specifier = "==2.8.*", index = "https://download.pytorch.org/whl/cu126" },
+    { name = "tqdm" },
+    { name = "transformers", specifier = "==4.57.1" },
+    { name = "wandb" },
 ]
 
 [[package]]

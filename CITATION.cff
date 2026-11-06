@@ -1,0 +1,40 @@
+cff-version: 1.2.0
+message: "If you use GeneZip in your research, please cite the paper below."
+type: software
+title: "GeneZip: Region-Aware Compression for Long-Context DNA Modeling"
+version: 1.0.0
+license: Apache-2.0
+repository-code: "https://github.com/AndyJZhao/GeneZip"
+url: "https://andyjzhao.github.io/GeneZip/"
+authors:
+  - family-names: Zhao
+    given-names: Jianan
+  - family-names: Liu
+    given-names: Xixian
+  - family-names: Zhan
+    given-names: Zhihao
+  - family-names: Yuan
+    given-names: Xinyu
+  - family-names: Guo
+    given-names: Hongyu
+  - family-names: Tang
+    given-names: Jian
+preferred-citation:
+  type: conference-paper
+  title: "GeneZip: Region-Aware Compression for Long-Context DNA Modeling"
+  authors:
+    - family-names: Zhao
+      given-names: Jianan
+    - family-names: Liu
+      given-names: Xixian
+    - family-names: Zhan
+      given-names: Zhihao
+    - family-names: Yuan
+      given-names: Xinyu
+    - family-names: Guo
+      given-names: Hongyu
+    - family-names: Tang
+      given-names: Jian
+  collection-title: "Advances in Neural Information Processing Systems"
+  year: 2026
+  url: "https://openreview.net/pdf?id=E37ysCRa5d"
