@@ -25,7 +25,7 @@
       <p class="affiliations"><span><sup>1</sup>Mila – Québec AI Institute</span><span><sup>2</sup>Université de Montréal</span><span><sup>3</sup>University of Ottawa</span><br><span><sup>4</sup>National Research Council of Canada</span><span><sup>5</sup>HEC Montréal</span></p>
       <p class="author-note">* Equal contribution · Correspondence to Jian Tang</p>
       <nav class="resource-buttons" aria-label="Project resources">
-        <a class="button resource-button paper-button" href="assets/GeneZip.pdf" target="_blank" rel="noopener"><img src="assets/file-pdf.svg" alt="">Paper</a>
+        <a class="button resource-button paper-button" href="https://openreview.net/pdf?id=E37ysCRa5d" target="_blank" rel="noopener"><img src="assets/file-pdf.svg" alt="">Paper</a>
         <a class="button resource-button code-button" href="https://github.com/AndyJZhao/GeneZip" target="_blank" rel="noopener"><img src="assets/github.svg" alt="">Code</a>
       </nav>
     </div>
@@ -161,7 +161,7 @@
 <p>Under leakage-controlled pretraining, GeneZip leads on CMP, eQTL and TISP and has the best average rank.</p>
 <div class="table-scroll"><table id="main-table"><caption>DNALongBench · held-out test results</caption><thead><tr><th scope="col">Model</th><th scope="col">Pretraining group</th><th scope="col">Compression ratio</th><th scope="col">Inference (s) ↓</th><th scope="col">CMP SCC ↑</th><th scope="col">eQTL AUROC ↑</th><th scope="col">ETGP AUPRC ↑</th><th scope="col">TISP PCC ↑</th><th scope="col">Avg. rank ↓</th></tr></thead><tbody><tr><th scope="row">HyenaDNA-6.6M</th><td>DNALongBench-official</td><td>1.0×</td><td>22.86</td><td>0.115</td><td>0.514</td><td>0.249</td><td>0.132</td><td>8.00</td></tr><tr><th scope="row">Caduceus-Ph-7.7M</th><td>DNALongBench-official</td><td>1.0×</td><td>35.06</td><td>0.133</td><td>0.566</td><td>0.380</td><td>0.109</td><td>5.63</td></tr><tr><th scope="row">Caduceus-PS-7.7M</th><td>DNALongBench-official</td><td>1.0×</td><td>68.36</td><td>0.127</td><td>0.538</td><td>0.376</td><td>0.108</td><td>7.00</td></tr><tr><th scope="row">JanusDNA-7.7M</th><td>External-pretraining</td><td>1.0×</td><td>228.63</td><td>0.159</td><td>0.840</td><td>0.438</td><td>0.002</td><td>3.25</td></tr><tr><th scope="row">NTv3-100M-pre</th><td>External-pretraining</td><td>127.99×</td><td>13.27</td><td>0.136</td><td>0.792</td><td>0.440</td><td>0.194</td><td>2.75</td></tr><tr><th scope="row">Evo2-1B</th><td>External-pretraining</td><td>1.0×</td><td>OOM</td><td>0.018</td><td>0.754</td><td>0.095</td><td>-0.002</td><td>9.25</td></tr><tr><th scope="row">Mamba2-84M</th><td>Leakage-controlled-pretraining</td><td>1.0×</td><td>40.80</td><td>0.111</td><td>0.762</td><td>0.322</td><td>0.294</td><td>6.25</td></tr><tr><th scope="row">U-Net-70M</th><td>Leakage-controlled-pretraining</td><td>127.99×</td><td>4.85</td><td>0.131</td><td>0.807</td><td>0.390</td><td>0.178</td><td>4.00</td></tr><tr><th scope="row">H-Net-70M</th><td>Leakage-controlled-pretraining</td><td>122.19×</td><td>11.78</td><td>0.118</td><td>0.791</td><td>0.225</td><td>0.303</td><td>5.75</td></tr><tr><th scope="row">GeneZip-70M</th><td>Leakage-controlled-pretraining</td><td>137.59×</td><td>6.34</td><td>0.133</td><td>0.817</td><td>0.375</td><td>0.336</td><td>3.13</td></tr></tbody></table></div>
 <p class="small">H-Net and GeneZip share 70,000-token ceilings per stage, with no additional floors, for eQTL, ETGP and TISP. Average rank is calculated among all ten main-table models. Compression reports pretraining-validation measurements; inference is a separate benchmark with model-specific batch sizes and routing settings.</p>
-<p><a href="assets/GeneZip.pdf" target="_blank" rel="noopener">Paper and evaluation protocols</a></p>
+<p><a href="https://openreview.net/pdf?id=E37ysCRa5d" target="_blank" rel="noopener">Paper and evaluation protocols</a></p>
 <p>GeneZip takes 6.34 s versus H-Net’s 11.78 s in the separate inference benchmark.</p></details>
 <div class="ablation-heading" id="ablation"><div class="eyebrow">Ablation</div><h2 id="ablation-heading">Different Region Targets; Different Compression Behaviour</h2></div>
 <figure class="allocation-comparison">
@@ -186,7 +186,7 @@
       <div>
         <h2 id="resources-heading">Resources &amp; citation</h2>
         <nav class="resource-buttons" aria-label="Paper and source code">
-          <a class="button resource-button paper-button" href="assets/GeneZip.pdf" target="_blank" rel="noopener"><img src="assets/file-pdf.svg" alt="">Paper</a>
+          <a class="button resource-button paper-button" href="https://openreview.net/pdf?id=E37ysCRa5d" target="_blank" rel="noopener"><img src="assets/file-pdf.svg" alt="">Paper</a>
           <a class="button resource-button code-button" href="https://github.com/AndyJZhao/GeneZip" target="_blank" rel="noopener"><img src="assets/github.svg" alt="">GitHub</a>
         </nav>
       </div>
