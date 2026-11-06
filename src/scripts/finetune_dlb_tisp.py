@@ -603,7 +603,8 @@ def build_tisp_model(cfg: RunConfig, device: torch.device) -> nn.Module:
         device=device,
         dtype=dtype,
         strict=bool(cfg.get("strict", False)),
-        use_routing_ceiling=bool(cfg.use_routing_ceiling),
+        use_routing_floor=cfg.use_routing_floor,
+        use_routing_ceiling=cfg.use_routing_ceiling,
         k_max_list=cfg.k_max_list,
     )
     model = HNetForTISPRegression(

@@ -4,9 +4,29 @@
 
 </div>
 
-Long-context DNA models are limited by token-mixing cost and by how compression allocates representational budget across the genome. Existing approaches operate close to base-pair resolution, apply fixed downsampling, or learn content-dependent chunks without an explicit genomic budget, making long-context pretraining expensive and difficult to control. We introduce GeneZip, a region-aware DNA compression framework that combines H-Net-style dynamic routing with a Region-Aware Ratio (RAR) objective and bounded routing. GeneZip uses static gene-structure annotations during compression training to specify region-wise base-pairs-per-token (BPT) targets; at inference time, it compresses raw unseen DNA without annotations. GeneZip provides three main benefits. First, it is effective: GeneZip variants achieve the best validation perplexity (PPL) among high-compression encoder-based models. At 137.6 BPT, GeneZip-70M incurs only a +0.31 perplexity increase relative to the 84M Mamba2 baseline without compression. GeneZip achieves the best average rank across four DNALongBench downstream tasks among compression models with leakage-controlled pretraining. Second, it is redundancy-aware: a post-hoc RepeatMasker/TRF analysis shows that, without repeat supervision, GeneZip assigns higher local BPT to selected TE-derived interspersed repeats and tandem repeats, two major classes of repetitive DNA sequence redundancy. Third, it is efficient: on 450-kb inputs, 70M GeneZip achieves a 36.1× inference speedup over the uncompressed JanusDNA-7.7M model. GeneZip also supports 128K-context and 636M-parameter pretraining on a single H100 80GB GPU. These results establish GeneZip as an effective, redundancy-aware, and efficient compression interface for long-context DNA modeling.
+Long-context DNA modeling is computationally expensive, motivating existing approaches to reduce sequence length through uniform downsampling. However, functional information and sequence redundancy are unevenly distributed across the genome, calling for finer resolution in functionally dense regions and stronger compression of redundant sequence. We introduce GeneZip, a region-aware DNA compression framework that learns where to allocate a limited token budget. Building on H-Net-style dynamic routing, GeneZip combines a Region-Aware Ratio objective, which uses regional labels derived from GENCODE gene annotations to specify compression targets during training, with bounded routing for stable token counts. At inference, it compresses raw DNA without annotations. GeneZip provides three main benefits. First, it preserves predictive utility under high compression: GeneZip-70M achieves 137.6-fold compression with a validation perplexity increase of 0.31 relative to uncompressed Mamba2-84M, and the best average rank across four DNALongBench tasks among compression models with leakage-controlled pretraining. Second, it learns region-aware allocation with emergent repeat-aware compression. Alternative regional priors yield task-dependent performance trade-offs. Without repeat-specific supervision, GeneZip compresses transposable-element-derived and tandem repeats more strongly than matched non-repeat sequence; its tandem-repeat compression preference transfers to a nine-species evaluation panel without further training. Third, it enables efficient long-context modeling: on 450-kb inputs, GeneZip-70M achieves 36.1-fold higher inference throughput than JanusDNA-7.7M on a single H100 GPU.
 
 ![GeneZip overview](asset/GeneZip.png)
+
+## Results
+
+GeneZip-70M uses the same pretrained weights across all four tasks, with
+separately trained task heads and adapted weights.
+
+| CMP SCC | eQTL AUROC | ETGP AUPRC | TISP PCC | Average rank |
+| ---: | ---: | ---: | ---: | ---: |
+| 0.1332 | 0.8172 | 0.3746 | 0.3356 | 3.13 |
+
+The average rank is computed across all ten models using the four task
+scores rounded to three decimals, with average ranks for ties. GeneZip leads
+among **compression models with leakage-controlled pretraining**; the
+[complete comparison](results/CHECKPOINTS.md#dnalongbench-results) includes
+external-pretraining models.
+
+The **36.1× inference throughput** result processes 100 sequences of 450,000 bp
+on one H100 80GB with BF16: 6.34 s for GeneZip-70M (batch 7), versus 228.63 s
+for JanusDNA-7.7M (batch 9). It measures batched inference, not training speed
+or single-sequence latency. See the [timing protocol](results/reproduce_release.md#inference-throughput).
 
 ## Pretrained models
 
@@ -41,7 +61,9 @@ starts from the pretrained weights using the commands below.
 
 ## Environment
 
-Linux and an NVIDIA GPU are required for model execution. The lockfile
+Linux x86_64, an NVIDIA GPU and a CUDA 12.6-compatible driver/toolkit are
+required for model execution. The release smoke checks used A100 80GB GPUs;
+the inference-throughput comparison above used an H100 80GB. The lockfile
 uses Python 3.12, PyTorch 2.8/CUDA 12.6, flash-attn 2.8.3, mamba-ssm 2.3.0 and
 causal-conv1d 1.6.0.
 
@@ -73,6 +95,7 @@ python - <<'PYTHON'
 from huggingface_hub import snapshot_download
 snapshot_download(
     repo_id="andyjzhao/GeneZip-70M",
+    revision="15e46711bd6fa23fe5922dfe22e8893c9f01bec5",
     local_dir="./pretrained/GeneZip-70M",
 )
 PYTHON
@@ -83,7 +106,7 @@ The CMP command defaults to HFF. To evaluate all five cell lines:
 
 ```sh
 for SUBSET in HFF H1hESC GM12878 IMR90 HCT116; do
-  SUBSET="$SUBSET" CKPT=/path/to/local/GeneZip-70M bash shell/dnalongbench/cmp.sh
+  SUBSET="$SUBSET" bash shell/dnalongbench/cmp.sh
 done
 ```
 
@@ -92,8 +115,9 @@ The eQTL command defaults to Artery_Tibial. Use `CELL_TYPE` to select one of the
 frozen embeddings/encoder/router, LR 2e-4, three epochs and best validation AUROC.
 Their compression regularizer targets 128 BPT (alpha 0.03), independently of
 the pretraining N=32 anchor. eQTL, ETGP and TISP use WD 0.1. TISP freezes
-embeddings, encoders and routers, retains the checkpoint routing floor, and
-disables routing caps. CMP evaluates every 200 steps. The same ETGP/TISP
+embeddings, encoders and routers. eQTL, ETGP and TISP all disable the extra
+routing floor and apply ceilings of `[70000,70000]` during training and
+validation/test; dynamic routing and the first-valid-token rule remain enabled. CMP evaluates every 200 steps. The same eQTL/ETGP/TISP
 protocol applies to the [regional-prior models](results/CHECKPOINTS.md#regional-prior-ablations).
 
 To repeat eQTL or ETGP evaluation after training, reuse the same model, subset
@@ -120,6 +144,13 @@ python src/scripts/finetune_dlb_tisp.py task=tisp \
 `completed_training_steps` must be supported by the original training record;
 it is not inferred from the checkpoint. Recovery evaluates validation and test
 splits and does not select a checkpoint using test scores.
+
+eQTL/ETGP/TISP training performs validation selection and held-out test evaluation.
+CMP reports validation/test metrics every 200 head updates.
+Downstream task checkpoints are produced by training and are not distributed.
+When changing the eQTL tissue or pretrained model, use a distinct `SAVE_DIR`
+(e.g. `CELL_TYPE=Whole_Blood SAVE_DIR=./temp/eqtl_Whole_Blood bash shell/dnalongbench/eqtl.sh`)
+and pass that same directory and `ckpt` to independent evaluation.
 
 Data loaders download the revisions pinned in `configs/data.yaml` and
 `configs/main.yaml`. GENCODE uses Parquet with its original `train`/`valid` split;

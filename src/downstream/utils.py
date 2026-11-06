@@ -88,6 +88,7 @@ def build_model(
     disable_routing: bool = False,
     use_routing_ceiling: bool = False,
     k_max_list: Optional[list[int]] = None,
+    use_routing_floor: Optional[bool] = None,
 ) -> tuple[torch.nn.Module, RunConfig]:
     cfg_path = resolve_hydra_cfg_path(checkpoint_dir)
     prev_cfg = RunConfig.from_path(cfg_path)
@@ -99,7 +100,8 @@ def build_model(
             "(for example outputs/.../.hydra/config.yaml or a model JSON)."
         )
     hnet_cfg = HNetConfig(**hnet_kwargs)
-    use_routing_floor = bool(prev_cfg.use_routing_floor)
+    if use_routing_floor is None:
+        use_routing_floor = bool(prev_cfg.use_routing_floor)
     if disable_routing:
         use_routing_floor = False
         use_routing_ceiling = False

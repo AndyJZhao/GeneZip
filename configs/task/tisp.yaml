@@ -25,8 +25,9 @@ tokenizer: fast
 dtype: bfloat16
 mixed_precision: bf16
 routing_step: null
-use_routing_ceiling: false
-k_max_list: null
+use_routing_floor: false
+use_routing_ceiling: true
+k_max_list: [70000, 70000]
 
 batch_size: 1
 eval_batch_size: 1
