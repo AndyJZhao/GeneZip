@@ -15,7 +15,7 @@ from rich.pretty import pretty_repr
 
 UNIMPORTANT_CFG = DictConfig(
     {'fields': ['gpus', 'debug', 'wandb', 'env', 'uid',
-                'local_rank', 'file_prefix'],
+                'local_rank', 'file_prefix', 'hf_token'],
      "prefix": ['_'],
      "postfix": ['_path', '_file', '_dir']}
 )
