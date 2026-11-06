@@ -77,7 +77,8 @@ The loaders download these public dataset revisions automatically:
 GENCODE uses Parquet and the original `train`/`valid` split. DNALongBench
 uses its published task directories. The default model's verified revision
 is `15e46711bd6fa23fe5922dfe22e8893c9f01bec5`; the README shows how to download
-that exact revision. The loader also accepts `CKPT=andyjzhao/GeneZip-70M@15e46711bd6fa23fe5922dfe22e8893c9f01bec5`.
+that exact revision. Direct Python entrypoints also accept
+`ckpt=andyjzhao/GeneZip-70M@15e46711bd6fa23fe5922dfe22e8893c9f01bec5`.
 Use `offline_mode=true` only after the required files are cached locally.
 
 ## Validation scope
