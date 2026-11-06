@@ -88,8 +88,7 @@ uv sync
 source .venv/bin/activate
 ```
 
-Run shell entrypoints from the repository root. W&B is optional for downstream
-commands (`USE_WANDB=true`). `HF_USER` selects the Hugging Face namespace and defaults to `andyjzhao`.
+Run shell entrypoints from the repository root.
 
 ## DNALongBench training and evaluation
 
@@ -103,94 +102,9 @@ bash shell/dnalongbench/etgp.sh
 bash shell/dnalongbench/tisp.sh
 ```
 
-To download the model into a local directory:
-
-```sh
-python - <<'PYTHON'
-from huggingface_hub import snapshot_download
-snapshot_download(
-    repo_id="andyjzhao/GeneZip-70M",
-    local_dir="./pretrained/GeneZip-70M",
-)
-PYTHON
-CKPT=./pretrained/GeneZip-70M bash shell/dnalongbench/etgp.sh
-```
-
-The CMP command defaults to HFF. To evaluate all five cell lines:
-
-```sh
-for SUBSET in HFF H1hESC GM12878 IMR90 HCT116; do
-  SUBSET="$SUBSET" bash shell/dnalongbench/cmp.sh
-done
-```
-
-The eQTL command defaults to Artery_Tibial. Use `CELL_TYPE` to select one of the
-[nine tissues](results/CHECKPOINTS.md#task-subsets). Both eQTL and ETGP use 450,000 bp, seed 1, no LoRA,
-frozen embeddings/encoder/router, LR 2e-4, three epochs and best validation AUROC.
-Their compression regularizer targets 128 BPT (alpha 0.03), independently of
-the pretraining N=32 anchor. eQTL, ETGP and TISP use WD 0.1. TISP freezes
-embeddings, encoders and routers. eQTL, ETGP and TISP all disable the extra
-routing floor and apply ceilings of `[70000,70000]` during training and
-validation/test; dynamic routing and the first-valid-token rule remain enabled. CMP evaluates every 200 steps. The same eQTL/ETGP/TISP
-protocol applies to the [regional-prior models](results/CHECKPOINTS.md#regional-prior-ablations).
-
-To repeat eQTL or ETGP evaluation after training, reuse the same model, subset
-and checkpoint directory. These examples use the wrappers' default settings
-and restore the checkpoint selected by validation AUROC:
-
-```sh
-python src/scripts/finetune_dlb_binary_classification.py task=eqtl \
-  cell_type=Artery_Tibial save_dir=./temp/eQTL_ckpt training.do_train=false test_load=best
-python src/scripts/finetune_dlb_binary_classification.py task=etgp \
-  cell_type=CRISPRi_EPI_K562_hg19 save_dir=./temp/ETGP_ckpt training.do_train=false test_load=best
-```
-
-To evaluate a trained TISP checkpoint, use the same pretrained model and task
-settings with a fresh output directory. For a completed 5,000-step run:
-
-```sh
-python src/scripts/finetune_dlb_tisp.py task=tisp \
-  evaluation_checkpoint=/path/to/training/best_model.pt \
-  completed_training_steps=5000 train_steps=5000 dirs.output=./output/tisp-evaluation
-```
-
-Set `completed_training_steps` and `train_steps` to the training run's completed
-step count. The command evaluates the validation and test splits.
-
-eQTL/ETGP/TISP training performs validation selection and held-out test evaluation.
-CMP reports validation/test metrics every 200 head updates.
-Training produces the task checkpoints used for evaluation.
-When changing the eQTL tissue or pretrained model, use a distinct `SAVE_DIR`
-(e.g. `CELL_TYPE=Whole_Blood SAVE_DIR=./temp/eqtl_Whole_Blood bash shell/dnalongbench/eqtl.sh`)
-and pass that same directory and `ckpt` to independent evaluation.
-
-Data loaders download the public datasets configured in `configs/data.yaml` and
-`configs/main.yaml`. GENCODE uses Parquet with its original `train`/`valid` split;
-DNALongBench uses its published task directories. Set `offline_mode=true` only
-after the required data and model files are available locally.
-
-## Pretraining templates
-
-```sh
-bash shell/pretrain/GeneZip-70M-12.8K-template.sh
-bash shell/pretrain/GeneZip-70M-128K-template.sh
-bash shell/pretrain/GeneZip-636M-12.8K-template.sh
-bash shell/pretrain/GeneZip-636M-128K-template.sh
-```
-
-128K training continues from the same-size 12.8K checkpoint. Each stage uses its
-own training budget. The templates default to eight GPUs. Regional targets
-are declared in `configs/prior/`, with N=64 for Regulome and PromoterDistal.
-Regulome, PromoterDistal and Intergenic use routing floors `[8,8]` and caps
-`[5000,2000]`. The 636M templates use `[3000,3000]` at 12.8K and `[30000,10000]`
-at 128K.
-
-Evaluate the downloaded 70M checkpoint on the pretraining validation split:
-
-```sh
-python src/scripts/pretrain_genezip.py task=pretrain \
-  pretrained_ckpt=./pretrained/GeneZip-70M training.do_train=false training.do_eval=true
-```
+See the [reproduction guide](results/reproduce_release.md) for model downloads,
+task subsets, training protocols, checkpoint evaluation and
+[pretraining templates](results/reproduce_release.md#pretraining-templates).
 
 ## Citation
 

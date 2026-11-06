@@ -1,7 +1,7 @@
 # Pretrained models and benchmark results
 
 The models below provide the pretrained weights for GeneZip and its regional-prior
-ablations. Training and evaluation commands are in the [README](../README.md).
+ablations. Commands and protocols are in the [reproduction guide](reproduce_release.md).
 
 ## Pretrained models
 
@@ -16,7 +16,7 @@ ablations. Training and evaluation commands are in the [README](../README.md).
 | [GeneZip-Intergenic](https://huggingface.co/andyjzhao/GeneZip-Intergenic) | 12,800 | 32 | Regional-prior ablation |
 
 Download commands are in the
-[README](../README.md#dnalongbench-training-and-evaluation).
+[reproduction guide](reproduce_release.md#model-downloads).
 
 `GeneZip` in the paper refers to `GeneZip-70M`. Region-wise targets follow the
 order promoter, CDS, UTR, exon, intron, NIG and DIG.
@@ -40,37 +40,18 @@ Inference times cover 100 × 450-kb inputs on one H100 80GB with model-specific
 batches; see the [timing protocol](reproduce_release.md#inference-throughput).
 The CSV records the three pretraining groups used in the paper.
 
-Every row in the task-protocol table below starts from the same `GeneZip-70M` pretrained weights; task heads and adapted weights differ.
+All four tasks start from the same `GeneZip-70M` pretrained weights; task heads
+and adapted weights differ. See [task protocols](reproduce_release.md#task-protocols)
+and [task subsets](reproduce_release.md#task-subsets).
 
-| Task | Input bp | Held-out result | Protocol |
-| --- | ---: | --- | --- |
-| CMP | 1,048,576 (12,800 encoder chunks) | SCC 0.1332 / Corr 0.1791 | Frozen representations, mean pooling, 5,000 head updates, evaluation every 200 steps; all five cell lines |
-| eQTL | 450,000 | AUROC 0.8172332642 / AUPRC 0.1995326131 | Seed 1; frozen embeddings/encoder/router; no LoRA; 3 epochs; LR 2e-4; WD 0.1; best validation AUROC; nine tissues |
-| ETGP | 450,000 | AUROC 0.8228846154 / AUPRC 0.3746280992 | Same adaptation protocol as eQTL; K562; best step 300 |
-| TISP | 100,000 | Mean PCC 0.3355521527 | Seed 0; frozen embeddings/encoder/router; WD 0.1; no extra routing floor, ceilings [70000,70000]; 5,000 steps; chromosome-level validation selection; five assays |
+| Task | Held-out result |
+| --- | --- |
+| CMP | SCC 0.1332 / Corr 0.1791 |
+| eQTL | AUROC 0.8172332642 / AUPRC 0.1995326131 |
+| ETGP | AUROC 0.8228846154 / AUPRC 0.3746280992 |
+| TISP | Mean PCC 0.3355521527 |
 
-The eQTL/ETGP recipes disable the routing floor and use caps of `[70000,70000]`.
-Their compression regularizer targets **128 BPT**, with alpha 0.03. These are
-fine-tuning settings; the pretrained model uses an N=32 anchor and routing floors
-of 8 tokens.
-
-### Task subsets
-
-CMP uses HFF, H1hESC, GM12878, IMR90 and HCT116.
-
-eQTL uses the following values for `CELL_TYPE`:
-
-- `Adipose_Subcutaneous`
-- `Artery_Tibial`
-- `Cells_Cultured_fibroblasts`
-- `Muscle_Skeletal`
-- `Nerve_Tibial`
-- `Skin_Not_Sun_Exposed_Suprapubic`
-- `Skin_Sun_Exposed_Lower_leg`
-- `Thyroid`
-- `Whole_Blood`
-
-ETGP uses K562. TISP covers FC, EC, ER, GC and PC.
+The reported ETGP checkpoint was selected at step 300.
 
 ## Regional-prior ablations
 
@@ -80,15 +61,8 @@ ETGP uses K562. TISP covers FC, EC, ER, GC and PC.
 | GeneZip-PromoterDistal | 0.8241 / 0.1847 | 0.8086538462 / 0.4893137255 | 0.0932 / 0.1416 | 0.3376757999 |
 | GeneZip-Intergenic | 0.7865 / 0.2058 | 0.8184615385 / 0.4230425843 | 0.1280 / 0.1735 | 0.2654333989 |
 
-eQTL, ETGP and TISP use the same fixed adaptation protocol as GeneZip-70M:
-LR 2e-4, WD 0.1 and frozen embeddings, encoders and routers. eQTL and ETGP use 450K
-inputs, seed 1, three epochs, caps `[70000,70000]`, no routing floor and best
-validation AUROC. TISP uses 100K inputs, seed 0, 5000 steps, no extra routing floor, ceilings `[70000,70000]` and best chromosome-level validation PCC.
-Select the regional model with `CKPT=GeneZip-Regulome`,
-`CKPT=GeneZip-PromoterDistal` or `CKPT=GeneZip-Intergenic` in the corresponding
-eQTL/ETGP/TISP wrapper. CMP retains its frozen-representation protocol.
-The paper compares H-Net and U-Net under the common adaptation protocol;
-external-pretraining and official benchmark rows retain their reported protocols.
+See the [reproduction guide](reproduce_release.md#task-protocols) for the common
+adaptation protocol and [model selection](reproduce_release.md#task-selection).
 
 The [result CSV](tables/regional_priors.csv) contains the aggregate scores.
 
