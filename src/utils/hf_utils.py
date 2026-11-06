@@ -251,7 +251,7 @@ def _resolve_local_path(
     return os.path.abspath(expanded)
 
 
-def _parse_hf_repo_spec(ckpt: str, default_owner: str | None) -> tuple[str, str | None, str]:
+def _parse_hf_repo_spec(ckpt: str, default_owner: str | None) -> tuple[str, str]:
     spec = str(ckpt).strip()
     if spec.startswith("hf://"):
         spec = spec[len("hf://") :]
@@ -278,21 +278,16 @@ def _parse_hf_repo_spec(ckpt: str, default_owner: str | None) -> tuple[str, str 
         owner = parts[0]
         repo_part = parts[1]
         subfolder = "/".join(parts[2:]) if len(parts) > 2 else ""
-    if "@" in repo_part:
-        repo_name, revision = repo_part.split("@", 1)
-    else:
-        repo_name, revision = repo_part, None
-    repo_id = f"{owner}/{repo_name}"
-    return repo_id, revision, subfolder
+    repo_id = f"{owner}/{repo_part}"
+    return repo_id, subfolder
 
 
 def _list_checkpoint_subfolders(
     repo_id: str,
-    revision: str | None,
     token: str | None,
 ) -> list[str]:
     api = HfApi()
-    files = api.list_repo_files(repo_id=repo_id, revision=revision, token=token)
+    files = api.list_repo_files(repo_id=repo_id, token=token)
     files_set = set(files)
     root_files = {name for name in files if "/" not in name}
     subfolders: list[str] = []
@@ -350,12 +345,12 @@ def resolve_checkpoint_path(
     if os.path.exists(local_path):
         return _resolve_ckpt_file(local_path)
 
-    repo_id, revision, subfolder = _parse_hf_repo_spec(ckpt, default_owner)
+    repo_id, subfolder = _parse_hf_repo_spec(ckpt, default_owner)
     explicit_subfolder = bool(subfolder)
     if explicit_subfolder:
         subfolders = [subfolder]
     else:
-        subfolders = _list_checkpoint_subfolders(repo_id, revision, token)
+        subfolders = _list_checkpoint_subfolders(repo_id, token)
     if not subfolders:
         raise FileNotFoundError(
             f"No checkpoint files found in repo={repo_id}. "
@@ -368,7 +363,6 @@ def resolve_checkpoint_path(
         try:
             snapshot_path = snapshot_download(
                 repo_id=repo_id,
-                revision=revision,
                 token=token,
                 cache_dir=cache_dir,
                 local_files_only=local_files_only,
@@ -411,7 +405,6 @@ def resolve_hf_dataset_root(
     *,
     repo_id: str,
     required_subdir: str,
-    revision: str | None = None,
     token: str | None = None,
     cache_dir: str | None = None,
     local_files_only: bool = False,
@@ -434,7 +427,6 @@ def resolve_hf_dataset_root(
     snapshot_download(
         repo_id=str(repo_id),
         repo_type="dataset",
-        revision=revision,
         cache_dir=cache_dir,
         token=_normalize_optional_str(token),
         local_dir=local_root,
@@ -469,7 +461,6 @@ def load_hf_dataset_from_cfg(
             snapshot_download(
                 repo_id=str(repo_id),
                 repo_type="dataset",
-                revision=dataset_cfg.get("revision"),
                 cache_dir=cache_dir,
                 token=_normalize_optional_str(hf_token),
                 local_dir=local_root,
@@ -481,7 +472,6 @@ def load_hf_dataset_from_cfg(
             snapshot_download(
                 repo_id=str(repo_id),
                 repo_type="dataset",
-                revision=dataset_cfg.get("revision"),
                 cache_dir=cache_dir,
                 token=_normalize_optional_str(hf_token),
                 local_dir=local_path,

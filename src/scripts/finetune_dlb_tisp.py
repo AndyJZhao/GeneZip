@@ -816,7 +816,6 @@ def main(cfg: RunConfig) -> None:
     data_root = resolve_hf_dataset_root(
         str(cfg.root),
         repo_id=str(cfg.dnalongbench_repo),
-        revision=str(cfg.dnalongbench_revision),
         required_subdir="tisp",
         token=cfg.get("hf_token"),
         cache_dir=resolve_hf_cache_dir(cfg),

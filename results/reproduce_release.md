@@ -66,19 +66,15 @@ added positions from pooling. Evo2-1B runs out of memory on one GPU.
 
 ## Public data and checkpoints
 
-The loaders download these public dataset revisions automatically:
+The loaders download these public datasets automatically:
 
-| Dataset | Revision |
-| --- | --- |
-| [DNALongBench](https://huggingface.co/datasets/andyjzhao/dnalongbench) | `4764bc626b4f4187cefb9e1c31355f62f4d3ee66` |
-| [GENCODE 12.8K](https://huggingface.co/datasets/andyjzhao/gencode_human_12.8k) | `af222ba30cb3bd3e97c1b8b678b4f8c2ef71006b` |
-| [GENCODE 128K](https://huggingface.co/datasets/andyjzhao/gencode_human_128k) | `883f3df895d6de4e5575c2f9b581c5f7c71058f1` |
+- [DNALongBench](https://huggingface.co/datasets/andyjzhao/dnalongbench)
+- [GENCODE 12.8K](https://huggingface.co/datasets/andyjzhao/gencode_human_12.8k)
+- [GENCODE 128K](https://huggingface.co/datasets/andyjzhao/gencode_human_128k)
 
 GENCODE uses Parquet and the original `train`/`valid` split. DNALongBench
-uses its published task directories. The default model's verified revision
-is `15e46711bd6fa23fe5922dfe22e8893c9f01bec5`; the README shows how to download
-that exact revision. Direct Python entrypoints also accept
-`ckpt=andyjzhao/GeneZip-70M@15e46711bd6fa23fe5922dfe22e8893c9f01bec5`.
+uses its published task directories. The README shows how to download
+`andyjzhao/GeneZip-70M` or select another public model by name.
 Use `offline_mode=true` only after the required files are cached locally.
 
 ## Validation scope

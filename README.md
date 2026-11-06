@@ -4,7 +4,7 @@
 
 </div>
 
-[Project page](https://andyjzhao.github.io/GeneZip/) · [Paper](https://andyjzhao.github.io/GeneZip/assets/GeneZip.pdf) · [arXiv](https://arxiv.org/abs/2602.17739)
+[Project page](https://andyjzhao.github.io/GeneZip/) · [Paper](https://openreview.net/pdf?id=E37ysCRa5d) · [arXiv](https://arxiv.org/abs/2602.17739)
 
 ## Abstract
 
@@ -99,7 +99,6 @@ python - <<'PYTHON'
 from huggingface_hub import snapshot_download
 snapshot_download(
     repo_id="andyjzhao/GeneZip-70M",
-    revision="15e46711bd6fa23fe5922dfe22e8893c9f01bec5",
     local_dir="./pretrained/GeneZip-70M",
 )
 PYTHON
@@ -156,7 +155,7 @@ When changing the eQTL tissue or pretrained model, use a distinct `SAVE_DIR`
 (e.g. `CELL_TYPE=Whole_Blood SAVE_DIR=./temp/eqtl_Whole_Blood bash shell/dnalongbench/eqtl.sh`)
 and pass that same directory and `ckpt` to independent evaluation.
 
-Data loaders download the revisions pinned in `configs/data.yaml` and
+Data loaders download the public datasets configured in `configs/data.yaml` and
 `configs/main.yaml`. GENCODE uses Parquet with its original `train`/`valid` split;
 DNALongBench uses its published task directories. Set `offline_mode=true` only
 after the required data and model files are available locally.

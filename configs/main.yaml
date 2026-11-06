@@ -179,7 +179,6 @@ freeze_encoder: true
 
 data_root: ./data/dnalongbench
 dnalongbench_repo: andyjzhao/dnalongbench
-dnalongbench_revision: 4764bc626b4f4187cefb9e1c31355f62f4d3ee66
 data_max_length: 1280000
 
 save_dir: ./temp/dnalongbench_ckpt
