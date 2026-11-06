@@ -26,12 +26,14 @@
 .prior-downstream .sequence-name { font-size: 14px; font-weight: 600; }
 .prior-downstream figcaption { font-size: 12px; margin-top: 6px; }
 .prior-downstream .grouped-legend { margin-top: 16px; margin-bottom: 22px; }
-.prior-downstream .task-panels { min-width: 0; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 28px; }
-.prior-downstream .task-panel h3 { margin: 0; }
+.prior-downstream .task-panels { min-width: 720px; grid-template-columns: repeat(4,minmax(0,1fr)); gap: 12px; }
+.prior-downstream .task-panel h3 { margin: 0; font-size: 17px; }
 .prior-downstream .task-panel > p { margin: 4px 0 28px; min-height: 0; }
-.prior-downstream .panel-plot { height: 210px; }
-.prior-downstream .panel-bars { gap: 8px; padding: 0 6px; }
-.prior-downstream .vertical-value { font-size: 11px; }
+.prior-downstream .panel-plot { height: 180px; margin: 0 0 12px 28px; }
+.prior-downstream .panel-axis { left: -28px; width: 23px; }
+.prior-downstream .panel-axis span { font-size: 9px; }
+.prior-downstream .panel-bars { gap: 3px; padding: 0 3px; }
+.prior-downstream .vertical-value { font-size: 9px; }
 .prior-downstream details { margin-top: 20px; }
 .prior-downstream summary { cursor: pointer; color: var(--link); }
 .prior-downstream .table-scroll { overflow: auto; }
@@ -44,7 +46,6 @@
 @media (max-width: 1100px) {
   .prior-downstream .sequence-name { font-size: 18px; }
   .prior-downstream .grouped-legend { gap: 10px 20px; }
-  .prior-downstream .panel-plot { height: 190px; }
 }
 @media (max-width: 700px) {
   .region-target-demo .animation { padding: 16px 12px; }
@@ -53,8 +54,6 @@
   .region-target-demo .explanation { min-height: 76px; }
 }
 @media (max-width: 480px) {
-  .prior-downstream .task-panels { grid-template-columns: 1fr; }
-  .prior-downstream .panel-plot { margin-right: 20px; }
   #allocation-strips { min-width: 620px; }
 }
 
