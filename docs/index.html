@@ -164,7 +164,6 @@
 <p><a href="assets/GeneZip.pdf" target="_blank" rel="noopener">Paper and evaluation protocols</a></p>
 <p>GeneZip takes 6.34 s versus H-Net’s 11.78 s in the separate inference benchmark.</p></details>
 <div class="ablation-heading" id="ablation"><div class="eyebrow">Ablation</div><h2 id="ablation-heading">Different Region Targets; Different Compression Behaviour</h2></div>
-<p>Different downstream tasks have different biological focuses.</p>
 <figure class="allocation-comparison">
 <div class="legend"><span style="--c:var(--orange)">Promoter</span><span style="--c:var(--blue)">Genic</span><span style="--c:var(--gray)">Intron + intergenic</span></div>
 <div class="scroll"><svg id="allocation-strips" viewBox="0 0 1000 350" role="img" aria-labelledby="allocation-title allocation-desc"><title id="allocation-title">Same DNA, five allocations with equal token counts</title><desc id="allocation-desc">Five illustrative allocations on the same seven equal-length DNA regions, with 140 tokens per row and identical spacing. Regional-prior weights are normalized to this shared budget. No Prior (HNet) is shown as a uniform reference, not measured H-Net routing.</desc></svg></div>
@@ -173,7 +172,7 @@
 <div class="grouped-legend" id="prior-legend" aria-label="Model colours for regional priors and the HNet baseline"></div>
 <div class="task-panels-scroll"><div class="task-panels" id="prior-charts" aria-label="Held-out test results for four regional priors and No Prior (HNet)"></div></div>
 <p class="small">Held-out test scores; all y-axes are truncated.</p>
-<p class="tradeoff">For TISP, the promoter-focused priors—Default (Promoter+Genic) and PromoterDistal—perform well. GeneZip lets users choose regional pretraining targets to match the biological focus of their downstream task.</p>
+<p class="tradeoff">Different downstream tasks have different biological focuses. For example, in TISP, the promoter-focused priors Default (Promoter+Genic) and PromoterDistal both perform well. GeneZip lets users choose regional pretraining targets to match the biological focus of their downstream task.</p>
 <details><summary>Compression ratios, scores and regional targets</summary>
 <div class="table-scroll"><table id="prior-scores"></table></div>
 <p class="small">Compression is measured on 3,000 shared validation windows and varies across priors.</p>
