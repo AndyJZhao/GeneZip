@@ -5,13 +5,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>GeneZip — Region-Aware Compression for Long-Context DNA Modeling</title>
   <meta name="description" content="GeneZip learns region-aware compression for long-context DNA modeling. Trained with gene-structure annotations, it compresses unseen DNA without annotations at inference.">
-  <link rel="canonical" href="https://andyjzhao.github.io/GeneZip/">
-  <link rel="icon" href="assets/dna.svg" type="image/svg+xml">
+  <link rel="icon" href="assets/icon-options/dna.svg" type="image/svg+xml">
   <link rel="stylesheet" href="assets/bulma.min.css">
-  <link rel="stylesheet" href="styles.css?v=8.4">
-  <link rel="stylesheet" href="region-target.css?v=8.5">
-  <script src="script.js" defer></script>
-  <script src="region-target.js" defer></script>
+  <link rel="stylesheet" href="styles.css?v=downstream-rank">
+  <link rel="stylesheet" href="region-target.css?v=compact-allocation">
+  <script src="script.js?v=merge-1108" defer></script>
+  <script src="region-target.js?v=compact-allocation" defer></script>
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to research</a>
@@ -32,18 +31,15 @@
   </header>
 
   <main id="main" class="page-container">
+
     <section class="research-section motivation-section" id="motivation" aria-labelledby="motivation-heading">
       <div class="motivation-copy">
         <p class="eyebrow">01 / Motivation</p>
         <h2 id="motivation-heading">Information in DNA is <strong class="motivation-emphasis">unevenly</strong> distributed</h2>
-        <p>Promoters, exons and long intronic or intergenic spans carry different kinds of information. GeneZip learns where to retain finer resolution, so long DNA sequences can be compressed while preserving information useful for genomic prediction.</p>
+        <p>DNA has <strong class="motivation-emphasis">uneven</strong> functional information density and extensive redundancy. Unlike uniform downsampling, GeneZip learns <strong class="motivation-emphasis">region-aware compression</strong>, allocating more tokens to user-specified regions such as promoters and genic regions.</p>
       </div>
-      <figure class="motivation-figure routing-animation" id="motivation-routing">
-        <a class="zoom-link" href="assets/motivation-compression.gif" data-lightbox data-caption="Actual routing on one held-out Human window: Promoter 30.8×, Genic 24.5×, Intron + intergenic 168.4× sequence compression. Regional compression uses fractional token-span allocation. This illustrative window is not a cohort average." aria-label="Enlarge regional compression-ratio animation">
-          <img src="assets/motivation-compression.gif" data-animation="assets/motivation-compression.gif" data-still="assets/motivation-compression-final.png" alt="A 12,800-base Human sequence compresses into 209 tokens. Promoter and genic regions have lower compression ratios and finer resolution; intron and intergenic spans have higher compression ratios and stronger compression." width="1320" height="650" loading="lazy">
-        </a>
-        <div class="animation-controls"><button type="button" class="animation-toggle" aria-pressed="false">Show final checkpoint</button></div>
-        <figcaption><strong>Higher ratios mean stronger sequence compression.</strong> One held-out Human example; regional compression uses fractional token-span allocation.</figcaption>
+      <figure class="motivation-figure">
+        <a class="zoom-link" href="assets/conceptual-chunking.svg?v=4" data-lightbox data-caption="Conceptual illustration of uniform and region-aware compression; not experimental data." aria-label="Enlarge the conceptual compression illustration"><img src="assets/conceptual-chunking.svg?v=4" alt="Conceptual illustration: equal-width compression allocates uniform resolution; region-aware compression allocates different resolutions across the same genomic sequence." width="1000" height="440" loading="lazy"></a>
       </figure>
     </section>
 
@@ -51,12 +47,12 @@
       <p class="eyebrow">02 / Method</p>
       <h2 id="method-heading">How GeneZip allocates compression</h2>
       <p class="section-intro">GeneZip builds on H-Net's dynamic routing to turn raw DNA into a shorter sequence of latent tokens. Regional targets guide where resolution is retained, while bounded routing keeps token counts within a tractable range.</p>
-      <figure class="overview-figure">
-        <a class="zoom-link" href="assets/overview.png" data-lightbox data-caption="GeneZip overview — original paper figure" aria-label="Enlarge the GeneZip overview figure">
-          <img src="assets/overview.png" alt="Raw DNA is compressed using hierarchical dynamic routing, with region-aware ratio supervision and bounded routing. A short latent sequence is processed by a token-mixing backbone." width="2600" height="1004" loading="lazy">
-        </a>
-        <figcaption><strong>Training:</strong> gene-structure annotations guide regional budgets. <strong>Inference:</strong> raw DNA only, without annotations or repeat masks.</figcaption>
-      </figure>
+    <figure class="overview-figure">
+      <a class="zoom-link" href="assets/overview.png" data-lightbox data-caption="GeneZip overview — original paper figure" aria-label="Enlarge the GeneZip overview figure">
+        <img src="assets/overview.png" alt="Raw DNA is compressed using hierarchical dynamic routing, with region-aware ratio supervision and bounded routing. A short latent sequence is processed by a token-mixing backbone." width="2600" height="1004" fetchpriority="high">
+      </a>
+      <figcaption><strong>Training:</strong> gene-structure annotations guide regional budgets. <strong>Inference:</strong> raw DNA only, without annotations or repeat masks.</figcaption>
+    </figure>
       <div class="method-roles">
         <article class="routing-role">
           <h3>Dynamic routing</h3>
@@ -64,7 +60,7 @@
         </article>
         <div class="complementary-roles">
           <article class="supporting-role">
-            <h3>Region-Aware Ratio (RAR)</h3>
+            <h3>Region-aware ratio (RAR)</h3>
             <p class="role-label">Training objective</p>
             <p>Use gene-structure annotations to train the router toward regional compression targets, preserving finer resolution in promoters and genic regions under the default prior.</p>
           </article>
@@ -79,54 +75,68 @@
 <h3 id="target-heading">Different targets. Different allocation.</h3>
 <p>Lower target ratios preserve finer resolution. Higher ratios allocate fewer tokens per base.</p>
 <div class="presets" role="group" aria-label="Choose pretrained regional prior"></div>
+<figure class="allocation-comparison" id="prior-comparison">
+<div class="legend"><span style="--c:#df9b65">Promoter</span><span style="--c:#91ad8c">CDS</span><span style="--c:#c8ad64">UTR</span><span style="--c:#577cb5">Exon</span><span style="--c:#7d909d">Intron + intergenic</span></div>
+<div class="scroll"><svg id="allocation-strips" viewBox="0 0 1000 350" role="img" aria-labelledby="allocation-title allocation-desc"><title id="allocation-title">Same DNA, five allocations with equal token counts</title><desc id="allocation-desc">Five illustrative allocations on the same seven equal-length DNA regions, with 140 tokens per row and identical spacing. Regional-prior weights are normalized to this shared budget. No Prior (HNet) is shown as a uniform reference, not measured H-Net routing.</desc></svg></div>
+<figcaption>Illustration with equal token counts; No Prior is a uniform reference, not measured routing.</figcaption>
+</figure>
+<div id="prior-detail" hidden>
 <div class="explanation" aria-live="polite"><strong id="prior-name"></strong><p id="prior-description"></p></div>
-<div class="legend"><span style="--c:var(--orange)">Promoter</span><span style="--c:var(--blue)">Genic</span><span style="--c:var(--gray)">Intron + intergenic</span></div>
+<div class="legend"><span style="--c:#df9b65">Promoter</span><span style="--c:#91ad8c">CDS</span><span style="--c:#c8ad64">UTR</span><span style="--c:#577cb5">Exon</span><span style="--c:#7d909d">Intron + intergenic</span></div>
 <div class="animation" id="target-animation">
 <div class="animation-head"><p><strong>Training targets</strong><br><span class="small">Target-based illustration · not measured routing</span></p><span class="phase" id="phase">1 / Set regional targets</span></div>
 <div class="scroll"><svg viewBox="0 0 1000 350" role="img" aria-labelledby="diagram-title diagram-desc"><title id="diagram-title">Regional targets and illustrative token allocation</title><desc id="diagram-desc">Seven equal-length schematic regions are assigned their published training targets. Tokens then compact in source order. These are ideal target allocations, not model inference or genomic coordinates.</desc><g id="regions"></g><text x="0" y="142" class="track-label">Same illustrative DNA</text><g id="input"></g><text x="0" y="221" class="track-label">Target-implied tokens</text><g id="tokens"></g><text x="0" y="328" fill="#68768a" font-size="13">Equal-length regions for comparison · compact token strip enlarged</text></svg></div>
 </div>
-<p class="note">Each preset represents a separately pretrained model. Targets guide learning; observed compression need not equal the targets.</p>
+<p class="note">Each prior represents a separately pretrained model; the animation illustrates target allocation.</p>
+</div>
 </div>
     </section>
 
-    <section class="research-section evidence-section" id="evidence" aria-labelledby="compression-heading">
+    <section class="research-section evidence-section" id="evidence" aria-labelledby="reconstruction-heading">
       <p class="eyebrow">03 / Compression Analysis</p>
-      <div class="quality-metrics compression-metrics" aria-label="Compression, language modeling quality and inference efficiency">
-          <div class="metric">
-            <p class="metric-value">137.6×</p>
-            <p>Sequence compression ratio<br>GeneZip-70M · pretraining validation</p>
-          </div>
-          <div class="metric">
-            <p class="metric-value">+0.31 PPL</p>
-            <p>Validation perplexity increase<br>vs. uncompressed Mamba2-84M</p>
-          </div>
-          <div class="metric">
-            <p class="metric-value">36.1×</p>
-            <p class="metric-label">Inference speedup</p>
-            <p>100 × 450-kb inputs · GeneZip-70M vs. JanusDNA-7.7M · single H100 · largest verified batch per model</p>
-          </div>
+      <h2 id="reconstruction-heading">High compression, yet minimal reconstruction loss</h2>
+      <p class="section-intro">Trained on human DNA with GENCODE gene annotations, GeneZip achieves <strong>137.6 base pairs per token</strong>, yet increases validation perplexity by only <strong>0.31</strong> over uncompressed Mamba2—the smallest reconstruction penalty among these high-compression models.</p>
+      <div class="quality-metrics compression-metrics reconstruction-metrics" aria-label="Compression rate and reconstruction quality">
+        <div class="metric">
+          <p class="metric-value">137.6 BPT</p>
+          <p>Base pairs per token<br>GeneZip-70M · pretraining validation</p>
         </div>
-      <h2 id="compression-heading">Learned regional preferences transfer to unseen DNA</h2>
-      <p class="section-intro">GeneZip learns regional preferences from human DNA and applies them to unseen human and mouse sequences, without annotations at inference.</p>
+        <div class="metric">
+          <p class="metric-value">+0.31 PPL</p>
+          <p>Validation perplexity increase<br>vs. uncompressed Mamba2-84M</p>
+        </div>
+      </div>
+      <details class="benchmark-data reconstruction-table">
+        <summary>Compare compression and reconstruction · Table 1</summary>
+        <div class="table-scroll">
+          <table>
+            <caption>Validation perplexity · lower is better</caption>
+            <thead><tr><th scope="col">Model</th><th scope="col">BPT</th><th scope="col">Overall PPL ↓</th><th scope="col">ΔPPL ↓</th></tr></thead>
+            <tbody>
+              <tr><th scope="row">Mamba2-84M (uncompressed)</th><td>1.0</td><td>2.4135</td><td>—</td></tr>
+              <tr><th scope="row">U-Net-70M</th><td>128.0</td><td>2.8414</td><td>+0.4279</td></tr>
+              <tr><th scope="row">H-Net-70M</th><td>122.2</td><td>2.7930</td><td>+0.3795</td></tr>
+              <tr class="genezip-row"><th scope="row">GeneZip-70M</th><td><strong>137.6</strong></td><td><strong>2.7259</strong></td><td><strong>+0.3124</strong></td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p>ΔPPL is relative to uncompressed Mamba2. Bold marks the best values among the three high-compression models.</p>
+      </details>
+      <h2 class="analysis-subheading" id="compression-heading"><strong class="motivation-emphasis">Region-aware</strong> compression on unseen DNA</h2>
+      <p class="section-intro">GeneZip retains finer resolution in promoter and genic regions on unseen human and mouse DNA, without annotations at inference.</p>
       <figure class="routing-animation" id="region-routing">
         <div class="species-switch" role="group" aria-label="Choose species">
-          <button type="button" data-species="Human" data-animation="assets/genezip_region_human.gif" data-still="assets/region_human_final.png" aria-pressed="true">Human</button>
-          <button type="button" data-species="Mouse" data-animation="assets/genezip_region_mouse.gif" data-still="assets/region_mouse_final.png" aria-pressed="false">Mouse</button>
+          <button type="button" data-species="Human" data-animation="assets/genezip_region_human.gif?v=merge-1108" data-still="assets/region_human_final.png?v=merge-1108" aria-pressed="true">Human</button>
+          <button type="button" data-species="Mouse" data-animation="assets/genezip_region_mouse.gif?v=merge-1108" data-still="assets/region_mouse_final.png?v=merge-1108" aria-pressed="false">Mouse</button>
         </div>
-        <a class="zoom-link" href="assets/genezip_region_human.gif" data-lightbox data-caption="Learned routing on unseen DNA. Token Density summarizes 749 fixed windows per species; compact token strips are enlarged." aria-label="Enlarge Human compression training animation">
-          <img src="assets/genezip_region_human.gif" data-animation="assets/genezip_region_human.gif" data-still="assets/region_human_final.png" alt="Human DNA: region-colored routing during training, fixed smooth token-density curves revealed checkpoint by checkpoint, then a two-stage compression illustration with compression ratios." width="1320" height="880" loading="lazy">
+        <a class="zoom-link" href="assets/genezip_region_human.gif?v=merge-1108" data-lightbox data-caption="Learned regional compression on unseen DNA. BPT = bases per token; higher means stronger compression." aria-label="Enlarge Human compression training animation">
+          <img src="assets/genezip_region_human.gif?v=merge-1108" data-animation="assets/genezip_region_human.gif?v=merge-1108" data-still="assets/region_human_final.png?v=merge-1108" alt="Human DNA: region-colored routing during training, fixed smooth token-density curves revealed checkpoint by checkpoint, then a two-stage compression illustration with BPT." width="1320" height="880" loading="lazy">
         </a>
-        <div class="animation-controls"><button type="button" class="animation-toggle" aria-pressed="false">Show final checkpoint</button></div>
-        <figcaption><strong>Token Density = regional token share / original DNA share.</strong> Values above 1 indicate denser allocation. Curves summarize 749 fixed windows per species; dots show measured checkpoints.</figcaption>
+        <div class="animation-controls"><button type="button" class="animation-toggle" aria-pressed="false">Show final result</button></div>
+        <figcaption><strong>Token Density &gt; 1</strong> means denser token allocation. Curves summarize held-out windows; upper tracks show one example.</figcaption>
       </figure>
-      <details class="routing-details"><summary>View the paper's boundary-probability case studies</summary>
-      <figure class="region-figure">
-        <a class="zoom-link" href="assets/region-aware.png" data-lightbox data-caption="Learned boundary probabilities at a promoter-dense locus and an intron-dominated locus on held-out human chromosome 9." aria-label="Enlarge region-aware compression case studies"><img src="assets/region-aware.png" alt="Two chr9 loci show genomic region annotations above per-base boundary probabilities. GeneZip in blue concentrates peaks around promoters and transcribed features compared with H-Net in orange." width="1992" height="688" loading="lazy"></a>
-        <figcaption>Two held-out chr9 loci: a promoter-dense transcript locus (top) and an intron-dominated gene locus (bottom). Curves show per-base boundary probability for GeneZip (blue) and H-Net (orange), computed from raw DNA without annotations.</figcaption>
-      </figure>
-      </details>
-      <h2 class="analysis-subheading" id="evidence-heading"><strong class="motivation-emphasis">Repeats</strong> are a major source of DNA redundancy</h2>
-      <p class="section-intro">GeneZip is trained with gene-structure labels, without repeat-specific supervision. Yet it learns to allocate fewer tokens per base to repetitive DNA than to the surrounding sequence: <strong>emergent redundancy-aware compression</strong>.</p>
+      <h2 class="analysis-subheading" id="evidence-heading"><strong class="motivation-emphasis">Redundancy-aware</strong> compression</h2>
+      <p class="section-intro">GeneZip shows <strong>emergent Redundancy-aware compression</strong>. Repeats are a major source of DNA redundancy, yet GeneZip learns to compress them more strongly than surrounding DNA using only gene-structure supervision. This behavior emerges without repeat labels or a repeat-specific objective, covers both transposable-element-derived and tandem repeats, and transfers to <strong>nine species without further training</strong>.</p>
       <figure class="routing-animation" id="repeat-routing">
         <div class="species-switch" role="group" aria-label="Choose tandem-repeat species">
           <button type="button" data-species="Human" data-animation="assets/genezip_repeat_human.gif" data-still="assets/repeat_human_final.png" aria-pressed="true">Human</button>
@@ -135,60 +145,87 @@
         <a class="zoom-link" href="assets/genezip_repeat_human.gif" data-lightbox data-caption="Tandem-repeat compression on unseen DNA, without repeat-specific supervision. Orange: repeat; blue: non-repeat." aria-label="Enlarge Human tandem-repeat compression animation">
           <img src="assets/genezip_repeat_human.gif" data-animation="assets/genezip_repeat_human.gif" data-still="assets/repeat_human_final.png" alt="Human DNA: orange tandem-repeat and blue non-repeat routing boundaries during training, then a two-stage compression animation with compression ratios and synchronized local detail." width="1320" height="880" loading="lazy">
         </a>
-        <div class="animation-controls"><button type="button" class="animation-toggle" aria-pressed="false">Show final checkpoint</button></div>
-        <figcaption><strong>Orange: tandem repeat · Blue: non-repeat.</strong> Arrows show input bases → final tokens, classified by retained boundary position. Repeat labels are never supplied to the router.</figcaption>
+        <div class="animation-controls"><button type="button" class="animation-toggle" aria-pressed="false">Show final result</button></div>
+        <figcaption><strong>Orange: tandem repeat · Blue: non-repeat.</strong> Illustrative examples; repeat labels are not supplied to the router.</figcaption>
       </figure>
-      <p class="benchmark-note">Animations show selected examples; token strips are enlarged. Compression ratio = input bases / retained latent tokens.</p>
       <h3 class="figure-heading">Stronger repeat compression across human and mouse</h3>
-      <p class="section-intro">GeneZip and H-Net predict repeat sequences with nearly identical perplexity, but allocate tokens differently. GeneZip has higher repeat-to-background compression ratios in all ten evaluated subsets, spanning transposon-derived and tandem repeats.</p>
+      <p class="section-intro">GeneZip compresses repeats more strongly than H-Net across human and mouse, with comparable repeat perplexity.</p>
       <figure class="repeat-figure">
-        <a class="zoom-link" href="assets/repeat-compression.png" data-lightbox data-caption="Redundancy-aware compression across TE-derived and tandem-repeat sequence; repeat-to-background compression measurements." aria-label="Enlarge Human and Mouse repeat compression results"><img src="assets/repeat-compression.png" alt="Human and Mouse repeat/non-repeat compression ratios for DNA transposon, LINE, LTR, SINE and tandem repeats, comparing GeneZip with H-Net. GeneZip has higher repeat/non-repeat compression ratios in every displayed subset." loading="lazy" width="2228" height="560"></a>
-        <figcaption>Repeat/non-repeat compression ratio on held-out human and mouse sequences. Ratios above 1 mean fewer tokens per base in repeats than in matched non-repeat positions from the same sequence window. TR denotes tandem repeats.</figcaption>
+        <a class="zoom-link" href="assets/repeat-compression.png" data-lightbox data-caption="Redundancy-aware compression across TE-derived and tandem-repeat sequence — original paper figure." aria-label="Enlarge Human and Mouse repeat compression results"><img src="assets/repeat-compression.png" alt="Human and Mouse BPT ratios for DNA transposon, LINE, LTR, SINE and tandem repeats, comparing GeneZip with H-Net. GeneZip has higher repeat/non-repeat BPT ratios in every displayed subset." loading="lazy" width="2228" height="560"></a>
+        <figcaption>Ratios above 1 indicate stronger compression in repeats than surrounding DNA. TR = tandem repeats.</figcaption>
       </figure>
     </section>
 
-<section class="research-section downstream-section prior-downstream" id="downstream" aria-labelledby="downstream-heading">
-<div class="eyebrow">04 / Downstream performance</div>
-<h2 id="downstream-heading">General Performance</h2>
-<p>GeneZip combines efficient long-context inference with the best average rank among models with leakage-controlled pretraining. It leads this group on CMP, eQTL and TISP.</p>
-<div class="compression-metrics general-metrics" aria-label="General performance highlights">
-<div class="metric"><p class="metric-value">3.13</p><p class="metric-label">Best average rank ↓</p><p>Among the leakage-controlled pretraining group. Task ranks are computed across all ten benchmark models.</p></div>
-<div class="metric"><p class="metric-value">36.1×</p><p class="metric-label">Faster inference than JanusDNA</p><p>6.34 s vs. 228.63 s for 100 × 450-kb inputs on one H100.</p></div>
-</div>
-<div class="table-scroll"><table id="general-performance-table"><caption>Leakage-controlled pretraining · held-out downstream test scores</caption><thead><tr><th scope="col">Model</th><th scope="col">Inference (s) ↓</th><th scope="col">CMP SCC ↑</th><th scope="col">eQTL AUROC ↑</th><th scope="col">ETGP AUPRC ↑</th><th scope="col">TISP PCC ↑</th><th scope="col">Avg. rank ↓</th></tr></thead><tbody><tr><th scope="row">Mamba2-84M</th><td>40.80</td><td>0.111</td><td>0.762</td><td>0.322</td><td>0.294</td><td>6.25</td></tr><tr><th scope="row">U-Net-70M</th><td>4.85</td><td>0.131</td><td>0.807</td><td>0.390</td><td>0.178</td><td>4.00</td></tr><tr><th scope="row">H-Net-70M</th><td>11.78</td><td>0.118</td><td>0.791</td><td>0.225</td><td>0.303</td><td>5.75</td></tr><tr class="selected"><th scope="row">GeneZip-70M</th><td>6.34</td><td>0.133</td><td>0.817</td><td>0.375</td><td>0.336</td><td>3.13</td></tr></tbody></table></div>
-<p class="small">Inference is measured separately with each model's largest verified batch size and benchmark routing settings.</p>
-<details><summary>All benchmark models</summary>
-<p>Under leakage-controlled pretraining, GeneZip leads on CMP, eQTL and TISP and has the best average rank.</p>
-<div class="table-scroll"><table id="main-table"><caption>DNALongBench · held-out test results</caption><thead><tr><th scope="col">Model</th><th scope="col">Pretraining group</th><th scope="col">Compression ratio</th><th scope="col">Inference (s) ↓</th><th scope="col">CMP SCC ↑</th><th scope="col">eQTL AUROC ↑</th><th scope="col">ETGP AUPRC ↑</th><th scope="col">TISP PCC ↑</th><th scope="col">Avg. rank ↓</th></tr></thead><tbody><tr><th scope="row">HyenaDNA-6.6M</th><td>DNALongBench-official</td><td>1.0×</td><td>22.86</td><td>0.115</td><td>0.514</td><td>0.249</td><td>0.132</td><td>8.00</td></tr><tr><th scope="row">Caduceus-Ph-7.7M</th><td>DNALongBench-official</td><td>1.0×</td><td>35.06</td><td>0.133</td><td>0.566</td><td>0.380</td><td>0.109</td><td>5.63</td></tr><tr><th scope="row">Caduceus-PS-7.7M</th><td>DNALongBench-official</td><td>1.0×</td><td>68.36</td><td>0.127</td><td>0.538</td><td>0.376</td><td>0.108</td><td>7.00</td></tr><tr><th scope="row">JanusDNA-7.7M</th><td>External-pretraining</td><td>1.0×</td><td>228.63</td><td>0.159</td><td>0.840</td><td>0.438</td><td>0.002</td><td>3.25</td></tr><tr><th scope="row">NTv3-100M-pre</th><td>External-pretraining</td><td>127.99×</td><td>13.27</td><td>0.136</td><td>0.792</td><td>0.440</td><td>0.194</td><td>2.75</td></tr><tr><th scope="row">Evo2-1B</th><td>External-pretraining</td><td>1.0×</td><td>OOM</td><td>0.018</td><td>0.754</td><td>0.095</td><td>-0.002</td><td>9.25</td></tr><tr><th scope="row">Mamba2-84M</th><td>Leakage-controlled-pretraining</td><td>1.0×</td><td>40.80</td><td>0.111</td><td>0.762</td><td>0.322</td><td>0.294</td><td>6.25</td></tr><tr><th scope="row">U-Net-70M</th><td>Leakage-controlled-pretraining</td><td>127.99×</td><td>4.85</td><td>0.131</td><td>0.807</td><td>0.390</td><td>0.178</td><td>4.00</td></tr><tr><th scope="row">H-Net-70M</th><td>Leakage-controlled-pretraining</td><td>122.19×</td><td>11.78</td><td>0.118</td><td>0.791</td><td>0.225</td><td>0.303</td><td>5.75</td></tr><tr><th scope="row">GeneZip-70M</th><td>Leakage-controlled-pretraining</td><td>137.59×</td><td>6.34</td><td>0.133</td><td>0.817</td><td>0.375</td><td>0.336</td><td>3.13</td></tr></tbody></table></div>
-<p class="small">H-Net and GeneZip share 70,000-token ceilings per stage, with no additional floors, for eQTL, ETGP and TISP. Average rank is calculated among all ten main-table models. Compression reports pretraining-validation measurements; inference is a separate benchmark with model-specific batch sizes and routing settings.</p>
-<p><a href="https://openreview.net/pdf?id=E37ysCRa5d" target="_blank" rel="noopener">Paper and evaluation protocols</a></p>
-<p>GeneZip takes 6.34 s versus H-Net’s 11.78 s in the separate inference benchmark.</p></details>
-<div class="ablation-heading" id="ablation"><div class="eyebrow">Ablation</div><h2 id="ablation-heading">Different Region Targets; Different Compression Behaviour</h2></div>
-<figure class="allocation-comparison">
-<div class="legend"><span style="--c:var(--orange)">Promoter</span><span style="--c:var(--blue)">Genic</span><span style="--c:var(--gray)">Intron + intergenic</span></div>
-<div class="scroll"><svg id="allocation-strips" viewBox="0 0 1000 350" role="img" aria-labelledby="allocation-title allocation-desc"><title id="allocation-title">Same DNA, five allocations with equal token counts</title><desc id="allocation-desc">Five illustrative allocations on the same seven equal-length DNA regions, with 140 tokens per row and identical spacing. Regional-prior weights are normalized to this shared budget. No Prior (HNet) is shown as a uniform reference, not measured H-Net routing.</desc></svg></div>
+    <section class="research-section downstream-section" id="downstream" aria-labelledby="downstream-heading">
+      <p class="eyebrow">04 / Downstream performance</p>
+      <h2 id="downstream-heading">Strong downstream performance despite high compression</h2>
+      <h3 class="figure-heading">Faster inference speed</h3>
+      <figure class="efficiency-figure" id="efficiency">
+        <a class="zoom-link" href="assets/inference-efficiency.svg" data-lightbox data-caption="100 sequences of 450 kb on one H100, using model-specific batch sizes. Inference time is from Table 2." aria-label="Enlarge inference efficiency comparison">
+          <img src="assets/inference-efficiency.svg" alt="GeneZip processes 100 sequences of 450 kb in 6.34 seconds, compared with 228.63 seconds for JanusDNA: 36.1 times higher throughput." width="960" height="350" loading="lazy">
+        </a>
+        <figcaption>100 × 450-kb sequences · one H100 · model-specific batch sizes.</figcaption>
+      </figure>
+      <h3 class="figure-heading" id="performance-heading">Downstream performance</h3>
+      <p class="metric-value">3.13 <span class="rank-label">average rank</span></p>
+      <p class="section-intro">GeneZip achieves the <strong>best average rank among models with leakage-controlled pretraining</strong> across four DNALongBench tasks, despite compressing DNA by 137.6×.</p>
+      <div class="benchmark-data downstream-results matched-results">
+        <div class="table-scroll">
+          <table>
+            <caption>Leakage-controlled pretraining</caption>
+            <thead><tr><th scope="col">Model</th><th scope="col">BPT</th><th scope="col">Inference (s) ↓</th><th scope="col">CMP<br>SCC ↑</th><th scope="col">eQTL<br>AUROC ↑</th><th scope="col">ETGP<br>AUPRC ↑</th><th scope="col">TISP<br>PCC ↑</th><th scope="col">Avg. rank ↓</th></tr></thead>
+            <tbody>
+              <tr><th scope="row">Mamba2-84M</th><td>1.0</td><td>40.80</td><td>0.111</td><td>0.762</td><td>0.322</td><td>0.294</td><td>6.25</td></tr>
+              <tr><th scope="row">U-Net-70M</th><td>127.99</td><td>4.85</td><td>0.131</td><td>0.807</td><td><strong>0.390</strong></td><td>0.178</td><td>4.00</td></tr>
+              <tr><th scope="row">H-Net-70M</th><td>122.19</td><td>11.78</td><td>0.118</td><td>0.791</td><td>0.225</td><td>0.303</td><td>5.75</td></tr>
+              <tr class="genezip-row"><th scope="row">GeneZip-70M</th><td>137.59</td><td>6.34</td><td><strong>0.133</strong></td><td><strong>0.817</strong></td><td>0.375</td><td><strong>0.336</strong></td><td><strong>3.13</strong></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <details class="benchmark-data downstream-results">
+        <summary>Full DNALongBench results · Table 2</summary>
+        <div class="table-scroll">
+          <table>
+            <caption>Held-out test scores and inference cost</caption>
+            <thead><tr><th scope="col">Model</th><th scope="col">BPT</th><th scope="col">Inference (s) ↓</th><th scope="col">CMP<br>SCC ↑</th><th scope="col">eQTL<br>AUROC ↑</th><th scope="col">ETGP<br>AUPRC ↑</th><th scope="col">TISP<br>PCC ↑</th><th scope="col">Avg. rank ↓</th></tr></thead>
+            <tbody>
+              <tr class="result-group"><th colspan="8" scope="rowgroup">DNALongBench-official</th></tr>
+              <tr><th scope="row">HyenaDNA-6.6M</th><td>1.0</td><td>22.86</td><td>0.115</td><td>0.514</td><td>0.249</td><td>0.132</td><td>8.00</td></tr>
+              <tr><th scope="row">Caduceus-Ph-7.7M</th><td>1.0</td><td>35.06</td><td>0.133</td><td>0.566</td><td>0.380</td><td>0.109</td><td>5.63</td></tr>
+              <tr><th scope="row">Caduceus-PS-7.7M</th><td>1.0</td><td>68.36</td><td>0.127</td><td>0.538</td><td>0.376</td><td>0.108</td><td>7.00</td></tr>
+              <tr class="result-group"><th colspan="8" scope="rowgroup">External pretraining</th></tr>
+              <tr><th scope="row">JanusDNA-7.7M</th><td>1.0</td><td>228.63</td><td>0.159</td><td>0.840</td><td>0.438</td><td>0.002</td><td>3.25</td></tr>
+              <tr><th scope="row">NTv3-100M-pre</th><td>127.99</td><td>13.27</td><td>0.136</td><td>0.792</td><td>0.440</td><td>0.194</td><td>2.75</td></tr>
+              <tr><th scope="row">Evo2-1B</th><td>1.0</td><td>OOM</td><td>0.018</td><td>0.754</td><td>0.095</td><td>-0.002</td><td>9.25</td></tr>
+              <tr class="result-group"><th colspan="8" scope="rowgroup">Leakage-controlled pretraining</th></tr>
+              <tr><th scope="row">Mamba2-84M</th><td>1.0</td><td>40.80</td><td>0.111</td><td>0.762</td><td>0.322</td><td>0.294</td><td>6.25</td></tr>
+              <tr><th scope="row">U-Net-70M</th><td>127.99</td><td>4.85</td><td>0.131</td><td>0.807</td><td><strong>0.390</strong></td><td>0.178</td><td>4.00</td></tr>
+              <tr><th scope="row">H-Net-70M</th><td>122.19</td><td>11.78</td><td>0.118</td><td>0.791</td><td>0.225</td><td>0.303</td><td>5.75</td></tr>
+              <tr class="genezip-row"><th scope="row">GeneZip-70M</th><td>137.59</td><td>6.34</td><td><strong>0.133</strong></td><td><strong>0.817</strong></td><td>0.375</td><td><strong>0.336</strong></td><td><strong>3.13</strong></td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="benchmark-note">Average rank uses all 10 models across the four tasks; lower is better. Bold marks the best results within leakage-controlled pretraining. Inference: 100 × 450-kb sequences on one H100, with model-specific batch sizes; OOM = out of memory. JanusDNA BPT reflects its published single-nucleotide representation.</p>
+      </details>
+      <div class="prior-downstream" id="ablation">
+        <h3 class="analysis-subheading" id="ablation-heading">Different region targets; different compression behaviour</h3>
+
+<figure class="allocation-comparison" id="ablation-comparison">
+<div class="legend"><span style="--c:#df9b65">Promoter</span><span style="--c:#91ad8c">CDS</span><span style="--c:#c8ad64">UTR</span><span style="--c:#577cb5">Exon</span><span style="--c:#7d909d">Intron + intergenic</span></div>
+<div class="scroll"><svg id="ablation-allocation" viewBox="0 0 1000 235" role="img" aria-labelledby="ablation-allocation-title ablation-allocation-desc"><title id="ablation-allocation-title">Same DNA, five allocations with equal token counts</title><desc id="ablation-allocation-desc">Five illustrative allocations on the same seven equal-length DNA regions, with 140 tokens per row and identical spacing. Regional-prior weights are normalized to this shared budget. No Prior (HNet) is shown as a uniform reference, not measured H-Net routing.</desc></svg></div>
 <figcaption>Illustration with equal token counts; No Prior is a uniform reference, not measured routing.</figcaption>
 </figure>
 <div class="grouped-legend" id="prior-legend" aria-label="Model colours for regional priors and the HNet baseline"></div>
 <div class="task-panels-scroll"><div class="task-panels" id="prior-charts" aria-label="Held-out test results for four regional priors and No Prior (HNet)"></div></div>
 <p class="small">Held-out test scores; all y-axes are truncated.</p>
 <p class="tradeoff">Different downstream tasks have different biological focuses. For example, in TISP, the promoter-focused priors Default (Promoter+Genic) and PromoterDistal both perform well. GeneZip lets users choose regional pretraining targets to match the biological focus of their downstream task.</p>
-<details><summary>Compression ratios, scores and regional targets</summary>
-<div class="table-scroll"><table id="prior-scores"></table></div>
-<p class="small">Compression is measured on 3,000 shared validation windows and varies across priors.</p>
-<div class="table-scroll"><table id="prior-table"></table></div>
-<p class="small">Target = base anchor × region multiplier. NIG / DIG: near / distal intergenic.</p>
-</details>
-
-</section>
+      </div>
+    </section>
 
     <section class="research-section resources-section" id="resources" aria-labelledby="resources-heading">
       <div>
-        <h2 id="resources-heading">Resources &amp; citation</h2>
-        <nav class="resource-buttons" aria-label="Paper and source code">
-          <a class="button resource-button paper-button" href="https://openreview.net/pdf?id=E37ysCRa5d" target="_blank" rel="noopener"><img src="assets/file-pdf.svg" alt="">Paper</a>
-          <a class="button resource-button code-button" href="https://github.com/AndyJZhao/GeneZip" target="_blank" rel="noopener"><img src="assets/github.svg" alt="">GitHub</a>
-        </nav>
+        <h2 id="resources-heading">Citation</h2>
       </div>
       <div class="citation-block">
         <button class="copy-button" type="button" id="copy-citation"><img src="assets/copy.svg" alt=""><span>Copy BibTeX</span></button>
@@ -205,7 +242,6 @@
 
   <footer class="page-footer">
     <p>Based on <a href="https://github.com/eliahuhorwitz/Academic-project-page-template" target="_blank" rel="noopener">Academic Project Page Template</a> and <a href="https://nerfies.github.io/" target="_blank" rel="noopener">Nerfies</a>. Template: <a href="https://creativecommons.org/licenses/by-sa/4.0/" target="_blank" rel="noopener">CC BY-SA 4.0</a>.</p>
-    <p>GeneZip · NeurIPS 2026</p>
   </footer>
 
   <dialog id="figure-dialog" aria-labelledby="figure-caption">

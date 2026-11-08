@@ -32,7 +32,7 @@ document.querySelectorAll('.routing-animation').forEach(figure => {
     image.src = still ? image.dataset.still : image.dataset.animation;
     figure.querySelector('[data-lightbox]').href = image.src;
     button.setAttribute('aria-pressed', String(still));
-    button.textContent = still ? 'Replay animation' : 'Show final checkpoint';
+    button.textContent = still ? 'Replay animation' : 'Show final result';
   }
   figure.querySelectorAll('[data-species]').forEach(choice => {
     choice.addEventListener('click', () => {
