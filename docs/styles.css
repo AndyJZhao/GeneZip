@@ -39,9 +39,9 @@ sup { font-size: .65em; vertical-align: super; line-height: 0; margin-left: 2px;
 .resource-button img { width: 17px; height: 17px; }
 .paper-button.button { background: var(--accent); color: #fff; }
 .paper-button.button:hover { background: #a83b21; color: #fff; }
-.code-button.button { background: #253041; color: #fff; }
-.code-button.button:hover { background: #101d35; color: #fff; }
-.paper-button img, .code-button img { filter: invert(1); }
+.code-button.button, .email-button.button { background: #253041; color: #fff; }
+.code-button.button:hover, .email-button.button:hover { background: #101d35; color: #fff; }
+.paper-button img, .code-button img, .email-button img { filter: invert(1); }
 .page-container, .page-footer { width: calc(100% - 64px); max-width: 720px; margin: 0 auto; }
 .overview-figure { padding: 28px 0 27px; border-top: 1px solid var(--rule); }
 .overview-figure img { display: block; width: 100%; }
