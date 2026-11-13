@@ -7,10 +7,10 @@
   <meta name="description" content="GeneZip learns region-aware compression for long-context DNA modeling. Trained with gene-structure annotations, it compresses unseen DNA without annotations at inference.">
   <link rel="icon" href="assets/icon-options/dna.svg" type="image/svg+xml">
   <link rel="stylesheet" href="assets/bulma.min.css">
-  <link rel="stylesheet" href="styles.css?v=email-button">
-  <link rel="stylesheet" href="region-target.css?v=compact-allocation">
+  <link rel="stylesheet" href="styles.css?v=citation-stacked">
+  <link rel="stylesheet" href="region-target.css?v=poster-allocation-v1">
   <script src="script.js?v=merge-1108" defer></script>
-  <script src="region-target.js?v=compact-allocation" defer></script>
+  <script src="region-target.js?v=poster-allocation-v1" defer></script>
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to research</a>
@@ -210,17 +210,26 @@
         <p class="benchmark-note">Average rank uses all 10 models across the four tasks; lower is better. Bold marks the best results within leakage-controlled pretraining. Inference: 100 × 450-kb sequences on one H100, with model-specific batch sizes; OOM = out of memory. JanusDNA BPT reflects its published single-nucleotide representation.</p>
       </details>
       <div class="prior-downstream" id="ablation">
-        <h3 class="analysis-subheading" id="ablation-heading">Different region targets; different compression behaviour</h3>
-
-<figure class="allocation-comparison" id="ablation-comparison">
-<div class="legend"><span style="--c:#df9b65">Promoter</span><span style="--c:#91ad8c">CDS</span><span style="--c:#c8ad64">UTR</span><span style="--c:#577cb5">Exon</span><span style="--c:#7d909d">Intron + intergenic</span></div>
-<div class="scroll"><svg id="ablation-allocation" viewBox="0 0 1000 235" role="img" aria-labelledby="ablation-allocation-title ablation-allocation-desc"><title id="ablation-allocation-title">Same DNA, five allocations with equal token counts</title><desc id="ablation-allocation-desc">Five illustrative allocations on the same seven equal-length DNA regions, with 140 tokens per row and identical spacing. Regional-prior weights are normalized to this shared budget. No Prior (HNet) is shown as a uniform reference, not measured H-Net routing.</desc></svg></div>
-<figcaption>Illustration with equal token counts; No Prior is a uniform reference, not measured routing.</figcaption>
-</figure>
-<div class="grouped-legend" id="prior-legend" aria-label="Model colours for regional priors and the HNet baseline"></div>
-<div class="task-panels-scroll"><div class="task-panels" id="prior-charts" aria-label="Held-out test results for four regional priors and No Prior (HNet)"></div></div>
-<p class="small">Held-out test scores; all y-axes are truncated.</p>
-<p class="tradeoff">Different downstream tasks have different biological focuses. For example, in TISP, the promoter-focused priors Default (Promoter+Genic) and PromoterDistal both perform well. GeneZip lets users choose regional pretraining targets to match the biological focus of their downstream task.</p>
+        <h3 class="analysis-subheading" id="ablation-heading">Flexible region-aware compression</h3>
+        <div class="prior-poster">
+          <div class="prior-allocation">
+            <h4>Region-aware allocation</h4>
+            <p class="allocation-intro">GeneZip offers <strong>flexible compression</strong> through regional pretraining priors tailored to downstream tasks.</p>
+            <p class="allocation-example">ETGP example: Default → Regulome, AUPRC <strong>0.3746 → 0.5049</strong>.</p>
+            <figure class="allocation-comparison" id="ablation-comparison">
+              <div id="ablation-allocation" role="group" aria-label="Four schematic regional allocations, each with 140 tokens"></div>
+              <div class="legend"><span style="--c:#df9b65">Promoter</span><span style="--c:#91ad8c">CDS</span><span style="--c:#c8ad64">UTR</span><span style="--c:#577cb5">Exon</span><span style="--c:#7d909d">Intron + intergenic</span></div>
+              <figcaption>Schematic: 140 tokens/row; equal-length regions; not measured routing.</figcaption>
+            </figure>
+            <p class="small prior-training-note">Each prior corresponds to a separately pretrained model.</p>
+          </div>
+          <div class="prior-performance">
+            <h4>Performance</h4>
+            <div class="task-panels" id="prior-charts" aria-label="Held-out test results for four regional priors and No Prior (HNet)"></div>
+          </div>
+        </div>
+        <div class="grouped-legend" id="prior-legend" aria-label="Model colours for regional priors and the HNet baseline"></div>
+        <p class="small prior-score-note">Held-out test scores; all y-axes are truncated. Labels show the best score per task; hover or focus on a bar for its value.</p>
       </div>
     </section>
 

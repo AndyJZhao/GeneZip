@@ -34,18 +34,17 @@ function renderDownstream(){
  const names=['No Prior (HNet)','Default (Promoter+Genic)','Regulome','PromoterDistal','Intergenic'];
  const models=[data.baseline,...data.priors];
  const modelColors=['#9c8058','#c64c2e','#438a91','#577cb5','#68778b'];
- [$('allocation-strips'),$('ablation-allocation')].forEach(strip=>{
- const compact=strip.id==='ablation-allocation',start=220,width=780,compressedWidth=400;
- strip.append(svg('text',{x:0,y:compact?23:30,class:'track-label'},'Same input DNA'));
+ const strip=$('allocation-strips'),start=220,width=780,compressedWidth=400;
+ strip.append(svg('text',{x:0,y:30,class:'track-label'},'Same input DNA'));
  labels.forEach((label,i)=>{
-  strip.append(svg('rect',{x:start+i*width/7,y:compact?10:17,width:width/7-2,height:compact?16:22,rx:2,fill:colors[i],opacity:.28}));
-  strip.append(svg('text',{x:start+(i+.5)*width/7,y:compact?41:57,'text-anchor':'middle',fill:'#48576d','font-size':11},label));
+  strip.append(svg('rect',{x:start+i*width/7,y:17,width:width/7-2,height:22,rx:2,fill:colors[i],opacity:.28}));
+  strip.append(svg('text',{x:start+(i+.5)*width/7,y:57,'text-anchor':'middle',fill:'#48576d','font-size':11},label));
  });
  const tokenBudget=140;
  models.forEach((p,row)=>{
-  const y=compact?70+row*34:98+row*53;let count=0;
+  const y=98+row*53;let count=0;
   const name=svg('text',{x:20,y:row===1?y-6:y,class:'sequence-name',fill:'#101d35'},row===1?'Default':names[row]);
-  if(row===1)name.append(svg('tspan',{x:20,dy:compact?14:19},'(Promoter+Genic)'));
+  if(row===1)name.append(svg('tspan',{x:20,dy:19},'(Promoter+Genic)'));
   strip.append(svg('rect',{x:0,y:y-10,width:11,height:11,fill:modelColors[row]}),name);
   const weights=row===0?labels.map(()=>1):p.targets.map(target=>1/target);
   const total=weights.reduce((a,b)=>a+b,0);
@@ -56,17 +55,28 @@ function renderDownstream(){
   counts.forEach((n,i)=>{
    for(let j=0;j<n;j++){
     const x=start+(count+.5)*compressedWidth/tokenBudget;
-    track.append(svg('line',{x1:x,x2:x,y1:y-(compact?10:15),y2:y+(compact?6:7),stroke:colors[i],'stroke-width':2.2}));count++;
+    track.append(svg('line',{x1:x,x2:x,y1:y-15,y2:y+7,stroke:colors[i],'stroke-width':2.2}));count++;
    }
   });
   strip.append(track);
  });
+ const posterRows=[['Uniform reference',null],['Default',data.priors[0]],['Regulome',data.priors[1]],['Intergenic',data.priors[3]]];
+ posterRows.forEach(([name,prior])=>{
+  const weights=prior?prior.targets.map(target=>1/target):labels.map(()=>1);
+  const total=weights.reduce((a,b)=>a+b,0),quotas=weights.map(w=>w/total*140),counts=quotas.map(Math.floor);
+  quotas.map((q,i)=>({i,fraction:q-counts[i]})).sort((a,b)=>b.fraction-a.fraction).slice(0,140-counts.reduce((a,b)=>a+b,0)).forEach(({i})=>counts[i]++);
+  const row=document.createElement('div');row.className='allocation-row';
+  const label=document.createElement(name==='Default'?'strong':'span');label.textContent=name;
+  const track=svg('svg',{viewBox:'0 0 560 24',role:'img','aria-label':`${name}: ${counts.map((n,i)=>labels[i]+' '+n).join(', ')} illustrative tokens; 140 total`,preserveAspectRatio:'none'});
+  let offset=0;
+  counts.forEach((n,i)=>{for(let j=0;j<n;j++){track.append(svg('rect',{x:offset*4,y:0,width:3.2,height:24,fill:colors[i]}));offset++}});
+  row.append(label,track);$('ablation-allocation').append(row);
  });
  $('prior-legend').innerHTML=names.map((name,i)=>`<span><i style="background:${modelColors[i]}" aria-hidden="true"></i>${name}</span>`).join('');
- const tasks=[['cmp','CMP','SCC',.08,.14,[.08,.10,.12,.14]],['eqtl','eQTL','AUROC',.76,.84,[.76,.78,.80,.82,.84]],['etgp','ETGP','AUPRC',.20,.55,[.20,.25,.30,.35,.40,.45,.50,.55]],['tisp','TISP','PCC',.24,.36,[.24,.27,.30,.33,.36]]];
+ const tasks=[['cmp','CMP','SCC',.08,.14,[.08,.11,.14]],['eqtl','eQTL','AUROC',.76,.84,[.76,.80,.84]],['etgp','ETGP','AUPRC',.20,.55,[.20,.40,.55]],['tisp','TISP','PCC',.24,.36,[.24,.30,.36]]];
  $('prior-charts').innerHTML=tasks.map(([key,title,metric,min,max,ticks])=>{
-  const percent=v=>(v-min)/(max-min)*100;
-  return `<section class="task-panel" aria-label="${title}, ${metric}, axis ${min} to ${max}${min?' (truncated)':''}"><h3>${title}</h3><p>${metric} ↑</p><div class="panel-plot"><div class="panel-axis" aria-hidden="true">${ticks.map(v=>`<span style="bottom:${percent(v)}%">${v.toFixed(2)}</span>`).join('')}</div><div class="panel-grid" aria-hidden="true">${ticks.map(v=>`<span style="bottom:${percent(v)}%"></span>`).join('')}</div><div class="panel-bars">${models.map((p,i)=>`<div class="vertical-bar" style="height:${percent(p[key])}%;background:${modelColors[i]}" role="img" aria-label="${title}, ${names[i]}: ${p[key].toFixed(4)}"><span class="vertical-value">${p[key].toFixed(4)}</span></div>`).join('')}</div></div></section>`;
+  const percent=v=>(v-min)/(max-min)*100,best=Math.max(...models.map(p=>p[key]));
+  return `<section class="task-panel" aria-label="${title}, ${metric}, axis ${min} to ${max}${min?' (truncated)':''}"><h5>${title}</h5><p>${metric} ↑</p><div class="panel-plot"><div class="panel-axis" aria-hidden="true">${ticks.map(v=>`<span style="bottom:${percent(v)}%">${v.toFixed(2)}</span>`).join('')}</div><div class="panel-grid" aria-hidden="true">${ticks.map(v=>`<span style="bottom:${percent(v)}%"></span>`).join('')}</div><div class="panel-bars">${models.map((p,i)=>`<div class="vertical-bar" style="height:${percent(p[key])}%;background:${modelColors[i]}" role="img" tabindex="0" aria-label="${title}, ${names[i]}: ${p[key].toFixed(4)}"><span class="bar-tooltip">${names[i]}: ${p[key].toFixed(4)}</span>${p[key]===best?`<span class="vertical-value">${p[key].toFixed(4)}</span>`:''}</div>`).join('')}</div></div></section>`;
  }).join('');
 }
 fetch('assets/region-target-data.json').then(r=>{if(!r.ok)throw Error('Cannot load source data');return r.json()}).then(d=>{

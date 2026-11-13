@@ -81,7 +81,7 @@ figcaption strong { font-weight: 600; color: var(--text); }
 .efficiency-callout .metric-value span { display: block; font-size: 25px; letter-spacing: -.5px; margin-top: 5px; }
 .efficiency-callout > p:not(.metric-value) { font-size: 14px; line-height: 1.5; margin: 15px 0 10px; }
 .efficiency-callout > a { font-size: 14px; text-decoration: underline; }
-.resources-section { display: grid; grid-template-columns: 1fr 1.2fr; gap: 40px; padding-top: 25px; }
+.resources-section { display: grid; grid-template-columns: 1fr; gap: 15px; padding-top: 25px; }
 .resources-section h2 { font-size: 20px; letter-spacing: -.35px; }
 .resources-section .resource-buttons { justify-content: flex-start; margin-top: 18px; gap: 9px; }
 .resources-section .resource-button.button { height: 38px; padding: 0 15px; font-size: 14px; }

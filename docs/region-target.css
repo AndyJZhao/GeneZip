@@ -26,15 +26,28 @@
 .region-target-demo .allocation-comparison .legend { justify-content: flex-end; font-size: 13px; margin-bottom: 8px; }
 .region-target-demo .sequence-name { font-size: 14px; font-weight: 600; }
 .region-target-demo .allocation-comparison figcaption { font-size: 12px; margin-top: 6px; }
-.prior-downstream .grouped-legend { margin-top: 16px; margin-bottom: 22px; }
-.prior-downstream .task-panels { min-width: 720px; grid-template-columns: repeat(4,minmax(0,1fr)); gap: 12px; }
-.prior-downstream .task-panel h3 { margin: 0; font-size: 17px; }
-.prior-downstream .task-panel > p { margin: 4px 0 28px; min-height: 0; }
-.prior-downstream .panel-plot { height: 180px; margin: 0 0 12px 28px; }
-.prior-downstream .panel-axis { left: -28px; width: 23px; }
-.prior-downstream .panel-axis span { font-size: 9px; }
-.prior-downstream .panel-bars { gap: 3px; padding: 0 3px; }
-.prior-downstream .vertical-value { font-size: 9px; }
+.prior-downstream { width: min(1120px, calc(100vw - 64px)); position: relative; left: 50%; transform: translateX(-50%); scroll-margin-top: 24px; }
+.prior-downstream h3.analysis-subheading { font-size: clamp(25px, 3vw, 36px); padding-bottom: 18px; border-bottom: 2px solid var(--accent); margin-bottom: 24px; }
+.prior-poster { display: grid; grid-template-columns: minmax(0, 3fr) minmax(0, 1fr); gap: 48px; }
+.prior-poster h4 { color: var(--ink); font-size: 24px; line-height: 1.2; font-weight: 700; margin: 0 0 16px; }
+.prior-allocation { min-width: 0; }
+.prior-allocation .allocation-intro { font-size: 22px; line-height: 1.4; max-width: 48ch; margin-bottom: 18px; }
+.prior-allocation .allocation-example { font-size: 17px; margin-bottom: 28px; }
+.prior-performance { position: relative; min-width: 0; }
+.prior-performance:before { content: ''; position: absolute; left: -24px; top: 0; bottom: 0; border-left: 1px solid var(--rule); }
+.prior-downstream .grouped-legend { justify-content: flex-start; margin: 24px 0 10px; gap: 12px 24px; font-size: 14px; }
+.prior-downstream .task-panels { min-width: 0; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 14px 16px; }
+.prior-downstream .task-panel h5 { margin: 0; font-size: 17px; text-align: center; color: var(--ink); font-weight: 700; line-height: 1.2; }
+.prior-downstream .task-panel > p { font-size: 11px; margin: 2px 0 18px; min-height: 0; }
+.prior-downstream .panel-plot { height: 125px; margin: 0 0 0 28px; }
+.prior-downstream .panel-axis { left: -28px; width: 24px; }
+.prior-downstream .panel-axis span { font-size: 10px; }
+.prior-downstream .panel-bars { gap: 3px; padding: 0 2px; }
+.prior-downstream .vertical-value { font-size: 11px; font-weight: 700; padding-bottom: 3px; }
+.prior-downstream .bar-tooltip { display: none; position: absolute; z-index: 2; bottom: calc(100% + 22px); left: 50%; transform: translateX(-50%); width: max-content; max-width: 180px; background: var(--ink); color: white; padding: 6px 9px; border-radius: 4px; font-size: 12px; text-align: center; pointer-events: none; }
+.prior-downstream .task-panel:nth-child(even) .bar-tooltip { left: auto; right: 0; transform: none; }
+.prior-downstream .vertical-bar:hover .bar-tooltip, .prior-downstream .vertical-bar:focus .bar-tooltip { display: block; }
+.prior-downstream .prior-score-note { font-size: 12px; }
 .prior-downstream details { margin-top: 20px; }
 .prior-downstream summary { cursor: pointer; color: var(--link); }
 .prior-downstream .table-scroll { overflow: auto; }
@@ -68,8 +81,31 @@
   .prior-downstream .general-metrics { grid-template-columns: 1fr; }
 }
 
-.prior-downstream .allocation-comparison { margin: 12px 0 20px; }
-.prior-downstream .allocation-comparison .legend { justify-content: flex-end; font-size: 13px; margin-bottom: 8px; }
-.prior-downstream .sequence-name { font-size: 14px; font-weight: 600; }
-.prior-downstream .allocation-comparison figcaption { font-size: 12px; margin-top: 4px; }
-#ablation-allocation { min-width: 620px; }
+.prior-downstream .allocation-comparison { margin: 0; }
+.prior-downstream .allocation-comparison .legend { justify-content: flex-start; gap: 8px 20px; font-size: 14px; margin: 12px 0 8px; }
+.prior-downstream .allocation-comparison figcaption { font-size: 12px; margin: 0; text-align: left; }
+.prior-downstream .allocation-row { display: grid; grid-template-columns: 168px minmax(0, 1fr); align-items: center; gap: 16px; margin: 10px 0; color: var(--ink); font-size: 17px; }
+.prior-downstream .allocation-row svg { height: 24px; }
+.prior-downstream .prior-training-note { margin-top: 14px; }
+@media (max-width: 1000px) {
+  .prior-poster { grid-template-columns: minmax(0, 2fr) minmax(250px, 1fr); gap: 36px; }
+  .prior-performance:before { left: -18px; }
+  .prior-allocation .allocation-intro { font-size: 20px; }
+  .prior-downstream .allocation-row { grid-template-columns: 142px minmax(0, 1fr); gap: 12px; font-size: 15px; }
+}
+@media (max-width: 760px) {
+  .prior-downstream { width: 100%; left: 0; transform: none; }
+  .prior-poster { grid-template-columns: 1fr; gap: 28px; }
+  .prior-performance { padding-top: 24px; border-top: 1px solid var(--rule); }
+  .prior-performance:before { display: none; }
+  .prior-downstream .task-panels { gap: 24px; }
+  .prior-downstream .panel-plot { height: 160px; }
+  .prior-downstream .panel-axis span { font-size: 11px; }
+  .prior-downstream .vertical-value { font-size: 12px; }
+}
+@media (max-width: 480px) {
+  .prior-downstream .allocation-row { grid-template-columns: 1fr; gap: 4px; margin: 12px 0; }
+  .prior-downstream .allocation-row svg { height: 22px; }
+  .prior-downstream .allocation-comparison .legend { gap: 8px 16px; font-size: 13px; }
+  .prior-downstream .grouped-legend { font-size: 13px; }
+}
